@@ -1,26 +1,381 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   RAW DESIGN TOKENS
+   Define values here. @theme inline references these so dark mode works
+   by overriding the raw variables, not the Tailwind tokens.
+───────────────────────────────────────────────────────────────────────────── */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ── Surfaces ── */
+  --srf-0: #FDFCF8; /* Page background — ivory */
+  --srf-1: #F8F4EE; /* Card surface — slightly warmer */
+  --srf-2: #F2EBE0; /* Inset surface — quotes, code blocks */
+
+  /* ── Text ── */
+  --txt:        #2D2A26; /* Primary text — warm brown */
+  --txt-muted:  #9A9087; /* Secondary text */
+  --txt-subtle: #B8AFA5; /* Tertiary — metadata, timestamps */
+
+  /* ── Accent — Old Rose ── */
+  --acc:       #B76E79;
+  --acc-light: #E5C1C5;
+  --acc-hover: #A55E69;
+
+  /* ── Borders ── */
+  --brd:       #E8E2D7; /* Default border */
+  --brd-strong:#D4C5B0; /* Hover / focus border */
 }
+
+/* ── Dark mode overrides ─────────────────────────────────────────────────── */
+
+.dark {
+  --srf-0: #1C1815;
+  --srf-1: #252018;
+  --srf-2: #2E2820;
+
+  --txt:        #F2EDE7;
+  --txt-muted:  #8A807A;
+  --txt-subtle: #6A605A;
+
+  --acc:       #C97F89;
+  --acc-light: #5A3A42;
+  --acc-hover: #D98F99;
+
+  --brd:       #3A342C;
+  --brd-strong:#4A4238;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TAILWIND THEME REGISTRATION
+   @theme inline keeps CSS var() references dynamic — required for dark mode.
+   Without `inline`, Tailwind resolves at build time and dark mode breaks.
+───────────────────────────────────────────────────────────────────────────── */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Fonts — set by next/font via CSS classes on <html> */
+  --font-sans:  var(--font-inter);
+  --font-serif: var(--font-playfair);
+
+  /* ── Color tokens → Tailwind utilities ── */
+
+  /* Surfaces */
+  --color-background: var(--srf-0);  /* bg-background, text-background */
+  --color-surface-1:  var(--srf-1);  /* bg-surface-1 */
+  --color-surface-2:  var(--srf-2);  /* bg-surface-2 */
+
+  /* Legacy alias for backward compat with existing components */
+  --color-muted: var(--srf-1);       /* bg-muted */
+  --color-card:  var(--srf-1);       /* bg-card */
+
+  /* Text */
+  --color-foreground:       var(--txt);        /* text-foreground */
+  --color-muted-foreground: var(--txt-muted);  /* text-muted-foreground */
+  --color-subtle:           var(--txt-subtle); /* text-subtle */
+
+  /* Accent */
+  --color-accent:       var(--acc);        /* bg-accent, text-accent, border-accent */
+  --color-accent-light: var(--acc-light);  /* bg-accent-light */
+  --color-accent-hover: var(--acc-hover);  /* used in CSS, not typically as utility */
+
+  /* Borders */
+  --color-border:       var(--brd);        /* border-border */
+  --color-border-strong:var(--brd-strong); /* border-border-strong */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ─────────────────────────────────────────────────────────────────────────────
+   BASE STYLES
+───────────────────────────────────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* Smooth scroll with reduced-motion fallback */
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--srf-0);
+  color: var(--txt);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* Prevent horizontal overflow from animations */
+  overflow-x: hidden;
 }
+
+/* Headings default to serif */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-playfair), Georgia, serif;
+}
+
+/* ── Text selection ── */
+::selection {
+  background-color: var(--acc-light);
+  color: var(--txt);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FOCUS SYSTEM
+   Replace browser defaults with branded focus rings everywhere.
+───────────────────────────────────────────────────────────────────────────── */
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SCROLL MARGIN
+   Compensates for fixed navbar (80px) on all anchor-targeted sections.
+   Applied to every element with an id — no per-section configuration needed.
+───────────────────────────────────────────────────────────────────────────── */
+
+[id] {
+  scroll-margin-top: 5rem; /* 80px — matches navbar height */
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CURSOR
+   Hide default cursor on desktop when custom cursor is active.
+   Mobile: cursor remains (hover media query).
+───────────────────────────────────────────────────────────────────────────── */
+
+@media (hover: hover) and (pointer: fine) {
+  html {
+    cursor: none;
+  }
+
+  a, button, [role="button"], label[for], select, input[type="submit"] {
+    cursor: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TYPOGRAPHY HELPERS
+   CSS custom properties for the type scale.
+   Used in components via style={{ fontSize: "var(--text-display)" }}.
+   Prefer Tailwind utilities when possible; use these for clamp() values
+   that Tailwind can't express natively.
+───────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --text-display:  clamp(2.75rem, 5.5vw, 4.75rem); /* 44px → 76px */
+  --text-h1:       clamp(2.25rem, 4.5vw, 3.81rem);  /* 36px → 61px */
+  --text-h2:       clamp(1.875rem, 3.5vw, 3.06rem); /* 30px → 49px */
+  --text-h3:       clamp(1.375rem, 2.5vw, 1.94rem); /* 22px → 31px */
+  --text-h4:       clamp(1.125rem, 1.8vw, 1.56rem); /* 18px → 25px */
+  --text-body-xl:  clamp(1rem, 1.3vw, 1.25rem);     /* 16px → 20px */
+  --text-body:     1rem;                             /* 16px — fixed */
+  --text-body-sm:  0.875rem;                         /* 14px — fixed */
+  --text-caption:  0.75rem;                          /* 12px — fixed */
+  --text-overline: 0.6875rem;                        /* 11px — fixed, uppercase */
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SECTION SPACING
+   Consistent vertical rhythm across all sections.
+───────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --section-py: clamp(4.5rem, 9vw, 7.5rem);    /* 72px → 120px */
+  --section-px: clamp(1.25rem, 5vw, 3.5rem);   /* 20px → 56px */
+  --content-max: 80rem;                          /* 1280px */
+  --content-prose: 42rem;                        /* 672px — optimal reading width */
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TRANSITION DEFAULTS
+   Applied to interactive elements for consistent hover/focus behavior.
+───────────────────────────────────────────────────────────────────────────── */
+
+a, button {
+  transition-property: color, background-color, border-color, opacity, transform;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   REDUCED MOTION
+   Collapse all durations for users who prefer reduced motion.
+   Framer Motion reads prefers-reduced-motion via useReducedMotion().
+   This covers CSS transitions as a fallback.
+───────────────────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GLASSMORPHISM HELPERS
+   --glass-bg / --glass-brd for theme-aware frosted glass surfaces.
+───────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --glass-bg:  rgba(248, 244, 238, 0.72);
+  --glass-brd: rgba(183, 110, 121, 0.18);
+}
+
+.dark {
+  --glass-bg:  rgba(37, 32, 24, 0.70);
+  --glass-brd: rgba(201, 127, 137, 0.16);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GRAIN TEXTURE OVERLAY
+   Fixed pseudo-element adds tactile depth — very subtle, pointer-events none.
+   z-index 9998 renders above page content but below the custom cursor (9999).
+───────────────────────────────────────────────────────────────────────────── */
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+
+.dark body::before {
+  opacity: 0.05;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before { display: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PREMIUM CARD — GRADIENT BORDER
+   Background-clip trick: solid fill on padding-box, gradient on border-box.
+   Works with any border-radius; hover transitions to accent gradient.
+───────────────────────────────────────────────────────────────────────────── */
+
+.card-gradient-border {
+  background:
+    linear-gradient(var(--srf-1), var(--srf-1)) padding-box,
+    linear-gradient(145deg, var(--brd), var(--brd-strong) 60%, var(--brd)) border-box;
+  border: 1px solid transparent;
+  transition: background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow  0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card-gradient-border:hover {
+  background:
+    linear-gradient(var(--srf-1), var(--srf-1)) padding-box,
+    linear-gradient(145deg, var(--acc) 0%, var(--acc-light) 55%, var(--brd-strong) 100%) border-box;
+  box-shadow:
+    0 0 0 0px transparent,
+    0 20px 60px rgba(0, 0, 0, 0.07),
+    0 6px 20px rgba(0, 0, 0, 0.04);
+}
+
+.dark .card-gradient-border:hover {
+  box-shadow:
+    0 0 0 0px transparent,
+    0 20px 60px rgba(0, 0, 0, 0.28),
+    0 6px 20px rgba(0, 0, 0, 0.18);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ORB DRIFT KEYFRAMES
+   Backup CSS animations for ambient background orbs.
+───────────────────────────────────────────────────────────────────────────── */
+
+@keyframes orb-drift-a {
+  0%,  100% { transform: translate(0,   0)   scale(1);    }
+  33%        { transform: translate(28px, -18px) scale(1.04); }
+  66%        { transform: translate(-18px, 14px) scale(0.97); }
+}
+
+@keyframes orb-drift-b {
+  0%,  100% { transform: translate(0,   0)   scale(1);    }
+  40%        { transform: translate(-32px, 24px) scale(1.03); }
+  75%        { transform: translate(20px, -14px) scale(0.98); }
+}
+
+@keyframes orb-drift-c {
+  0%,  100% { transform: translate(0,   0)   scale(1);    }
+  50%        { transform: translate(18px, 30px) scale(1.05); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SECTION DIVIDER ANIMATE-IN
+   Used for wipe-from-left dividers without JS.
+───────────────────────────────────────────────────────────────────────────── */
+
+@keyframes wipe-in-x {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HERO SCENE — RING & LINE ANIMATIONS
+   orbit-cw / orbit-ccw run on the inner ring SVG wrappers.
+   line-flow animates stroke-dashoffset on SVG connection lines.
+   Both run on the compositor — GPU only, no layout.
+───────────────────────────────────────────────────────────────────────────── */
+
+@keyframes orbit-cw {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes orbit-ccw {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+
+@keyframes line-flow {
+  from { stroke-dashoffset: 52; }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FLOATING ELEMENTS
+   Gentle vertical oscillation for decorative / ambient elements.
+   Use via class="animate-float" (slow) or "animate-float-fast".
+   Framer Motion `animate` is preferred for elements that also need parallax.
+───────────────────────────────────────────────────────────────────────────── */
+
+@keyframes float {
+  0%,  100% { transform: translateY(0px); }
+  50%        { transform: translateY(-14px); }
+}
+
+@keyframes float-sm {
+  0%,  100% { transform: translateY(0px); }
+  50%        { transform: translateY(-8px); }
+}
+
+.animate-float      { animation: float    7s ease-in-out infinite; }
+.animate-float-sm   { animation: float-sm 5s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-float-sm  { animation: none; }
+}
+
