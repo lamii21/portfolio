@@ -213,7 +213,7 @@ export function HeroScene() {
 
 // ── Dot grid ──────────────────────────────────────────────────────────────────
 
-function DotGrid() {
+const DotGrid = React.memo(function DotGrid() {
   return (
     <div
       className="absolute inset-0 pointer-events-none"
@@ -229,13 +229,13 @@ function DotGrid() {
       }}
     />
   );
-}
+});
 
 // ── Bokeh depth spheres ───────────────────────────────────────────────────────
 // Large, out-of-focus blurred orbs floating slowly create a photography
 // depth-of-field atmosphere behind the orbital rings.
 
-function BokehSpheres() {
+const BokehSpheres = React.memo(function BokehSpheres() {
   return (
     <>
       {BOKEH.map(({ x, y, size, opacity, dur, delay }, i) => (
@@ -261,13 +261,13 @@ function BokehSpheres() {
       ))}
     </>
   );
-}
+});
 
 // ── SVG connection lines ──────────────────────────────────────────────────────
 // Thin dashed lines flow from avatar center to each tech card.
 // CSS line-flow animation drives stroke-dashoffset on compositor.
 
-function ConnectionLines({ animated }: { animated: boolean }) {
+const ConnectionLines = React.memo(function ConnectionLines({ animated }: { animated: boolean }) {
   return (
     <svg
       className="absolute inset-0 w-full h-full pointer-events-none"
@@ -296,7 +296,7 @@ function ConnectionLines({ animated }: { animated: boolean }) {
       ))}
     </svg>
   );
-}
+});
 
 // ── Orbital ring system ───────────────────────────────────────────────────────
 // Three rings on different 3D planes — perspective on the parent creates
@@ -387,7 +387,7 @@ function OrbRing({
   );
 }
 
-function OrbitalRings({ animated }: { animated: boolean }) {
+const OrbitalRings = React.memo(function OrbitalRings({ animated }: { animated: boolean }) {
   return (
     // perspective creates the 3D rendering context for child rotateX transforms
     <div
@@ -440,7 +440,7 @@ function OrbitalRings({ animated }: { animated: boolean }) {
       />
     </div>
   );
-}
+});
 
 // ── Avatar core ───────────────────────────────────────────────────────────────
 
@@ -595,7 +595,7 @@ function AvatarCore({ rotateX, rotateY, animated }: AvatarCoreProps) {
 
 // ── Particles ─────────────────────────────────────────────────────────────────
 
-function Particles() {
+const Particles = React.memo(function Particles() {
   return (
     <>
       {PARTICLES.map(({ x, y, s, dur, d }, i) => (
@@ -627,7 +627,7 @@ function Particles() {
       ))}
     </>
   );
-}
+});
 
 // ── Tech cards ────────────────────────────────────────────────────────────────
 

@@ -7,7 +7,6 @@ import { ArrowUpRight, Download } from "lucide-react";
 import { ScrambleIn } from "@/components/ScrambleIn";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { siteConfig } from "@/data/site";
-import gsap from "gsap";
 
 const TECH = ["React", "Next.js", "TypeScript", "Python", "Django", "SQL"];
 
@@ -17,58 +16,64 @@ export function Hero() {
   const [scrambleTrigger, setScrambleTrigger] = useState(false);
 
   useEffect(() => {
-    // Reduced-motion: show everything immediately, skip timeline
+    // Reduced-motion: show everything immediately, skip GSAP timeline
     if (prefersReduced) {
       setScrambleTrigger(true);
       return;
     }
 
-    const ctx = gsap.context(() => {
-      // ── Initial states ─────────────────────────────────────────────────────
-      gsap.set(".h-badge",    { opacity: 0, y: -14, scale: 0.9 });
-      gsap.set(".h-line",     { opacity: 0, y: 56 });
-      gsap.set(".h-rule",     { scaleX: 0, transformOrigin: "left center" });
-      gsap.set(".h-thesis",   { opacity: 0, y: 18 });
-      gsap.set(".h-identity", { opacity: 0, y: 14 });
-      gsap.set(".h-ctas",     { opacity: 0, y: 24 });
-      gsap.set(".h-chips",    { opacity: 0 });
-      gsap.set(".h-scene",    { opacity: 0, x: 44, scale: 0.93 });
-      gsap.set(".h-scroll",   { opacity: 0 });
+    // GSAP is loaded lazily — keeps it out of the initial JS bundle
+    let cleanup: (() => void) | undefined;
 
-      // ── Cinematic entry timeline ───────────────────────────────────────────
-      const tl = gsap.timeline({ delay: 0.2 });
+    import("gsap").then(({ default: gsap }) => {
+      const ctx = gsap.context(() => {
+        // ── Initial states ─────────────────────────────────────────────────────
+        gsap.set(".h-badge",    { opacity: 0, y: -14, scale: 0.9 });
+        gsap.set(".h-line",     { opacity: 0, y: 56 });
+        gsap.set(".h-rule",     { scaleX: 0, transformOrigin: "left center" });
+        gsap.set(".h-thesis",   { opacity: 0, y: 18 });
+        gsap.set(".h-identity", { opacity: 0, y: 14 });
+        gsap.set(".h-ctas",     { opacity: 0, y: 24 });
+        gsap.set(".h-chips",    { opacity: 0 });
+        gsap.set(".h-scene",    { opacity: 0, x: 44, scale: 0.93 });
+        gsap.set(".h-scroll",   { opacity: 0 });
 
-      tl
-        // Status badge drops in
-        .to(".h-badge", {
-          opacity: 1, y: 0, scale: 1,
-          duration: 0.6, ease: "back.out(1.4)",
-        })
-        // Headline lines rise with stagger (expo.out = fast start, long tail)
-        .to(".h-line", {
-          opacity: 1, y: 0,
-          duration: 0.82, ease: "expo.out", stagger: 0.1,
-        }, "-=0.25")
-        // Fire ScrambleIn as lines begin rising
-        .call(() => setScrambleTrigger(true), [], "<+=0.05")
-        // Accent rule draws left-to-right
-        .to(".h-rule", { scaleX: 1, duration: 0.7, ease: "power3.out" }, "-=0.45")
-        // Supporting text cascades in
-        .to(".h-thesis",   { opacity: 1, y: 0, duration: 0.55, ease: "power2.out" }, "-=0.5")
-        .to(".h-identity", { opacity: 1, y: 0, duration: 0.5,  ease: "power2.out" }, "-=0.38")
-        .to(".h-ctas",     { opacity: 1, y: 0, duration: 0.55, ease: "power2.out" }, "-=0.38")
-        .to(".h-chips",    { opacity: 1,         duration: 0.4                     }, "-=0.3")
-        .to(".h-scroll",   { opacity: 1,         duration: 0.6, ease: "power1.out" }, "-=0.1");
+        // ── Cinematic entry timeline ───────────────────────────────────────────
+        const tl = gsap.timeline({ delay: 0.2 });
 
-      // Scene swoops in from the right, independent of the text timeline
-      gsap.to(".h-scene", {
-        opacity: 1, x: 0, scale: 1,
-        duration: 1.2, ease: "expo.out", delay: 0.35,
-      });
+        tl
+          // Status badge drops in
+          .to(".h-badge", {
+            opacity: 1, y: 0, scale: 1,
+            duration: 0.6, ease: "back.out(1.4)",
+          })
+          // Headline lines rise with stagger (expo.out = fast start, long tail)
+          .to(".h-line", {
+            opacity: 1, y: 0,
+            duration: 0.82, ease: "expo.out", stagger: 0.1,
+          }, "-=0.25")
+          // Fire ScrambleIn as lines begin rising
+          .call(() => setScrambleTrigger(true), [], "<+=0.05")
+          // Accent rule draws left-to-right
+          .to(".h-rule", { scaleX: 1, duration: 0.7, ease: "power3.out" }, "-=0.45")
+          // Supporting text cascades in
+          .to(".h-thesis",   { opacity: 1, y: 0, duration: 0.55, ease: "power2.out" }, "-=0.5")
+          .to(".h-identity", { opacity: 1, y: 0, duration: 0.5,  ease: "power2.out" }, "-=0.38")
+          .to(".h-ctas",     { opacity: 1, y: 0, duration: 0.55, ease: "power2.out" }, "-=0.38")
+          .to(".h-chips",    { opacity: 1,         duration: 0.4                     }, "-=0.3")
+          .to(".h-scroll",   { opacity: 1,         duration: 0.6, ease: "power1.out" }, "-=0.1");
 
-    }, sectionRef);
+        // Scene swoops in from the right, independent of the text timeline
+        gsap.to(".h-scene", {
+          opacity: 1, x: 0, scale: 1,
+          duration: 1.2, ease: "expo.out", delay: 0.35,
+        });
+      }, sectionRef);
 
-    return () => ctx.revert();
+      cleanup = () => ctx.revert();
+    });
+
+    return () => cleanup?.();
   }, [prefersReduced]);
 
   return (

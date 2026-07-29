@@ -473,7 +473,7 @@ interface CardProps {
   index: number;
 }
 
-function ProjectCard({ project, index }: CardProps) {
+const ProjectCard = React.memo(function ProjectCard({ project, index }: CardProps) {
   const { setMode } = useCursor();
   const prefersReduced = useReducedMotion();
   const router = useRouter();
@@ -697,7 +697,7 @@ function ProjectCard({ project, index }: CardProps) {
       )}
     </motion.article>
   );
-}
+});
 
 // ── Abstract project visuals ───────────────────────────────────────────────────
 // SVG-based abstract representations — never fake screenshots.
