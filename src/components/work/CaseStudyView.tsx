@@ -1184,6 +1184,350 @@ function ArchitectureDiagram({ project }: { project: Project }) {
     );
   }
 
+  // ── Smart RH ── React → Django (RBAC) → PostgreSQL (RLS) → AI layer → workflows
+  if (id === "smart-rh") {
+    return (
+      <div style={containerStyle} aria-hidden="true">
+        {BG}{dotGrid}
+        <svg viewBox="0 0 700 240" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+          <defs>
+            <linearGradient id="srh-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="var(--acc)" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="var(--acc)" stopOpacity="0.1" />
+            </linearGradient>
+            <filter id="srh-glow"><feGaussianBlur stdDeviation="3" in="SourceGraphic" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+
+          {/* React SaaS dashboard */}
+          <rect x="15" y="82" width="90" height="76" rx="10" fill="rgba(183,110,121,0.06)" stroke="rgba(183,110,121,0.25)" strokeWidth="1"/>
+          <text x="60" y="105" textAnchor="middle" fontSize="9" fill="var(--acc)" fontFamily="monospace">⚛</text>
+          <text x="60" y="119" textAnchor="middle" fontSize="8.5" fill="var(--txt)" fontFamily="inherit">React</text>
+          <text x="60" y="131" textAnchor="middle" fontSize="7.5" fill="var(--txt-subtle)" fontFamily="inherit">HR Dashboard</text>
+          <text x="60" y="143" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">Multi-role views</text>
+          <text x="60" y="153" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace">TypeScript</text>
+
+          <line x1="105" y1="120" x2="162" y2="120" stroke="url(#srh-grad)" strokeWidth="1.5" strokeDasharray="5 4"/>
+          <text x="133" y="114" textAnchor="middle" fontSize="7.5" fill="var(--txt-subtle)" fontFamily="monospace">JWT</text>
+
+          {/* Django RBAC API */}
+          <rect x="162" y="68" width="100" height="104" rx="10" fill="rgba(183,110,121,0.11)" stroke="var(--acc)" strokeWidth="1.5" filter="url(#srh-glow)"/>
+          <text x="212" y="92" textAnchor="middle" fontSize="8" fill="var(--acc)" fontFamily="monospace" fontWeight="700">Django API</text>
+          <text x="212" y="106" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">RBAC middleware</text>
+          <line x1="172" y1="114" x2="252" y2="114" stroke="rgba(183,110,121,0.2)" strokeWidth="0.7"/>
+          <text x="212" y="126" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">HR manager</text>
+          <text x="212" y="138" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">Line manager</text>
+          <text x="212" y="150" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">Employee</text>
+          <text x="212" y="163" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace">role in JWT token</text>
+
+          <line x1="262" y1="120" x2="325" y2="120" stroke="url(#srh-grad)" strokeWidth="1.5" strokeDasharray="5 4"/>
+
+          {/* PostgreSQL + RLS */}
+          <rect x="325" y="76" width="110" height="88" rx="10" fill="rgba(183,110,121,0.07)" stroke="rgba(183,110,121,0.28)" strokeWidth="1"/>
+          <text x="380" y="98" textAnchor="middle" fontSize="8" fill="var(--txt)" fontFamily="inherit">PostgreSQL</text>
+          <text x="380" y="111" textAnchor="middle" fontSize="7.5" fill="var(--acc)" fontFamily="monospace" fontWeight="600">Row-level security</text>
+          <line x1="335" y1="118" x2="425" y2="118" stroke="rgba(183,110,121,0.2)" strokeWidth="0.7"/>
+          <text x="380" y="130" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">Tenant A data</text>
+          <text x="380" y="142" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">Tenant B data</text>
+          <text x="380" y="154" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace">isolated at DB level</text>
+
+          {/* AI module */}
+          <line x1="435" y1="120" x2="495" y2="120" stroke="url(#srh-grad)" strokeWidth="1.5" strokeDasharray="5 4"/>
+          <rect x="495" y="82" width="90" height="76" rx="10" fill="rgba(183,110,121,0.07)" stroke="rgba(183,110,121,0.25)" strokeWidth="1"/>
+          <text x="540" y="104" textAnchor="middle" fontSize="8" fill="var(--acc)" fontFamily="monospace">Python AI</text>
+          <text x="540" y="117" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">CV scoring</text>
+          <text x="540" y="129" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">skill extraction</text>
+          <text x="540" y="141" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">rank candidates</text>
+          <text x="540" y="153" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace">explainable scores</text>
+
+          {/* Workflow */}
+          <line x1="585" y1="120" x2="625" y2="120" stroke="url(#srh-grad)" strokeWidth="1.5" strokeDasharray="5 4"/>
+          <rect x="625" y="95" width="60" height="50" rx="8" fill="rgba(183,110,121,0.05)" stroke="rgba(183,110,121,0.2)" strokeWidth="0.8"/>
+          <text x="655" y="116" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">Workflows</text>
+          <text x="655" y="128" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">leave · onboard</text>
+          <text x="655" y="138" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">notifications</text>
+
+          <circle r="2.5" fill="var(--acc)" opacity="0.8">
+            <animateMotion dur="3.8s" repeatCount="indefinite"><mpath href="#srh-path"/></animateMotion>
+          </circle>
+          <path id="srh-path" d="M105,120 L625,120" fill="none"/>
+
+          <text x="15" y="32" fontSize="8" fill="var(--txt-subtle)" fontFamily="monospace" opacity="0.6">System Architecture · Smart RH</text>
+          <text x="15" y="44" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace" opacity="0.5">Multi-tenant SaaS · row-level security enforced at DB · AI recruitment</text>
+        </svg>
+      </div>
+    );
+  }
+
+  // ── RecruteAI ── CV upload → NLP parser → ML scorer → FastAPI → React dashboard
+  if (id === "recrute-ai") {
+    return (
+      <div style={containerStyle} aria-hidden="true">
+        {BG}{dotGrid}
+        <svg viewBox="0 0 700 240" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+          <defs>
+            <linearGradient id="rai-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="var(--acc)" stopOpacity="0.5"/>
+              <stop offset="100%" stopColor="var(--acc)" stopOpacity="0.1"/>
+            </linearGradient>
+            <filter id="rai-glow"><feGaussianBlur stdDeviation="3" in="SourceGraphic" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+
+          {/* CV Upload */}
+          <rect x="15" y="85" width="78" height="50" rx="8" fill="rgba(183,110,121,0.05)" stroke="rgba(183,110,121,0.22)" strokeWidth="0.9"/>
+          <text x="54" y="108" textAnchor="middle" fontSize="12" fontFamily="inherit">📄</text>
+          <text x="54" y="122" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">CV Upload</text>
+          <text x="54" y="131" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">PDF · DOCX</text>
+
+          <line x1="93" y1="110" x2="128" y2="110" stroke="url(#rai-grad)" strokeWidth="1.3" strokeDasharray="4 3"/>
+
+          {/* NLP Parser */}
+          <rect x="128" y="76" width="100" height="68" rx="10" fill="rgba(183,110,121,0.10)" stroke="var(--acc)" strokeWidth="1.4" filter="url(#rai-glow)"/>
+          <text x="178" y="99" textAnchor="middle" fontSize="8" fill="var(--acc)" fontFamily="monospace" fontWeight="700">NLP Parser</text>
+          <text x="178" y="112" textAnchor="middle" fontSize="7" fill="var(--txt)" fontFamily="inherit">tokenize · entities</text>
+          <text x="178" y="124" textAnchor="middle" fontSize="7" fill="var(--txt)" fontFamily="inherit">normalize skills</text>
+          <text x="178" y="135" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace">JS → JavaScript</text>
+
+          <line x1="228" y1="110" x2="268" y2="110" stroke="url(#rai-grad)" strokeWidth="1.3" strokeDasharray="4 3"/>
+
+          {/* Skill Extractor */}
+          <rect x="268" y="85" width="90" height="50" rx="8" fill="rgba(183,110,121,0.07)" stroke="rgba(183,110,121,0.28)" strokeWidth="1"/>
+          <text x="313" y="106" textAnchor="middle" fontSize="8" fill="var(--acc)" fontFamily="monospace">Skill Extract</text>
+          <text x="313" y="118" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">canonical names</text>
+          <text x="313" y="128" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">experience weight</text>
+
+          <line x1="358" y1="110" x2="395" y2="110" stroke="url(#rai-grad)" strokeWidth="1.3" strokeDasharray="4 3"/>
+
+          {/* ML Matcher */}
+          <rect x="395" y="76" width="90" height="68" rx="10" fill="rgba(183,110,121,0.09)" stroke="rgba(183,110,121,0.3)" strokeWidth="1"/>
+          <text x="440" y="98" textAnchor="middle" fontSize="8" fill="var(--acc)" fontFamily="monospace">ML Matcher</text>
+          <text x="440" y="111" textAnchor="middle" fontSize="7" fill="var(--txt)" fontFamily="inherit">similarity score</text>
+          <text x="440" y="123" textAnchor="middle" fontSize="7" fill="var(--txt)" fontFamily="inherit">level alignment</text>
+          <text x="440" y="135" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace">score breakdown</text>
+
+          <line x1="485" y1="110" x2="520" y2="110" stroke="url(#rai-grad)" strokeWidth="1.3" strokeDasharray="4 3"/>
+
+          {/* FastAPI */}
+          <rect x="520" y="85" width="80" height="50" rx="8" fill="rgba(183,110,121,0.06)" stroke="rgba(183,110,121,0.25)" strokeWidth="1"/>
+          <text x="560" y="106" textAnchor="middle" fontSize="8" fill="var(--acc)" fontFamily="monospace">FastAPI</text>
+          <text x="560" y="118" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">async Python</text>
+          <text x="560" y="128" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">auto OpenAPI</text>
+
+          <line x1="600" y1="110" x2="630" y2="110" stroke="url(#rai-grad)" strokeWidth="1.3" strokeDasharray="4 3"/>
+
+          {/* React HR dashboard */}
+          <rect x="630" y="82" width="58" height="56" rx="8" fill="rgba(183,110,121,0.05)" stroke="rgba(183,110,121,0.2)" strokeWidth="0.8"/>
+          <text x="659" y="103" textAnchor="middle" fontSize="9" fill="var(--acc)" fontFamily="monospace">⚛</text>
+          <text x="659" y="116" textAnchor="middle" fontSize="7" fill="var(--txt)" fontFamily="inherit">HR Dashboard</text>
+          <text x="659" y="127" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">ranked list</text>
+          <text x="659" y="137" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">score view</text>
+
+          {/* Ranked output visualization */}
+          {[
+            { score: "94%", label: "Candidate A", y: 170 },
+            { score: "78%", label: "Candidate B", y: 188 },
+            { score: "61%", label: "Candidate C", y: 206 },
+          ].map(({ score, label, y }) => (
+            <g key={y}>
+              <rect x="490" y={y} width="185" height="14" rx="3" fill="rgba(183,110,121,0.04)" stroke="rgba(183,110,121,0.15)" strokeWidth="0.6"/>
+              <text x="498" y={y + 10} fontSize="7.5" fill="var(--acc)" fontFamily="monospace">{score}</text>
+              <text x="522" y={y + 10} fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">{label}</text>
+            </g>
+          ))}
+          <line x1="659" y1="138" x2="659" y2="164" stroke="rgba(183,110,121,0.2)" strokeWidth="0.8" strokeDasharray="3 3"/>
+          <line x1="490" y1="164" x2="675" y2="164" stroke="rgba(183,110,121,0.15)" strokeWidth="0.7"/>
+
+          <circle r="2.5" fill="var(--acc)" opacity="0.8">
+            <animateMotion dur="3.5s" repeatCount="indefinite"><mpath href="#rai-path"/></animateMotion>
+          </circle>
+          <path id="rai-path" d="M93,110 L630,110" fill="none"/>
+
+          <text x="15" y="32" fontSize="8" fill="var(--txt-subtle)" fontFamily="monospace" opacity="0.6">ML Pipeline · RecruteAI</text>
+          <text x="15" y="44" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace" opacity="0.5">NLP normalization → ML scoring → explainable ranking</text>
+        </svg>
+      </div>
+    );
+  }
+
+  // ── OrderHub ── Next.js → Express webhook → Supabase → Google Apps Script → Sheets
+  if (id === "orderhub") {
+    return (
+      <div style={containerStyle} aria-hidden="true">
+        {BG}{dotGrid}
+        <svg viewBox="0 0 700 240" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+          <defs>
+            <linearGradient id="oh-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="var(--acc)" stopOpacity="0.5"/>
+              <stop offset="100%" stopColor="var(--acc)" stopOpacity="0.1"/>
+            </linearGradient>
+            <filter id="oh-glow"><feGaussianBlur stdDeviation="3" in="SourceGraphic" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+
+          {/* Next.js Storefront */}
+          <rect x="15" y="75" width="95" height="90" rx="10" fill="rgba(183,110,121,0.06)" stroke="rgba(183,110,121,0.25)" strokeWidth="1"/>
+          <text x="62" y="99" textAnchor="middle" fontSize="9" fill="var(--acc)" fontFamily="monospace">Next.js</text>
+          <text x="62" y="113" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">Storefront</text>
+          <line x1="25" y1="120" x2="100" y2="120" stroke="rgba(183,110,121,0.2)" strokeWidth="0.7"/>
+          <text x="62" y="132" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">Product pages</text>
+          <text x="62" y="143" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">Cart + checkout</text>
+          <text x="62" y="154" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace">TypeScript</text>
+
+          <line x1="110" y1="120" x2="165" y2="120" stroke="url(#oh-grad)" strokeWidth="1.5" strokeDasharray="5 4"/>
+          <text x="137" y="114" textAnchor="middle" fontSize="7.5" fill="var(--txt-subtle)" fontFamily="monospace">order event</text>
+
+          {/* Express.js Webhook */}
+          <rect x="165" y="80" width="100" height="80" rx="10" fill="rgba(183,110,121,0.10)" stroke="var(--acc)" strokeWidth="1.4" filter="url(#oh-glow)"/>
+          <text x="215" y="103" textAnchor="middle" fontSize="8" fill="var(--acc)" fontFamily="monospace" fontWeight="700">Express.js</text>
+          <text x="215" y="116" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">Webhook handler</text>
+          <text x="215" y="128" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">validate payload</text>
+          <text x="215" y="140" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">retry on failure</text>
+          <text x="215" y="152" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace">event → persist first</text>
+
+          {/* Two arrows from webhook: to Supabase and to GAS */}
+          <line x1="265" y1="108" x2="328" y2="100" stroke="url(#oh-grad)" strokeWidth="1.3" strokeDasharray="4 3"/>
+          <line x1="265" y1="132" x2="328" y2="148" stroke="url(#oh-grad)" strokeWidth="1.3" strokeDasharray="4 3"/>
+
+          {/* Supabase */}
+          <rect x="328" y="70" width="92" height="60" rx="9" fill="rgba(183,110,121,0.07)" stroke="rgba(183,110,121,0.28)" strokeWidth="1"/>
+          <text x="374" y="92" textAnchor="middle" fontSize="8" fill="var(--acc)" fontFamily="monospace">Supabase</text>
+          <text x="374" y="105" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">PostgreSQL</text>
+          <text x="374" y="117" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">order records</text>
+          <text x="374" y="127" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace">fallback source</text>
+
+          {/* Google Apps Script */}
+          <rect x="328" y="140" width="92" height="56" rx="9" fill="rgba(183,110,121,0.06)" stroke="rgba(183,110,121,0.25)" strokeWidth="1"/>
+          <text x="374" y="161" textAnchor="middle" fontSize="8" fill="var(--acc)" fontFamily="monospace">Apps Script</text>
+          <text x="374" y="174" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">Google infra</text>
+          <text x="374" y="186" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">direct Sheets access</text>
+
+          {/* Arrow to Google Sheets */}
+          <line x1="420" y1="168" x2="495" y2="158" stroke="url(#oh-grad)" strokeWidth="1.3" strokeDasharray="4 3"/>
+
+          {/* Google Sheets */}
+          <rect x="495" y="90" width="95" height="108" rx="9" fill="rgba(183,110,121,0.05)" stroke="rgba(183,110,121,0.22)" strokeWidth="0.9"/>
+          <text x="542" y="110" textAnchor="middle" fontSize="8" fill="var(--txt)" fontFamily="inherit">Google Sheets</text>
+          <text x="542" y="122" textAnchor="middle" fontSize="7.5" fill="var(--acc)" fontFamily="monospace">Operations</text>
+          {/* Sheet rows */}
+          {[
+            { y: 132, text: "#001 · Pending", hi: true },
+            { y: 146, text: "#002 · Complete", hi: false },
+            { y: 160, text: "#003 · Shipped", hi: false },
+          ].map(({ y, text, hi }) => (
+            <g key={y}>
+              <rect x="503" y={y - 9} width="79" height="13" rx="2"
+                fill={hi ? "rgba(183,110,121,0.12)" : "rgba(183,110,121,0.04)"}
+                stroke={hi ? "rgba(183,110,121,0.3)" : "rgba(183,110,121,0.1)"} strokeWidth="0.5"/>
+              <text x="507" y={y} fontSize="7" fill={hi ? "var(--txt)" : "var(--txt-subtle)"} fontFamily="monospace">{text}</text>
+            </g>
+          ))}
+          <rect x="503" y="173" width="79" height="13" rx="2" fill="rgba(34,197,94,0.08)" stroke="rgba(34,197,94,0.25)" strokeWidth="0.5"/>
+          <text x="507" y="183" fontSize="7" fill="rgb(34,197,94)" fontFamily="monospace">#004 · Just placed →</text>
+          <text x="542" y="197" textAnchor="middle" fontSize="6.5" fill="var(--acc)" fontFamily="monospace">live sync</text>
+
+          {/* Live indicator */}
+          <circle r="3" fill="rgb(34,197,94)" cx="545" cy="100">
+            <animate attributeName="opacity" dur="1.5s" repeatCount="indefinite" values="1;0.3;1"/>
+          </circle>
+
+          <circle r="2.5" fill="var(--acc)" opacity="0.8">
+            <animateMotion dur="3s" repeatCount="indefinite"><mpath href="#oh-main"/></animateMotion>
+          </circle>
+          <path id="oh-main" d="M110,120 L328,168" fill="none"/>
+
+          <text x="15" y="32" fontSize="8" fill="var(--txt-subtle)" fontFamily="monospace" opacity="0.6">System Architecture · OrderHub</text>
+          <text x="15" y="44" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace" opacity="0.5">Persist before sync · retry on failure · match team's existing sheet format</text>
+        </svg>
+      </div>
+    );
+  }
+
+  // ── HijabShop ── Next.js → color metadata → Python recommendation API → product display
+  if (id === "hijabshop") {
+    return (
+      <div style={containerStyle} aria-hidden="true">
+        {BG}{dotGrid}
+        <svg viewBox="0 0 700 240" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+          <defs>
+            <linearGradient id="hs-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="var(--acc)" stopOpacity="0.5"/>
+              <stop offset="100%" stopColor="var(--acc)" stopOpacity="0.1"/>
+            </linearGradient>
+            <filter id="hs-glow"><feGaussianBlur stdDeviation="3" in="SourceGraphic" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+
+          {/* Product pages — Next.js SSR */}
+          <rect x="15" y="70" width="100" height="100" rx="10" fill="rgba(183,110,121,0.06)" stroke="rgba(183,110,121,0.25)" strokeWidth="1"/>
+          <text x="65" y="93" textAnchor="middle" fontSize="9" fill="var(--acc)" fontFamily="monospace">Next.js</text>
+          <text x="65" y="107" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">Product pages</text>
+          <line x1="25" y1="115" x2="105" y2="115" stroke="rgba(183,110,121,0.2)" strokeWidth="0.7"/>
+          <text x="65" y="127" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">SSR for SEO</text>
+          <text x="65" y="138" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">catalog + cart</text>
+          <text x="65" y="149" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">checkout</text>
+          <text x="65" y="161" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace">TypeScript</text>
+
+          <line x1="115" y1="120" x2="175" y2="120" stroke="url(#hs-grad)" strokeWidth="1.5" strokeDasharray="5 4"/>
+
+          {/* PostgreSQL + color schema */}
+          <rect x="175" y="72" width="110" height="96" rx="10" fill="rgba(183,110,121,0.08)" stroke="rgba(183,110,121,0.28)" strokeWidth="1"/>
+          <text x="230" y="95" textAnchor="middle" fontSize="8" fill="var(--acc)" fontFamily="monospace">PostgreSQL</text>
+          <text x="230" y="108" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">Product schema</text>
+          <line x1="185" y1="114" x2="275" y2="114" stroke="rgba(183,110,121,0.2)" strokeWidth="0.7"/>
+          {/* Color attributes */}
+          {[
+            { label: "primary_hue", val: "rose" },
+            { label: "tone", val: "warm" },
+            { label: "saturation", val: "medium" },
+          ].map(({ label, val }, i) => (
+            <g key={i}>
+              <text x="185" y={126 + i * 12} fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace">{label}:</text>
+              <text x="250" y={126 + i * 12} fontSize="7" fill="var(--acc)" fontFamily="monospace">{val}</text>
+            </g>
+          ))}
+          <text x="230" y="163" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">pre-computed recs</text>
+
+          <line x1="285" y1="120" x2="350" y2="120" stroke="url(#hs-grad)" strokeWidth="1.5" strokeDasharray="5 4"/>
+
+          {/* Python Rec API */}
+          <rect x="350" y="78" width="100" height="84" rx="10" fill="rgba(183,110,121,0.11)" stroke="var(--acc)" strokeWidth="1.4" filter="url(#hs-glow)"/>
+          <text x="400" y="101" textAnchor="middle" fontSize="8" fill="var(--acc)" fontFamily="monospace" fontWeight="700">Python</text>
+          <text x="400" y="114" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">Color theory rules</text>
+          <text x="400" y="126" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">complementary</text>
+          <text x="400" y="138" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">analogous</text>
+          <text x="400" y="150" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace">compute at creation</text>
+
+          <line x1="450" y1="120" x2="510" y2="120" stroke="url(#hs-grad)" strokeWidth="1.5" strokeDasharray="5 4"/>
+
+          {/* Recommendation display */}
+          <rect x="510" y="78" width="90" height="84" rx="10" fill="rgba(183,110,121,0.06)" stroke="rgba(183,110,121,0.25)" strokeWidth="1"/>
+          <text x="555" y="99" textAnchor="middle" fontSize="8" fill="var(--acc)" fontFamily="monospace">Recs UI</text>
+          <text x="555" y="112" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">Product page</text>
+          {/* Color swatches */}
+          {[0, 1, 2].map((i) => (
+            <circle key={i} cx={530 + i * 18} cy={132} r="8"
+              fill={["rgba(183,110,121,0.7)", "rgba(139,90,100,0.6)", "rgba(220,160,100,0.5)"][i]}
+              stroke="rgba(183,110,121,0.3)" strokeWidth="0.6"/>
+          ))}
+          <text x="555" y="153" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">mobile: collapsed</text>
+          <text x="555" y="163" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">desktop: inline</text>
+
+          {/* Order management */}
+          <rect x="620" y="95" width="65" height="50" rx="8" fill="rgba(183,110,121,0.05)" stroke="rgba(183,110,121,0.2)" strokeWidth="0.8"/>
+          <line x1="600" y1="120" x2="620" y2="120" stroke="url(#hs-grad)" strokeWidth="1.2" strokeDasharray="4 3"/>
+          <text x="652" y="116" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">Orders</text>
+          <text x="652" y="128" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">admin panel</text>
+          <text x="652" y="138" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">inventory</text>
+
+          <circle r="2.5" fill="var(--acc)" opacity="0.8">
+            <animateMotion dur="3.2s" repeatCount="indefinite"><mpath href="#hs-path"/></animateMotion>
+          </circle>
+          <path id="hs-path" d="M115,120 L510,120" fill="none"/>
+
+          <text x="15" y="32" fontSize="8" fill="var(--txt-subtle)" fontFamily="monospace" opacity="0.6">System Architecture · HijabShop</text>
+          <text x="15" y="44" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace" opacity="0.5">Color metadata first-class in schema · recs pre-computed at product creation</text>
+        </svg>
+      </div>
+    );
+  }
+
   // Fallback
   return (
     <div style={containerStyle} aria-hidden="true">

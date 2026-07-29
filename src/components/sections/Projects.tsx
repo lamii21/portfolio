@@ -307,7 +307,7 @@ function FeaturedCase() {
 }
 
 // ── Featured architecture visual ──────────────────────────────────────────────
-// Abstract system diagram: React → Django API → PostgreSQL
+// HandyMath: Camera → OpenCV OCR → SymPy solver → Django REST → PostgreSQL + Three.js
 
 function FeaturedVisual() {
   return (
@@ -333,89 +333,99 @@ function FeaturedVisual() {
       <div
         className="absolute inset-0"
         style={{
-          opacity: 0.25,
+          opacity: 0.22,
           backgroundImage: "radial-gradient(circle, rgba(183,110,121,0.5) 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
+          backgroundSize: "22px 22px",
           maskImage: "radial-gradient(ellipse 90% 90% at 50% 50%, black 30%, transparent 80%)",
           WebkitMaskImage: "radial-gradient(ellipse 90% 90% at 50% 50%, black 30%, transparent 80%)",
         }}
       />
 
-      <svg
-        viewBox="0 0 400 300"
-        className="absolute inset-0 w-full h-full"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {/* Defs */}
+      <svg viewBox="0 0 400 300" className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <linearGradient id="conn-grad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="var(--acc)" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="var(--acc)" stopOpacity="0.15" />
+          <linearGradient id="feat-grad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="var(--acc)" stopOpacity="0.45" />
+            <stop offset="100%" stopColor="var(--acc)" stopOpacity="0.12" />
           </linearGradient>
-          <filter id="node-glow">
+          <filter id="feat-glow">
             <feGaussianBlur stdDeviation="3" in="SourceGraphic" result="b" />
             <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
         </defs>
 
-        {/* Connection lines */}
-        <line x1="115" y1="150" x2="168" y2="150" stroke="url(#conn-grad)" strokeWidth="1.5" strokeDasharray="5 4" />
-        <line x1="232" y1="150" x2="285" y2="150" stroke="url(#conn-grad)" strokeWidth="1.5" strokeDasharray="5 4" />
+        {/* Top row: Camera → OpenCV → SymPy → Django → PostgreSQL */}
+        {/* Camera */}
+        <rect x="12" y="98" width="62" height="52" rx="8" fill="rgba(183,110,121,0.05)" stroke="rgba(183,110,121,0.25)" strokeWidth="0.9" />
+        <text x="43" y="120" textAnchor="middle" fontSize="14" fontFamily="inherit">📷</text>
+        <text x="43" y="136" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">Camera</text>
+        <text x="43" y="146" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="inherit">input</text>
 
-        {/* Vertical connection — API to DB */}
-        <line x1="200" y1="190" x2="200" y2="225" stroke="rgba(183,110,121,0.2)" strokeWidth="1" strokeDasharray="3 4" />
+        <line x1="74" y1="124" x2="96" y2="124" stroke="url(#feat-grad)" strokeWidth="1.3" strokeDasharray="4 3" />
+        <text x="85" y="119" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="monospace">OCR</text>
 
-        {/* React node */}
-        <rect x="30" y="124" width="85" height="52" rx="10"
-          fill="rgba(183,110,121,0.06)" stroke="rgba(183,110,121,0.3)" strokeWidth="1" />
-        <text x="72" y="145" textAnchor="middle" fontSize="9" fill="var(--acc)" fontFamily="monospace" fontWeight="600">⚛</text>
-        <text x="72" y="160" textAnchor="middle" fontSize="8.5" fill="var(--txt)" fontFamily="inherit">React</text>
-        <text x="72" y="172" textAnchor="middle" fontSize="7.5" fill="var(--txt-subtle)" fontFamily="inherit">Client Layer</text>
+        {/* OpenCV */}
+        <rect x="96" y="94" width="72" height="60" rx="8" fill="rgba(183,110,121,0.08)" stroke="rgba(183,110,121,0.28)" strokeWidth="1" />
+        <text x="132" y="116" textAnchor="middle" fontSize="9" fill="var(--acc)" fontFamily="monospace" fontWeight="700">OpenCV</text>
+        <text x="132" y="129" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">binarize</text>
+        <text x="132" y="140" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">denoise</text>
+        <text x="132" y="150" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">detect regions</text>
 
-        {/* Django API node — center, elevated */}
-        <rect x="155" y="114" width="90" height="72" rx="10"
-          fill="rgba(183,110,121,0.10)" stroke="var(--acc)" strokeWidth="1.5"
-          filter="url(#node-glow)" />
-        <text x="200" y="138" textAnchor="middle" fontSize="9" fill="var(--acc)" fontFamily="monospace" fontWeight="700">API</text>
-        <text x="200" y="152" textAnchor="middle" fontSize="8.5" fill="var(--txt)" fontFamily="inherit">Django REST</text>
-        <text x="200" y="164" textAnchor="middle" fontSize="7.5" fill="var(--txt-subtle)" fontFamily="inherit">Auth · Routing</text>
-        <text x="200" y="176" textAnchor="middle" fontSize="7.5" fill="var(--txt-subtle)" fontFamily="inherit">Serialization</text>
+        <line x1="168" y1="124" x2="192" y2="124" stroke="url(#feat-grad)" strokeWidth="1.3" strokeDasharray="4 3" />
 
-        {/* PostgreSQL node */}
-        <rect x="285" y="124" width="85" height="52" rx="10"
-          fill="rgba(183,110,121,0.06)" stroke="rgba(183,110,121,0.3)" strokeWidth="1" />
-        <text x="327" y="145" textAnchor="middle" fontSize="8" fill="var(--acc)" fontFamily="monospace">🗄</text>
-        <text x="327" y="160" textAnchor="middle" fontSize="8.5" fill="var(--txt)" fontFamily="inherit">PostgreSQL</text>
-        <text x="327" y="172" textAnchor="middle" fontSize="7.5" fill="var(--txt-subtle)" fontFamily="inherit">Progress Schema</text>
+        {/* SymPy */}
+        <rect x="192" y="88" width="72" height="72" rx="8" fill="rgba(183,110,121,0.10)" stroke="var(--acc)" strokeWidth="1.4" filter="url(#feat-glow)" />
+        <text x="228" y="108" textAnchor="middle" fontSize="9" fill="var(--acc)" fontFamily="monospace" fontWeight="700">SymPy</text>
+        <text x="228" y="121" textAnchor="middle" fontSize="7" fill="var(--txt)" fontFamily="inherit">parse expr</text>
+        <text x="228" y="132" textAnchor="middle" fontSize="7" fill="var(--txt)" fontFamily="inherit">solve symbolic</text>
+        <text x="228" y="143" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">step-by-step</text>
+        <text x="228" y="154" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">output</text>
 
-        {/* ORM badge below API */}
-        <rect x="168" y="228" width="64" height="22" rx="6"
-          fill="rgba(183,110,121,0.06)" stroke="rgba(183,110,121,0.2)" strokeWidth="1" />
-        <text x="200" y="243" textAnchor="middle" fontSize="7.5" fill="var(--txt-subtle)" fontFamily="inherit">Django ORM</text>
+        <line x1="264" y1="124" x2="286" y2="124" stroke="url(#feat-grad)" strokeWidth="1.3" strokeDasharray="4 3" />
 
-        {/* Flow labels on arrows */}
-        <text x="141" y="144" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace">fetch</text>
-        <text x="258" y="144" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace">query</text>
+        {/* Django REST */}
+        <rect x="286" y="94" width="70" height="60" rx="8" fill="rgba(183,110,121,0.07)" stroke="rgba(183,110,121,0.28)" strokeWidth="1" />
+        <text x="321" y="112" textAnchor="middle" fontSize="8" fill="var(--acc)" fontFamily="monospace" fontWeight="700">Django</text>
+        <text x="321" y="124" textAnchor="middle" fontSize="7" fill="var(--txt)" fontFamily="inherit">REST API</text>
+        <text x="321" y="136" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">JWT auth</text>
+        <text x="321" y="148" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">serializers</text>
 
-        {/* Animated flow dot on left arrow */}
-        <circle r="2.5" fill="var(--acc)" opacity="0.7">
-          <animateMotion dur="2.4s" repeatCount="indefinite">
-            <mpath href="#left-path" />
-          </animateMotion>
+        <line x1="356" y1="124" x2="374" y2="124" stroke="url(#feat-grad)" strokeWidth="1.3" strokeDasharray="4 3" />
+
+        {/* PostgreSQL */}
+        <rect x="326" y="188" width="62" height="46" rx="8" fill="rgba(183,110,121,0.05)" stroke="rgba(183,110,121,0.22)" strokeWidth="0.9" />
+        <line x1="321" y1="154" x2="321" y2="202" stroke="rgba(183,110,121,0.25)" strokeWidth="1" strokeDasharray="3 3" />
+        <line x1="321" y1="202" x2="326" y2="202" stroke="rgba(183,110,121,0.25)" strokeWidth="1" />
+        <text x="357" y="207" textAnchor="middle" fontSize="7" fill="var(--txt)" fontFamily="inherit">PostgreSQL</text>
+        <text x="357" y="219" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="inherit">Progress</text>
+        <text x="357" y="229" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="inherit">schema</text>
+
+        {/* Three.js branch — going down from SymPy */}
+        <line x1="228" y1="160" x2="228" y2="202" stroke="rgba(183,110,121,0.3)" strokeWidth="1" strokeDasharray="4 3" />
+        <rect x="170" y="202" width="116" height="42" rx="8" fill="rgba(183,110,121,0.07)" stroke="rgba(183,110,121,0.3)" strokeWidth="1" />
+        <text x="228" y="219" textAnchor="middle" fontSize="8" fill="var(--acc)" fontFamily="monospace" fontWeight="700">Three.js</text>
+        <text x="228" y="232" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">3D function graph</text>
+        <text x="228" y="242" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="inherit">React hook lifecycle</text>
+
+        {/* React client top-right */}
+        <rect x="374" y="94" width="18" height="60" rx="4" fill="rgba(183,110,121,0.05)" stroke="rgba(183,110,121,0.2)" strokeWidth="0.7" />
+        <text x="383" y="128" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace" transform="rotate(-90 383 128)">React</text>
+
+        {/* Animated dots */}
+        <circle r="2.2" fill="var(--acc)" opacity="0.75">
+          <animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#fp1" /></animateMotion>
         </circle>
-        <path id="left-path" d="M115,150 L168,150" fill="none" />
-
-        {/* Animated flow dot on right arrow */}
-        <circle r="2.5" fill="var(--acc)" opacity="0.7">
-          <animateMotion dur="2.4s" begin="1.2s" repeatCount="indefinite">
-            <mpath href="#right-path" />
-          </animateMotion>
+        <path id="fp1" d="M74,124 L96,124" fill="none" />
+        <circle r="2.2" fill="var(--acc)" opacity="0.75">
+          <animateMotion dur="2.6s" begin="0.85s" repeatCount="indefinite"><mpath href="#fp2" /></animateMotion>
         </circle>
-        <path id="right-path" d="M232,150 L285,150" fill="none" />
+        <path id="fp2" d="M168,124 L192,124" fill="none" />
+        <circle r="2.2" fill="var(--acc)" opacity="0.75">
+          <animateMotion dur="2.6s" begin="1.7s" repeatCount="indefinite"><mpath href="#fp3" /></animateMotion>
+        </circle>
+        <path id="fp3" d="M264,124 L286,124" fill="none" />
 
-        {/* Corner label */}
-        <text x="20" y="28" fontSize="8" fill="var(--txt-subtle)" fontFamily="monospace" opacity="0.6">System Architecture</text>
-        <text x="20" y="40" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace" opacity="0.5">HandyMath · Full-Stack</text>
+        <text x="12" y="30" fontSize="8" fill="var(--txt-subtle)" fontFamily="monospace" opacity="0.6">System Architecture · HandyMath</text>
+        <text x="12" y="42" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace" opacity="0.5">Camera → OCR → Symbolic solver → API → 3D viz</text>
       </svg>
     </div>
   );
@@ -884,6 +894,198 @@ function ProjectVisual({ id }: { id: string }) {
           <text x="284" y="128" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="monospace">t=n</text>
           <text x="14" y="52" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="monospace" transform="rotate(-90 14,52)">price</text>
           <text x="60" y="140" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit" opacity="0.7">LSTM · Keras · Confidence band</text>
+        </svg>
+      </div>
+    );
+  }
+
+  if (id === "smart-rh") {
+    return (
+      <div className="absolute inset-0" style={{ background: "var(--srf-1)" }} aria-hidden="true">
+        {BG}
+        <svg viewBox="0 0 320 148" className={base}>
+          <defs>
+            <linearGradient id="srh-g" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="var(--acc)" stopOpacity="0.45" />
+              <stop offset="100%" stopColor="var(--acc)" stopOpacity="0.1" />
+            </linearGradient>
+          </defs>
+          {/* Two tenant boxes on left */}
+          {[
+            { y: 24, label: "Tenant A", color: "rgba(183,110,121,0.12)" },
+            { y: 78, label: "Tenant B", color: "rgba(183,110,121,0.07)" },
+          ].map(({ y, label, color }) => (
+            <g key={y}>
+              <rect x="12" y={y} width="68" height="38" rx="6" fill={color} stroke="rgba(183,110,121,0.25)" strokeWidth="0.8" />
+              <text x="46" y={y + 18} textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">{label}</text>
+              <text x="46" y={y + 30} textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="monospace">HR data</text>
+            </g>
+          ))}
+          {/* Lines to RBAC */}
+          <line x1="80" y1="43" x2="120" y2="75" stroke="url(#srh-g)" strokeWidth="1" strokeDasharray="4 3" />
+          <line x1="80" y1="97" x2="120" y2="85" stroke="url(#srh-g)" strokeWidth="1" strokeDasharray="4 3" />
+          {/* RBAC / Auth core */}
+          <rect x="120" y="60" width="76" height="50" rx="8" fill="rgba(183,110,121,0.12)" stroke="var(--acc)" strokeWidth="1.2" />
+          <text x="158" y="80" textAnchor="middle" fontSize="8" fill="var(--acc)" fontFamily="monospace" fontWeight="700">RBAC</text>
+          <text x="158" y="93" textAnchor="middle" fontSize="7" fill="var(--txt)" fontFamily="inherit">Django + JWT</text>
+          <text x="158" y="105" textAnchor="middle" fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">Row-level security</text>
+          {/* Arrow to isolated PG */}
+          <line x1="196" y1="85" x2="224" y2="85" stroke="url(#srh-g)" strokeWidth="1.2" strokeDasharray="4 3" />
+          {/* PostgreSQL with RLS */}
+          <rect x="224" y="62" width="72" height="46" rx="6" fill="rgba(183,110,121,0.06)" stroke="rgba(183,110,121,0.28)" strokeWidth="0.9" />
+          <text x="260" y="81" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">PostgreSQL</text>
+          <text x="260" y="93" textAnchor="middle" fontSize="6.5" fill="var(--acc)" fontFamily="monospace">Row-level</text>
+          <text x="260" y="103" textAnchor="middle" fontSize="6.5" fill="var(--acc)" fontFamily="monospace">security</text>
+          {/* AI badge bottom */}
+          <rect x="120" y="124" width="76" height="18" rx="4" fill="rgba(183,110,121,0.07)" stroke="rgba(183,110,121,0.2)" strokeWidth="0.7" />
+          <text x="158" y="136" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="inherit">AI scoring · recruitment</text>
+        </svg>
+      </div>
+    );
+  }
+
+  if (id === "recrute-ai") {
+    return (
+      <div className="absolute inset-0" style={{ background: "var(--srf-1)" }} aria-hidden="true">
+        {BG}
+        <svg viewBox="0 0 320 148" className={base}>
+          <defs>
+            <linearGradient id="rai-g" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="var(--acc)" stopOpacity="0.45" />
+              <stop offset="100%" stopColor="var(--acc)" stopOpacity="0.1" />
+            </linearGradient>
+          </defs>
+          {/* Pipeline: CV → NLP → Score */}
+          {[
+            { x: 14,  icon: "📄", label: "CV", sub: "Upload" },
+            { x: 80,  icon: "🔍", label: "NLP", sub: "Parse" },
+            { x: 148, icon: "⚖", label: "ML", sub: "Score" },
+          ].map(({ x, icon, label, sub }) => (
+            <g key={x}>
+              <rect x={x} y="35" width="52" height="50" rx="7" fill="rgba(183,110,121,0.07)" stroke="rgba(183,110,121,0.25)" strokeWidth="0.9" />
+              <text x={x + 26} y="57" textAnchor="middle" fontSize="13" fontFamily="inherit">{icon}</text>
+              <text x={x + 26} y="71" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">{label}</text>
+              <text x={x + 26} y="81" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="inherit">{sub}</text>
+            </g>
+          ))}
+          {/* Arrows */}
+          {[66, 132].map((x) => (
+            <line key={x} x1={x} y1="60" x2={x + 14} y2="60" stroke="url(#rai-g)" strokeWidth="1.2" strokeDasharray="4 3" />
+          ))}
+          {/* Ranked candidates */}
+          <text x="228" y="30" textAnchor="middle" fontSize="7.5" fill="var(--txt-subtle)" fontFamily="inherit">Ranked</text>
+          {[
+            { score: 94, label: "Candidate A", top: true },
+            { score: 78, label: "Candidate B", top: false },
+            { score: 61, label: "Candidate C", top: false },
+          ].map(({ score, label, top }, i) => (
+            <g key={i}>
+              <rect x="206" y={40 + i * 32} width="104" height="24" rx="5"
+                fill={top ? "rgba(183,110,121,0.10)" : "rgba(183,110,121,0.04)"}
+                stroke={top ? "var(--acc)" : "rgba(183,110,121,0.18)"}
+                strokeWidth={top ? "1" : "0.7"} />
+              <text x="214" y={56 + i * 32} fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace">{score}%</text>
+              <text x="244" y={56 + i * 32} fontSize="7" fill={top ? "var(--txt)" : "var(--txt-subtle)"} fontFamily="inherit">{label}</text>
+              <rect x="214" y={47 + i * 32} width={Math.round(score * 0.62)} height="4" rx="2"
+                fill={top ? "var(--acc)" : "rgba(183,110,121,0.3)"} />
+            </g>
+          ))}
+          <line x1="200" y1="60" x2="206" y2="52" stroke="url(#rai-g)" strokeWidth="1.1" strokeDasharray="3 3" />
+          <text x="160" y="122" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="monospace" opacity="0.8">ML · NLP · Explainable scores</text>
+        </svg>
+      </div>
+    );
+  }
+
+  if (id === "orderhub") {
+    return (
+      <div className="absolute inset-0" style={{ background: "var(--srf-1)" }} aria-hidden="true">
+        {BG}
+        <svg viewBox="0 0 320 148" className={base}>
+          <defs>
+            <linearGradient id="oh-g" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="var(--acc)" stopOpacity="0.45" />
+              <stop offset="100%" stopColor="var(--acc)" stopOpacity="0.1" />
+            </linearGradient>
+          </defs>
+          {/* Store */}
+          <rect x="12" y="50" width="60" height="48" rx="7" fill="rgba(183,110,121,0.06)" stroke="rgba(183,110,121,0.22)" strokeWidth="0.8" />
+          <text x="42" y="72" textAnchor="middle" fontSize="13" fontFamily="inherit">🛒</text>
+          <text x="42" y="85" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">Next.js</text>
+          <text x="42" y="95" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="inherit">Storefront</text>
+          {/* Webhook */}
+          <line x1="72" y1="74" x2="100" y2="74" stroke="url(#oh-g)" strokeWidth="1.2" strokeDasharray="4 3" />
+          <rect x="100" y="54" width="60" height="40" rx="7" fill="rgba(183,110,121,0.10)" stroke="var(--acc)" strokeWidth="1.1" />
+          <text x="130" y="72" textAnchor="middle" fontSize="7.5" fill="var(--acc)" fontFamily="monospace" fontWeight="700">Webhook</text>
+          <text x="130" y="83" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="inherit">Express.js</text>
+          {/* Supabase */}
+          <line x1="160" y1="74" x2="188" y2="74" stroke="url(#oh-g)" strokeWidth="1.2" strokeDasharray="4 3" />
+          <rect x="188" y="54" width="56" height="40" rx="7" fill="rgba(183,110,121,0.06)" stroke="rgba(183,110,121,0.25)" strokeWidth="0.8" />
+          <text x="216" y="72" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">Supabase</text>
+          <text x="216" y="83" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="inherit">PostgreSQL</text>
+          {/* Google Sheets */}
+          <line x1="244" y1="74" x2="270" y2="74" stroke="url(#oh-g)" strokeWidth="1.2" strokeDasharray="4 3" />
+          <rect x="270" y="54" width="40" height="40" rx="7" fill="rgba(183,110,121,0.05)" stroke="rgba(183,110,121,0.2)" strokeWidth="0.7" />
+          <text x="290" y="71" textAnchor="middle" fontSize="12" fontFamily="inherit">📊</text>
+          <text x="290" y="84" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="inherit">Sheets</text>
+          {/* Animated sync dot */}
+          <circle r="2.5" fill="var(--acc)" opacity="0.8">
+            <animateMotion dur="2s" repeatCount="indefinite"><mpath href="#oh-path" /></animateMotion>
+          </circle>
+          <path id="oh-path" d="M72,74 L270,74" fill="none" />
+          {/* Real-time badge */}
+          <rect x="90" y="108" width="140" height="18" rx="4" fill="rgba(183,110,121,0.07)" stroke="rgba(183,110,121,0.18)" strokeWidth="0.7" />
+          <text x="160" y="120" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="inherit">Real-time sync · 0 manual steps</text>
+          <circle r="2" fill="rgb(34,197,94)" opacity="0.9" cx="98" cy="119" />
+        </svg>
+      </div>
+    );
+  }
+
+  if (id === "hijabshop") {
+    return (
+      <div className="absolute inset-0" style={{ background: "var(--srf-1)" }} aria-hidden="true">
+        {BG}
+        <svg viewBox="0 0 320 148" className={base}>
+          {/* Product grid */}
+          {[
+            { x: 14,  y: 18, hi: false },
+            { x: 76,  y: 18, hi: true  },
+            { x: 138, y: 18, hi: false },
+            { x: 14,  y: 72, hi: false },
+            { x: 76,  y: 72, hi: false },
+            { x: 138, y: 72, hi: false },
+          ].map(({ x, y, hi }, i) => (
+            <g key={i}>
+              <rect x={x} y={y} width="52" height="46" rx="5"
+                fill={hi ? "rgba(183,110,121,0.10)" : "rgba(183,110,121,0.04)"}
+                stroke={hi ? "var(--acc)" : "rgba(183,110,121,0.18)"}
+                strokeWidth={hi ? "1.2" : "0.7"} />
+              {/* Color swatch */}
+              <rect x={x + 4} y={y + 4} width="20" height="14" rx="2"
+                fill={hi ? "rgba(183,110,121,0.3)" : "rgba(183,110,121,0.12)"} />
+              <rect x={x + 28} y={y + 6} width="18" height="3.5" rx="1.5" fill="rgba(183,110,121,0.15)" />
+              <rect x={x + 28} y={y + 14} width="12" height="3" rx="1.5" fill="rgba(183,110,121,0.1)" />
+              {hi && <text x={x + 26} y={y + 42} fontSize="6" fill="var(--acc)" fontFamily="monospace">Selected</text>}
+            </g>
+          ))}
+          {/* Recommendation panel */}
+          <rect x="204" y="12" width="108" height="122" rx="8" fill="rgba(183,110,121,0.08)" stroke="rgba(183,110,121,0.28)" strokeWidth="1" />
+          <text x="258" y="30" textAnchor="middle" fontSize="7.5" fill="var(--acc)" fontFamily="monospace" fontWeight="700">AI Match</text>
+          <line x1="214" y1="36" x2="302" y2="36" stroke="rgba(183,110,121,0.2)" strokeWidth="0.6" />
+          {/* Color pairs */}
+          {[
+            { c1: "rgba(183,110,121,0.7)", c2: "rgba(139,90,100,0.5)", label: "Complementary" },
+            { c1: "rgba(183,110,121,0.5)", c2: "rgba(220,160,100,0.6)", label: "Analogous" },
+            { c1: "rgba(183,110,121,0.4)", c2: "rgba(120,120,120,0.5)", label: "Neutral pair" },
+          ].map(({ c1, c2, label }, i) => (
+            <g key={i}>
+              <circle cx="224" cy={52 + i * 30} r="9" fill={c1} />
+              <circle cx="242" cy={52 + i * 30} r="9" fill={c2} />
+              <text x="260" y={56 + i * 30} fontSize="7" fill="var(--txt-subtle)" fontFamily="inherit">{label}</text>
+            </g>
+          ))}
+          <text x="258" y="130" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="monospace" opacity="0.8">Color theory · AI</text>
         </svg>
       </div>
     );
