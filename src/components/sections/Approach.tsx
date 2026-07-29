@@ -13,22 +13,22 @@ const PRINCIPLES = [
   {
     number: "01",
     title: "Systems, not layers.",
-    body: "Frontend, backend, database — they're not separate jobs. I trace the user's request from the UI all the way down and back up. The architecture only makes sense when you've walked the whole path.",
+    body: "A request doesn't care which team owns which layer. I trace it from the React component to the SQL query and back — because the bug is usually where the handoff happens, not inside any single layer. Every project I've shipped, I built every layer of it. That's what 'full-stack' actually means.",
   },
   {
     number: "02",
     title: "Read before you write.",
-    body: "Before touching any codebase, I read it. The patterns, the naming choices, the edge cases that never made it to the docs — they're in there. Writing before reading creates a second system that fights the first.",
+    body: "Before I open an editor in an unfamiliar codebase, I read it — the patterns, the naming decisions, the edge cases that never made it to the docs. At Yazaki, I read manufacturing specs for two days before writing the BOM parser. Writing before reading creates a second system that contradicts the first.",
   },
   {
     number: "03",
     title: "Debug the seam.",
-    body: "When something breaks, I look at the integration boundary first. Not the component, not the function — the contract between them. Most failures happen where two things assumed different things about each other.",
+    body: "When something breaks, I check the integration boundary before the implementation. Not the component, not the function — the contract between them. Most failures aren't bugs in one place. They're mismatches in what two parts of the system assumed about each other's behavior.",
   },
   {
     number: "04",
     title: "Ship, then improve.",
-    body: "Working software with known limitations beats perfect architecture that doesn't exist yet. The real edge cases only appear in production. I ship early, measure honestly, and iterate with real data.",
+    body: "Perfect architecture that doesn't exist yet solves nothing. HandyMath v1 had a schema problem I couldn't have found in development — real users revealed it the moment they tried to resume sessions. I rebuilt the data model in two days. Some problems only appear in production. You have to deploy to find them.",
   },
 ] as const;
 

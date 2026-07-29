@@ -136,9 +136,10 @@ export function Contact() {
               transition={{ duration: duration.slow, ease: ease.out }}
               viewport={viewport}
             >
-              I'm looking for my first engineering role and I respond to every message
-              I receive. If you have a position, a project, or just want to talk
-              software — reach out.
+              If you're hiring a Software Engineer, Full-Stack Developer, or Backend
+              Developer — I'm available from 2027 and I respond to every message.
+              No cover letter needed. Tell me what you're building
+              and I'll tell you how I'd approach it.
             </motion.p>
 
             {/* Email link — wipe reveal */}

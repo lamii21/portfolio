@@ -217,7 +217,7 @@ export function Hero() {
                 color: "var(--txt-muted)",
               }}
             >
-              The seams are where software breaks.
+              I built the schema, the API, and the interface. Six projects. Solo.
             </p>
 
             {/* Identity context */}

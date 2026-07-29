@@ -15,7 +15,7 @@ const FOCUS_ITEMS = [
     icon: Compass,
     title: "First Engineering Role",
     label: "Active search · 2027",
-    body: "Looking for a Software Engineer, Full-Stack, or Backend position. I respond to every message. I want a team that cares about how the system is built, not just that it works.",
+    body: "Actively looking for a Software Engineer, Full-Stack, or Backend role. I respond to every message. What I'm looking for: a team that debates architecture decisions, reviews code carefully, and cares how the system is built — not just that it ships.",
     color: "#C97F89",
     primary: true,
   },
@@ -23,7 +23,7 @@ const FOCUS_ITEMS = [
     icon: BrainCircuit,
     title: "AI / ML Depth",
     label: "Ongoing · Deliberate",
-    body: "Going deeper on MLOps, LLM integration patterns, and agent architectures. Building from the foundation I laid in FinTech Predict and FlowForge, not starting over.",
+    body: "I've already built an LSTM forecasting model and an automated ETL pipeline — from scratch. What I'm extending: MLOps patterns, LLM integration, and what running a model in production actually requires versus training one in a notebook.",
     color: "#82B4D4",
     primary: false,
   },
@@ -31,7 +31,7 @@ const FOCUS_ITEMS = [
     icon: Code2,
     title: "Systems Thinking",
     label: "Through every project",
-    body: "Every project is a systems problem. I'm deliberately seeking exposure to distributed systems, container orchestration, and production monitoring — the layer above what I've built so far.",
+    body: "Every project I've shipped forced a systems decision — schema design, API contracts, pipeline layers. My current gap is the infrastructure layer above that: distributed systems, container orchestration, production observability. I've read about it. I want to build it.",
     color: "#6BA878",
     primary: false,
   },
@@ -95,7 +95,7 @@ export function CurrentFocus() {
             wordStagger={0.055}
             amount={0.3}
           >
-            What I&apos;m working on, right now.
+            Where my attention is right now.
           </SplitText>
         </div>
 
@@ -192,7 +192,7 @@ export function CurrentFocus() {
             className="text-sm font-light"
             style={{ color: "var(--txt-muted)" }}
           >
-            Open to work · Available from 2027 · Responds to every message
+            Available from 2027 · On-site, remote, or hybrid · Responds to every message
           </p>
         </motion.div>
 
