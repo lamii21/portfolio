@@ -10,6 +10,7 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { type Project, featuredProject, catalogProjects } from "@/data/projects";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { useCursor } from "@/hooks/useCursorContext";
@@ -232,17 +233,26 @@ function FeaturedCase() {
                 </motion.span>
               ))}
             </div>
-            {p.repo && (
+            <div className="flex items-center gap-3 flex-wrap">
               <MagneticButton
-                href={p.repo}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`View ${p.title} on GitHub`}
+                href={`/work/${p.id}`}
+                aria-label={`View ${p.title} case study`}
               >
-                View on GitHub
+                View Case Study
                 <ArrowUpRight size={15} strokeWidth={1.75} aria-hidden="true" />
               </MagneticButton>
-            )}
+              {p.repo && (
+                <MagneticButton
+                  href={p.repo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`View ${p.title} on GitHub`}
+                >
+                  GitHub
+                  <ArrowUpRight size={15} strokeWidth={1.75} aria-hidden="true" />
+                </MagneticButton>
+              )}
+            </div>
           </motion.div>
         </div>
 
@@ -456,6 +466,7 @@ interface CardProps {
 function ProjectCard({ project, index }: CardProps) {
   const { setMode } = useCursor();
   const prefersReduced = useReducedMotion();
+  const router = useRouter();
 
   // 3D tilt
   const mouseX = useMotionValue(0);
@@ -488,7 +499,7 @@ function ProjectCard({ project, index }: CardProps) {
         "card-gradient-border",
         "group relative flex flex-col rounded-2xl overflow-hidden",
       )}
-      style={prefersReduced ? {} : { transformPerspective: 900, rotateX, rotateY }}
+      style={prefersReduced ? { cursor: "pointer" } : { transformPerspective: 900, rotateX, rotateY, cursor: "pointer" }}
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ delay: index * stagger.xs, duration: duration.slow, ease: ease.out }}
@@ -497,6 +508,11 @@ function ProjectCard({ project, index }: CardProps) {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={() => setMode("project")}
+      onClick={() => router.push(`/work/${project.id}`)}
+      tabIndex={0}
+      role="link"
+      aria-label={`View ${project.title} case study`}
+      onKeyDown={(e) => { if (e.key === "Enter") router.push(`/work/${project.id}`); }}
     >
       {/* Shimmer overlay */}
       {!prefersReduced && (
@@ -660,6 +676,13 @@ function ProjectCard({ project, index }: CardProps) {
               ⌥ {project.architecture}
             </p>
           )}
+          <p
+            className="text-[9px] uppercase tracking-[0.18em] font-medium mt-3 flex items-center gap-1"
+            style={{ color: "rgba(183,110,121,0.7)" }}
+          >
+            Full Case Study
+            <ArrowUpRight size={10} strokeWidth={1.75} aria-hidden="true" />
+          </p>
         </div>
       )}
     </motion.article>
