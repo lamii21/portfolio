@@ -379,3 +379,478 @@ body::before {
   .animate-float-sm  { animation: none; }
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   CSS VIEW TRANSITIONS
+   Progressive enhancement — Chrome/Edge 111+. Falls back to JS template.tsx.
+   Named group "hero" persists the hero section across navigations.
+─────────────────────────────────────────────────────────────────────────────── */
+
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* Exit: scale down + blur + fade */
+  ::view-transition-old(root) {
+    animation: vt-exit 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* Enter: scale up + deblur + fade — slightly longer for elegance */
+  ::view-transition-new(root) {
+    animation: vt-enter 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes vt-exit {
+    to {
+      opacity: 0;
+      transform: scale(0.985);
+      filter: blur(4px);
+    }
+  }
+
+  @keyframes vt-enter {
+    from {
+      opacity: 0;
+      transform: scale(1.008) translateY(10px);
+      filter: blur(3px);
+    }
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   WEBGL AMBIENT CANVAS
+   Overlay blend mode for subtle warm noise on top of page content.
+   Dark mode: screen — brightens the noise on dark backgrounds.
+   Light mode: soft-light — adds subtle warmth without washing out.
+─────────────────────────────────────────────────────────────────────────────── */
+
+.webgl-ambient {
+  mix-blend-mode: soft-light;
+  opacity: 0.06;
+}
+
+.dark .webgl-ambient {
+  mix-blend-mode: screen;
+  opacity: 0.09;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ANIMATED GRID
+   Subtle dot or line grid that breathes slowly — for section backgrounds.
+   Usage: className="bg-animated-grid"
+─────────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --grid-line: rgba(183, 110, 121, 0.055);
+  --grid-dot:  rgba(183, 110, 121, 0.08);
+}
+
+.dark {
+  --grid-line: rgba(183, 110, 121, 0.06);
+  --grid-dot:  rgba(183, 110, 121, 0.10);
+}
+
+.bg-animated-grid {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 44px 44px;
+  animation: grid-breathe 18s ease-in-out infinite;
+}
+
+.bg-dot-grid {
+  background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
+  background-size: 28px 28px;
+  animation: grid-breathe 22s ease-in-out infinite;
+}
+
+@keyframes grid-breathe {
+  0%, 100% { opacity: 0.6;  background-position: 0 0; }
+  50%       { opacity: 1.0;  background-position: 2px 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-animated-grid,
+  .bg-dot-grid { animation: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GLASS REFRACTION
+   Enhanced backdrop-filter simulating light diffraction through glass.
+   Adds hue-rotate to shift the colours slightly — mimics real glass iridescence.
+─────────────────────────────────────────────────────────────────────────────── */
+
+.glass-refract {
+  backdrop-filter:
+    blur(18px)
+    saturate(175%)
+    brightness(103%)
+    hue-rotate(4deg);
+  -webkit-backdrop-filter:
+    blur(18px)
+    saturate(175%)
+    brightness(103%)
+    hue-rotate(4deg);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-brd);
+  transition:
+    backdrop-filter 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.glass-refract:hover {
+  backdrop-filter:
+    blur(24px)
+    saturate(190%)
+    brightness(105%)
+    hue-rotate(6deg);
+  -webkit-backdrop-filter:
+    blur(24px)
+    saturate(190%)
+    brightness(105%)
+    hue-rotate(6deg);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SOFT SHADOWS
+   Layered box-shadow system. Avoids hard edges — implies depth without drama.
+─────────────────────────────────────────────────────────────────────────────── */
+
+.shadow-soft-sm {
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.04),
+    0 2px 8px  rgba(0,0,0,0.06);
+}
+
+.shadow-soft {
+  box-shadow:
+    0 2px 4px  rgba(0,0,0,0.04),
+    0 6px 24px rgba(0,0,0,0.07),
+    0 16px 48px rgba(0,0,0,0.04);
+}
+
+.shadow-soft-lg {
+  box-shadow:
+    0 4px 8px   rgba(0,0,0,0.06),
+    0 12px 40px rgba(0,0,0,0.09),
+    0 32px 80px rgba(0,0,0,0.06);
+}
+
+.shadow-accent-glow {
+  box-shadow:
+    0 0 0 1px rgba(183, 110, 121, 0.15),
+    0 4px 24px rgba(183, 110, 121, 0.12),
+    0 12px 48px rgba(183, 110, 121, 0.06);
+}
+
+.dark .shadow-soft,
+.dark .shadow-soft-lg {
+  box-shadow:
+    0 2px 4px  rgba(0,0,0,0.16),
+    0 6px 24px rgba(0,0,0,0.20),
+    0 16px 48px rgba(0,0,0,0.14);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   LIGHT BLOOM
+   CSS filter: drop-shadow with the accent colour — halos of warm light
+   emanating from accent/glow elements. Use on icons, dots, accent marks.
+─────────────────────────────────────────────────────────────────────────────── */
+
+.bloom-sm {
+  filter: drop-shadow(0 0 4px rgba(183, 110, 121, 0.35));
+  transition: filter 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bloom {
+  filter:
+    drop-shadow(0 0 6px  rgba(183, 110, 121, 0.40))
+    drop-shadow(0 0 18px rgba(183, 110, 121, 0.18));
+  transition: filter 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bloom-lg {
+  filter:
+    drop-shadow(0 0 8px  rgba(183, 110, 121, 0.50))
+    drop-shadow(0 0 28px rgba(183, 110, 121, 0.24))
+    drop-shadow(0 0 60px rgba(183, 110, 121, 0.10));
+}
+
+/* Bloom-on-hover — minimal at rest, full bloom on hover */
+.bloom-hover {
+  filter: drop-shadow(0 0 0px rgba(183, 110, 121, 0));
+  transition: filter 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.bloom-hover:hover { filter: drop-shadow(0 0 10px rgba(183, 110, 121, 0.45)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .bloom-hover:hover { filter: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FLOATING LAYERS
+   Depth layering utilities — use with translateZ inside perspective containers.
+   Creates the illusion of multiple planes in 3D space.
+─────────────────────────────────────────────────────────────────────────────── */
+
+.layer-scene {
+  perspective: 1200px;
+  perspective-origin: 50% 40%;
+  transform-style: preserve-3d;
+}
+
+/* Planes: far (behind) → near (in front) */
+.layer-far    { transform: translateZ(-60px) scale(1.06); }
+.layer-mid    { transform: translateZ(  0px); }
+.layer-near   { transform: translateZ( 40px) scale(0.96); }
+.layer-front  { transform: translateZ( 80px) scale(0.90); }
+
+/* Floating animation — sinusoidal vertical drift for layered elements */
+@keyframes layer-float-a {
+  0%, 100% { transform: translateZ(-40px) translateY(0px)    scale(1.04); }
+  50%       { transform: translateZ(-40px) translateY(-10px)  scale(1.04); }
+}
+
+@keyframes layer-float-b {
+  0%, 100% { transform: translateZ(20px)  translateY(0px)   scale(0.97); }
+  50%       { transform: translateZ(20px)  translateY(-14px) scale(0.97); }
+}
+
+.layer-float-a { animation: layer-float-a 9s  ease-in-out infinite; }
+.layer-float-b { animation: layer-float-b 11s ease-in-out infinite 2s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .layer-float-a,
+  .layer-float-b { animation: none; transform: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TEXT MASKING
+   Utilities for clip-path-based text reveals.
+   Use with IntersectionObserver + CSS class toggle or Framer Motion clipPath.
+─────────────────────────────────────────────────────────────────────────────── */
+
+.text-mask {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+.text-mask-inner {
+  display: inline-block;
+  transform: translateY(110%);
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.text-mask.revealed .text-mask-inner {
+  transform: translateY(0);
+}
+
+/* Character-level stagger via CSS custom property */
+.text-mask-inner[style*="--i"] {
+  transition-delay: calc(var(--i, 0) * 0.04s);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SVG MORPHING
+   CSS animation driving SVG path `d` (where browser supports it) and
+   generic SVG element transforms. Used on decorative accent SVGs.
+─────────────────────────────────────────────────────────────────────────────── */
+
+@keyframes svg-breathe {
+  0%, 100% { transform: scale(1)    rotate(0deg); }
+  33%       { transform: scale(1.03) rotate(0.8deg); }
+  66%       { transform: scale(0.98) rotate(-0.5deg); }
+}
+
+@keyframes svg-pulse-opacity {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1.0; }
+}
+
+@keyframes accent-morph {
+  0%, 100% {
+    border-radius: 44% 56% 52% 48% / 46% 46% 54% 54%;
+    transform: rotate(0deg);
+  }
+  25% {
+    border-radius: 52% 48% 44% 56% / 54% 46% 54% 46%;
+    transform: rotate(1.5deg);
+  }
+  75% {
+    border-radius: 40% 60% 56% 44% / 50% 52% 48% 50%;
+    transform: rotate(-1deg);
+  }
+}
+
+.animate-svg-breathe      { animation: svg-breathe        14s ease-in-out infinite; }
+.animate-svg-pulse        { animation: svg-pulse-opacity  6s  ease-in-out infinite; }
+.animate-accent-morph     { animation: accent-morph       12s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-svg-breathe,
+  .animate-svg-pulse,
+  .animate-accent-morph { animation: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SECTION REVEAL SYSTEM
+   Scroll-triggered class reveals — complement Framer Motion variants.
+   Activated by IntersectionObserver or just as CSS utilities.
+─────────────────────────────────────────────────────────────────────────────── */
+
+/* Depth reveal — element emerges from behind (scale + blur) */
+@keyframes depth-emerge {
+  from {
+    opacity: 0;
+    transform: scale(0.93) translateY(20px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0px);
+  }
+}
+
+/* Wipe up — clip-path from bottom */
+@keyframes wipe-up {
+  from { clip-path: inset(0 0 100% 0); }
+  to   { clip-path: inset(0 0 0% 0); }
+}
+
+/* Line trace — left to right */
+@keyframes line-trace {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0% 0 0); }
+}
+
+.reveal-depth {
+  animation: depth-emerge 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.reveal-wipe {
+  animation: wipe-up   0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.reveal-line {
+  animation: line-trace 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Stagger delay utilities */
+.delay-100 { animation-delay: 0.10s; }
+.delay-150 { animation-delay: 0.15s; }
+.delay-200 { animation-delay: 0.20s; }
+.delay-250 { animation-delay: 0.25s; }
+.delay-300 { animation-delay: 0.30s; }
+.delay-400 { animation-delay: 0.40s; }
+.delay-500 { animation-delay: 0.50s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-depth,
+  .reveal-wipe,
+  .reveal-line { animation: none !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MESH GRADIENT
+   Multi-stop animated radial gradient — "living" background for hero/sections.
+   Apply as a fixed background layer at pointer-events: none.
+─────────────────────────────────────────────────────────────────────────────── */
+
+.mesh-gradient {
+  background:
+    radial-gradient(ellipse 70% 50% at 20% 20%, rgba(183,110,121,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 10%, rgba(183,110,121,0.04) 0%, transparent 55%),
+    radial-gradient(ellipse 80% 55% at 10% 70%, rgba(183,110,121,0.05) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 35% at 85% 75%, rgba(183,110,121,0.04) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 45% at 50% 50%, rgba(183,110,121,0.03) 0%, transparent 60%);
+  animation: mesh-shift 28s ease-in-out infinite;
+}
+
+@keyframes mesh-shift {
+  0%, 100% {
+    background-size: 100% 100%;
+    filter: blur(0px);
+  }
+  33% {
+    background-size: 105% 102%;
+    filter: blur(0.3px);
+  }
+  66% {
+    background-size: 98% 104%;
+    filter: blur(0.2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mesh-gradient { animation: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PARALLAX DEPTH LAYERS
+   Used on decorative elements that should scroll at different rates.
+   Apply data-depth attribute and let scroll-driven animations handle it.
+
+   CSS @scroll-timeline (where supported) for zero-JS parallax:
+─────────────────────────────────────────────────────────────────────────────── */
+
+@supports (animation-timeline: scroll()) {
+  .parallax-slow {
+    animation: parallax-up-slow linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0% 100%;
+    will-change: transform;
+  }
+
+  .parallax-fast {
+    animation: parallax-up-fast linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0% 100%;
+    will-change: transform;
+  }
+
+  @keyframes parallax-up-slow {
+    from { transform: translateY(0px);  }
+    to   { transform: translateY(-40px); }
+  }
+
+  @keyframes parallax-up-fast {
+    from { transform: translateY(0px);   }
+    to   { transform: translateY(-80px); }
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   DEPTH SHADOW SYSTEM
+   Consistent layered shadow across surfaces to convey elevation.
+─────────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --depth-1: 0 1px 3px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.04);
+  --depth-2: 0 2px 6px rgba(0,0,0,0.05), 0 6px 20px rgba(0,0,0,0.07);
+  --depth-3: 0 4px 12px rgba(0,0,0,0.06), 0 16px 40px rgba(0,0,0,0.08), 0 32px 64px rgba(0,0,0,0.05);
+  --depth-accent: 0 0 0 1px rgba(183,110,121,0.12), 0 4px 20px rgba(183,110,121,0.10), 0 16px 40px rgba(183,110,121,0.05);
+}
+
+.dark {
+  --depth-1: 0 1px 3px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);
+  --depth-2: 0 2px 6px rgba(0,0,0,0.18), 0 6px 20px rgba(0,0,0,0.22);
+  --depth-3: 0 4px 12px rgba(0,0,0,0.22), 0 16px 40px rgba(0,0,0,0.28), 0 32px 64px rgba(0,0,0,0.20);
+  --depth-accent: 0 0 0 1px rgba(183,110,121,0.16), 0 4px 20px rgba(183,110,121,0.14), 0 16px 40px rgba(183,110,121,0.07);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CURSOR MODE HELPERS
+   Add these attributes to elements to automatically trigger cursor modes.
+   Used by event delegation in Cursor.tsx or can be applied directly.
+─────────────────────────────────────────────────────────────────────────────── */
+
+/* Nudge interactive elements to call setMode("link") or "view" on hover */
+[data-cursor="text"]:hover    { cursor: none; }
+[data-cursor="link"]:hover    { cursor: none; }
+[data-cursor="project"]:hover { cursor: none; }
+[data-cursor="view"]:hover    { cursor: none; }
+

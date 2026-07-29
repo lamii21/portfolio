@@ -83,6 +83,23 @@ export function Hero() {
       aria-label="Introduction"
       className="relative isolate min-h-screen flex flex-col justify-center pt-16 overflow-hidden"
     >
+      {/* ── Animated dot grid — depth layer 0 (furthest back) ────────────── */}
+      {!prefersReduced && (
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none -z-20 bg-dot-grid"
+          style={{ opacity: 0.55 }}
+        />
+      )}
+
+      {/* ── Mesh gradient — living ambient background ─────────────────────── */}
+      {!prefersReduced && (
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none -z-10 mesh-gradient"
+        />
+      )}
+
       {/* ── Ambient background orbs — CSS-animated, zero JS ───────────────── */}
       <div
         className="absolute pointer-events-none -z-10"

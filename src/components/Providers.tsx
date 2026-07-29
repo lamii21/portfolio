@@ -1,25 +1,42 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { CursorProvider } from "@/hooks/useCursorContext";
-import { Cursor } from "@/components/ui/Cursor";
+import { Cursor }      from "@/components/ui/Cursor";
+import { MouseLight }  from "@/components/ui/MouseLight";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ReactNode } from "react";
 
+// WebGL ambient canvas — lazy-loaded so it never blocks the critical path
+const WebGLCanvas = dynamic(
+  () => import("@/components/WebGLCanvas").then(m => m.WebGLCanvas),
+  { ssr: false }
+);
+
 /**
- * Client-side provider wrapper.
+ * Global client-side provider wrapper.
  *
- * Adds a subtle page-entry fade (0.35s) that fires once on initial load.
- * The duration is short enough to not conflict with the Hero GSAP timeline
- * (which begins at delay: 0.2s), but eliminates the hard flash on hydration.
+ * Layer stack (z-index, low → high):
+ *   9983  WebGL ambient noise canvas (very subtle overlay)
+ *   9985  MouseLight spotlight (radial gradient tracking cursor)
+ *   9997  Portrait outer ring (cursor extra layer)
+ *   9998  Grain texture (CSS body::before)
+ *   9999  Cursor dot
+ *
+ * Page entry fade (0.35s) fires once on initial hydration.
+ * Per-route transitions are handled by template.tsx.
  */
 export function Providers({ children }: { children: ReactNode }) {
   const reduced = useReducedMotion();
 
   return (
     <CursorProvider>
-      {/* Global fixed UI — pointer-events: none, z-index 9997–9999 */}
+      {/* ── Fixed global effects (pointer-events: none) ─── */}
       <Cursor />
+      <MouseLight />
+      <WebGLCanvas />
 
+      {/* ── Initial hydration fade — fires once ───────────── */}
       <motion.div
         initial={reduced ? false : { opacity: 0 }}
         animate={{ opacity: 1 }}

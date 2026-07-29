@@ -471,7 +471,7 @@ function AvatarCore({ rotateX, rotateY, animated }: AvatarCoreProps) {
         }}
       />
 
-      {/* Avatar blob */}
+      {/* Avatar blob — subtle organic morph on borderRadius */}
       <motion.div
         className="relative overflow-hidden"
         style={{
@@ -487,6 +487,20 @@ function AvatarCore({ rotateX, rotateY, animated }: AvatarCoreProps) {
             "inset 0 1px 0 rgba(255,255,255,0.06)",
           ].join(", "),
         }}
+        animate={animated ? {
+          borderRadius: [
+            "44% 56% 52% 48% / 46% 46% 54% 54%",
+            "52% 48% 44% 56% / 54% 46% 54% 46%",
+            "40% 60% 56% 44% / 50% 52% 48% 50%",
+            "44% 56% 52% 48% / 46% 46% 54% 54%",
+          ],
+        } : {}}
+        transition={animated ? {
+          duration: 14,
+          repeat: Infinity,
+          ease: "easeInOut",
+          times: [0, 0.33, 0.66, 1],
+        } : {}}
         whileHover={animated ? { scale: 1.025, transition: spring.snappy } : {}}
       >
         <Image

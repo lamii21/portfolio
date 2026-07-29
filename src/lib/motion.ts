@@ -244,3 +244,74 @@ export const pageVariant = {
   animate: { opacity: 1, transition: { duration: 0.4, ease: ease.out } },
   exit:    { opacity: 0, transition: { duration: 0.25, ease: ease.in } },
 };
+
+// ── Premium Awwwards-level reveal variants ────────────────────────────────────
+
+/**
+ * Slide + mask reveal — content rises from a bottom clip WITH a y offset.
+ * More cinematic than plain clipReveal. For section headlines, card content.
+ */
+export const slideMask = {
+  hidden:  { clipPath: "inset(0 0 100% 0)", y: 12, opacity: 0 },
+  visible: (delay = 0) => ({
+    clipPath: "inset(0 0 0% 0)", y: 0, opacity: 1,
+    transition: { duration: duration.cinematic, ease: ease.out, delay },
+  }),
+};
+
+/**
+ * Glass reveal — opacity + blur transition. For glass cards, overlay panels.
+ * Simulate depth-of-field materialisation.
+ */
+export const glassReveal = {
+  hidden:  { opacity: 0, filter: "blur(8px)", scale: 0.97 },
+  visible: (delay = 0) => ({
+    opacity: 1, filter: "blur(0px)", scale: 1,
+    transition: { duration: duration.deliberate, ease: ease.out, delay },
+  }),
+};
+
+/**
+ * Depth reveal — element rises from below WITH perspective scale.
+ * Implies the element is on a closer z-plane emerging toward the viewer.
+ */
+export const depthReveal = {
+  hidden:  { opacity: 0, y: 32, scale: 0.92, filter: "blur(4px)" },
+  visible: (delay = 0) => ({
+    opacity: 1, y: 0, scale: 1, filter: "blur(0px)",
+    transition: { duration: duration.deliberate, ease: ease.out, delay },
+  }),
+};
+
+/**
+ * Horizontal line draw — element reveals left to right via clip-path.
+ * For decorative lines, underlines, section dividers.
+ * Shorter and snappier than wipeIn.
+ */
+export const lineDraw = {
+  hidden:  { clipPath: "inset(0 100% 0 0)", opacity: 0.6 },
+  visible: (delay = 0) => ({
+    clipPath: "inset(0 0% 0 0)", opacity: 1,
+    transition: { duration: duration.slow, ease: ease.out, delay },
+  }),
+};
+
+/**
+ * Parallax stagger — for groups where each child should float in from
+ * a different depth (y offset increases per item).
+ * Apply to children: custom={index * 0.1} where 0.1 is delay per item.
+ */
+export const depthStagger = {
+  hidden: {},
+  visible: (delay = 0) => ({
+    transition: { staggerChildren: stagger.sm, delayChildren: delay },
+  }),
+};
+
+export const depthChild = {
+  hidden:  { opacity: 0, y: 24, scale: 0.96 },
+  visible: {
+    opacity: 1, y: 0, scale: 1,
+    transition: { duration: duration.slow, ease: ease.out },
+  },
+};
