@@ -9,7 +9,7 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { staggerContainer, staggerChild, ease, duration, viewportEarly } from "@/lib/motion";
+import { staggerContainer, staggerChild, ease, duration, viewportEarly, spring } from "@/lib/motion";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // All events are factual — drawn from site config and project data.
@@ -101,7 +101,7 @@ export function Timeline() {
     offset: ["start 0.9", "end 0.15"],
   });
   const rawH = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-  const lineH = useSpring(rawH, { stiffness: 60, damping: 22 });
+  const lineH = useSpring(rawH, spring.scrollLine);
 
   return (
     <section

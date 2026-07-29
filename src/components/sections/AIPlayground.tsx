@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Play, RotateCcw, ChevronRight } from "lucide-react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { ease, duration } from "@/lib/motion";
+import { ease, duration, accordionTransition } from "@/lib/motion";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Interactive pipeline visualizations — all based on real projects.
@@ -212,27 +212,11 @@ export function AIPlayground() {
 
       <div className="max-w-[var(--content-max)] mx-auto px-[var(--section-px)] relative z-10">
 
-        {/* Header */}
-        <div className="flex items-center gap-6 mb-16">
-          <motion.span
-            className="text-[var(--text-overline)] uppercase tracking-[0.22em] font-medium shrink-0"
-            style={{ color: "#C97F89" }}
-            initial={{ opacity: 0, x: -14 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.55, ease: ease.out }}
-            viewport={{ once: true, amount: 0.5 }}
-          >
-            AI Playground
-          </motion.span>
-          <motion.div
-            className="flex-1 h-px origin-left"
-            style={{ background: "rgba(201,127,137,0.18)" }}
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            transition={{ duration: 0.8, ease: ease.out, delay: 0.12 }}
-            viewport={{ once: true, amount: 0.5 }}
-          />
-        </div>
+        <SectionLabel
+          label="AI Playground"
+          labelColor="#C97F89"
+          ruleColor="rgba(201,127,137,0.18)"
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.6fr] gap-12 items-start">
 

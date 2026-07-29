@@ -20,7 +20,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ease, duration, stagger, spring, viewportEarly } from "@/lib/motion";
+import { ease, duration, stagger, spring, viewportEarly, accordionTransition } from "@/lib/motion";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 
 // ── Step data ──────────────────────────────────────────────────────────────────
@@ -121,7 +121,7 @@ export function HowIThink() {
     offset: ["start 0.88", "end 0.18"],
   });
   const rawH = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-  const lineHeight = useSpring(rawH, { stiffness: 70, damping: 20 });
+  const lineHeight = useSpring(rawH, spring.scrollLine);
 
   function toggle(id: string) {
     setActive((prev) => (prev === id ? null : id));
@@ -424,7 +424,7 @@ function StepCard({ step, isActive, onToggle }: StepCardProps) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.38, ease: ease.out }}
+            transition={accordionTransition}
             style={{ overflow: "hidden" }}
           >
             <div className="pt-4 mt-3" style={{ borderTop: "1px solid var(--brd)" }}>

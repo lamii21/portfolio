@@ -262,7 +262,7 @@ function FeaturedCase() {
             style={{ background: "var(--srf-1)", borderColor: "var(--brd)" }}
             initial={{ opacity: 0, scale: 0.8, y: 8 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.45, ease: [0.34, 1.56, 0.64, 1] }}
+            transition={{ delay: 0.7, duration: 0.45, ease: ease.gentle }}
             viewport={{ once: true }}
           >
             <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
@@ -282,7 +282,7 @@ function FeaturedCase() {
             style={{ background: "var(--srf-1)", borderColor: "var(--brd)" }}
             initial={{ opacity: 0, scale: 0.8, y: -8 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.45, ease: [0.34, 1.56, 0.64, 1] }}
+            transition={{ delay: 0.9, duration: 0.45, ease: ease.gentle }}
             viewport={{ once: true }}
           >
             <span className="text-[9px] uppercase tracking-[0.18em] font-medium whitespace-nowrap" style={{ color: "var(--txt-muted)" }}>

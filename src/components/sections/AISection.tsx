@@ -24,6 +24,7 @@ import {
   Cpu,
   ChevronRight,
 } from "lucide-react";
+import { ease, duration } from "@/lib/motion";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PALETTE — forced dark, section-scoped
@@ -566,7 +567,7 @@ function CapabilityCard({
     <motion.div
       initial={reduced ? {} : { opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: duration.slow, delay, ease: ease.out }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -663,7 +664,7 @@ function FrontierCard({
     <motion.div
       initial={reduced ? {} : { opacity: 0, y: 24 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: duration.slow, delay, ease: ease.out }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -786,7 +787,7 @@ export function AISection() {
           <motion.h2
             initial={reduced ? {} : { opacity: 0, y: 14 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: duration.slow, delay: 0.08, ease: ease.out }}
             style={{
               fontSize: "var(--text-h2)",
               color: P.txt,
@@ -830,7 +831,7 @@ export function AISection() {
           <motion.div
             initial={reduced ? {} : { opacity: 0, x: 28 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.65, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: duration.slow, delay: 0.2, ease: ease.out }}
           >
             {/* Label */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
@@ -847,7 +848,7 @@ export function AISection() {
         <motion.div
           initial={reduced ? {} : { opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.55, delay: 0.32, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: duration.slow, delay: 0.32, ease: ease.out }}
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",

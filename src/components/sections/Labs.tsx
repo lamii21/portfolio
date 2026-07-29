@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { FlaskConical, ExternalLink, ChevronRight } from "lucide-react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { staggerContainer, staggerChild, ease, duration, viewport } from "@/lib/motion";
+import { staggerContainer, staggerChild, ease, duration, viewport, accordionTransition } from "@/lib/motion";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Labs = smaller experiments, prototypes, explorations — honestly framed.
@@ -182,7 +182,7 @@ export function Labs() {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.32, ease: ease.out }}
+                    transition={accordionTransition}
                     style={{ overflow: "hidden" }}
                   >
                     <p

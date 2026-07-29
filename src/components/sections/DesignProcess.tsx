@@ -5,7 +5,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Type, Layers, Zap, Smartphone, Eye } from "lucide-react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { SplitText } from "@/components/ui/SplitText";
-import { staggerContainer, staggerChild, ease, duration, viewport } from "@/lib/motion";
+import { staggerContainer, staggerChild, ease, duration, viewport, accordionTransition } from "@/lib/motion";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // "The Interface Layer" — how I approach UI/UX within full-stack work.
@@ -192,7 +192,7 @@ export function DesignProcess() {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.35, ease: ease.out }}
+                    transition={accordionTransition}
                     style={{ overflow: "hidden" }}
                   >
                   <div

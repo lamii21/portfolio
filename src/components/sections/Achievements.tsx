@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence, useInView, useReducedMotion } from "framer-motion";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { SplitText } from "@/components/ui/SplitText";
-import { staggerContainer, staggerChild, ease } from "@/lib/motion";
+import { staggerContainer, staggerChild, ease, accordionTransition } from "@/lib/motion";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // All metrics are real, sourced directly from project descriptions.
@@ -189,7 +189,7 @@ function AchievementCard({ metric, reduced }: AchievementCardProps) {
             initial={reduced ? false : { height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={reduced ? {} : { height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: ease.out }}
+            transition={accordionTransition}
           >
             {metric.detail}
           </motion.p>

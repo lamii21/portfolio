@@ -2,6 +2,7 @@
 
 import { Fragment, useRef, type CSSProperties } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
+import { ease } from "@/lib/motion";
 
 type TextTag = "h1" | "h2" | "h3" | "h4" | "p" | "span" | "div" | "blockquote";
 
@@ -69,7 +70,7 @@ export function SplitText({
               animate={inView || reduced ? { y: 0, opacity: 1 } : {}}
               transition={{
                 duration: 0.72,
-                ease: [0.22, 1, 0.36, 1],
+                ease: ease.out,
                 delay: delay + i * wordStagger,
               }}
             >

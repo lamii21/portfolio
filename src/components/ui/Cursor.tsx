@@ -50,8 +50,8 @@ export function Cursor() {
   const mouseY = useMotionValue(-200);
 
   // Dot: near-instant (stiffness 800 = ~1 frame lag)
-  const dotX = useSpring(mouseX, { stiffness: 800, damping: 50 });
-  const dotY = useSpring(mouseY, { stiffness: 800, damping: 50 });
+  const dotX = useSpring(mouseX, spring.cursorDot);
+  const dotY = useSpring(mouseY, spring.cursorDot);
 
   // Ring: deliberate lag — this IS the orbital effect
   const ringX = useSpring(mouseX, spring.orbit);
