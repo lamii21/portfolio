@@ -12,9 +12,14 @@ import { ease, duration, viewport } from "@/lib/motion";
 const NAV_SECTIONS = [
   { id: "cs-context",    label: "Context" },
   { id: "cs-arch",       label: "Architecture" },
-  { id: "cs-tech",       label: "Technical Choices" },
+  { id: "cs-schema",     label: "Data Schema" },
+  { id: "cs-tech",       label: "Tech Choices" },
+  { id: "cs-alts",       label: "Alternatives" },
   { id: "cs-timeline",   label: "Timeline" },
   { id: "cs-challenges", label: "Challenges" },
+  { id: "cs-perf",       label: "Optimizations" },
+  { id: "cs-testing",    label: "Testing" },
+  { id: "cs-media",      label: "Demo" },
   { id: "cs-impact",     label: "Impact" },
   { id: "cs-learned",    label: "What I Learned" },
 ] as const;
@@ -316,10 +321,94 @@ export function CaseStudyView({ project, allProjects }: CaseStudyViewProps) {
               )}
             </section>
 
-            {/* ── Section 3: Technical Choices ────────────────────────── */}
+            {/* ── Section 3: Data Schema ──────────────────────────────── */}
+            <section id="cs-schema" aria-label="Database schema">
+              <SectionHeading number="03" title="Data Schema" />
+              {cs?.dbSchema && cs.dbSchema.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {cs.dbSchema.map((entity, i) => (
+                    <motion.div
+                      key={entity.name}
+                      className="rounded-xl border overflow-hidden"
+                      style={{ borderColor: "var(--brd)" }}
+                      initial={reduced ? false : { opacity: 0, y: 14 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.07, duration: duration.slow, ease: ease.out }}
+                      viewport={viewport}
+                    >
+                      {/* Table header */}
+                      <div
+                        className="px-4 py-2.5 border-b flex items-center gap-2"
+                        style={{ background: "var(--srf-1)", borderColor: "var(--brd)" }}
+                      >
+                        <span
+                          className="font-mono font-medium text-accent"
+                          style={{ fontSize: "12px" }}
+                        >
+                          {entity.name}
+                        </span>
+                      </div>
+                      {/* Fields */}
+                      <div style={{ background: "var(--srf-0)" }}>
+                        {entity.fields.map((field) => (
+                          <div
+                            key={field.name}
+                            className="flex items-center justify-between px-4 py-2 border-b last:border-0"
+                            style={{ borderColor: "var(--brd)" }}
+                          >
+                            <div className="flex items-center gap-2 min-w-0">
+                              {field.key && (
+                                <span
+                                  className="shrink-0 inline-flex items-center px-1.5 py-0.5 rounded uppercase font-medium"
+                                  style={{
+                                    fontSize: "8px",
+                                    letterSpacing: "0.1em",
+                                    background: field.key === "pk" ? "rgba(183,110,121,0.12)" : "rgba(34,197,94,0.10)",
+                                    color: field.key === "pk" ? "var(--acc)" : "rgb(34,197,94)",
+                                  }}
+                                >
+                                  {field.key}
+                                </span>
+                              )}
+                              <span
+                                className="font-mono truncate"
+                                style={{ fontSize: "12px", color: "var(--txt-muted)" }}
+                              >
+                                {field.name}
+                              </span>
+                            </div>
+                            <span
+                              className="shrink-0 font-mono ml-3"
+                              style={{ fontSize: "11px", color: "var(--txt-subtle)" }}
+                            >
+                              {field.type}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div
+                  className="flex items-center gap-4 py-8 px-6 rounded-xl border"
+                  style={{ borderColor: "var(--brd)", borderStyle: "dashed", background: "var(--srf-1)" }}
+                >
+                  <span style={{ fontSize: "24px" }} aria-hidden="true">🗄️</span>
+                  <p
+                    className="font-light italic"
+                    style={{ fontSize: "13.5px", color: "var(--txt-subtle)" }}
+                  >
+                    À compléter — schema entities and field definitions to be documented.
+                  </p>
+                </div>
+              )}
+            </section>
+
+            {/* ── Section 4: Technical Choices ────────────────────────── */}
             {cs && (
               <section id="cs-tech" aria-label="Technical choices">
-                <SectionHeading number="03" title="Technical Choices" />
+                <SectionHeading number="04" title="Technical Choices" />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {cs.techChoices.map((choice, i) => (
                     <motion.div
@@ -349,10 +438,87 @@ export function CaseStudyView({ project, allProjects }: CaseStudyViewProps) {
               </section>
             )}
 
-            {/* ── Section 4: Timeline ──────────────────────────────────── */}
+            {/* ── Section 5: Alternatives Considered ──────────────────── */}
+            <section id="cs-alts" aria-label="Alternatives considered">
+              <SectionHeading number="05" title="Alternatives Considered" />
+              {cs?.alternatives && cs.alternatives.length > 0 ? (
+                <div className="space-y-4">
+                  {cs.alternatives.map((alt, i) => (
+                    <motion.div
+                      key={i}
+                      className="rounded-2xl border overflow-hidden"
+                      style={{ borderColor: "var(--brd)" }}
+                      initial={reduced ? false : { opacity: 0, y: 14 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.08, duration: duration.slow, ease: ease.out }}
+                      viewport={viewport}
+                    >
+                      {/* Header */}
+                      <div
+                        className="px-6 py-3.5 border-b"
+                        style={{ background: "var(--srf-1)", borderColor: "var(--brd)" }}
+                      >
+                        <span
+                          className="font-serif text-foreground"
+                          style={{ fontSize: "clamp(0.9rem, 1.3vw, 1rem)" }}
+                        >
+                          {alt.option}
+                        </span>
+                      </div>
+                      {/* Why rejected + what was chosen */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x" style={{ borderColor: "var(--brd)" } as React.CSSProperties}>
+                        <div className="px-6 py-5">
+                          <p
+                            className="text-[var(--text-overline)] uppercase tracking-[0.18em] font-medium mb-3"
+                            style={{ fontSize: "9px", color: "var(--txt-subtle)" }}
+                          >
+                            Why Rejected
+                          </p>
+                          <p
+                            className="font-light leading-[1.78]"
+                            style={{ fontSize: "13.5px", color: "var(--txt-muted)" }}
+                          >
+                            {alt.why}
+                          </p>
+                        </div>
+                        <div className="px-6 py-5" style={{ background: "rgba(183,110,121,0.025)" }}>
+                          <p
+                            className="text-[var(--text-overline)] uppercase tracking-[0.18em] font-medium mb-3 text-accent"
+                            style={{ fontSize: "9px" }}
+                          >
+                            What Was Chosen
+                          </p>
+                          <p
+                            className="font-light leading-[1.78]"
+                            style={{ fontSize: "13.5px", color: "var(--txt-muted)" }}
+                          >
+                            {alt.chosen}
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div
+                  className="flex items-center gap-4 py-8 px-6 rounded-xl border"
+                  style={{ borderColor: "var(--brd)", borderStyle: "dashed", background: "var(--srf-1)" }}
+                >
+                  <span style={{ fontSize: "24px" }} aria-hidden="true">🔀</span>
+                  <p
+                    className="font-light italic"
+                    style={{ fontSize: "13.5px", color: "var(--txt-subtle)" }}
+                  >
+                    À compléter — alternatives considered and why they were rejected.
+                  </p>
+                </div>
+              )}
+            </section>
+
+            {/* ── Section 6: Timeline ──────────────────────────────────── */}
             {cs && (
               <section id="cs-timeline" aria-label="Project timeline">
-                <SectionHeading number="04" title="Timeline" />
+                <SectionHeading number="06" title="Timeline" />
                 <div className="relative">
                   {/* Vertical line */}
                   <div
@@ -418,10 +584,10 @@ export function CaseStudyView({ project, allProjects }: CaseStudyViewProps) {
               </section>
             )}
 
-            {/* ── Section 5: Challenges ───────────────────────────────── */}
+            {/* ── Section 7: Challenges ───────────────────────────────── */}
             {cs && (
               <section id="cs-challenges" aria-label="Challenges and solutions">
-                <SectionHeading number="05" title="Challenges" />
+                <SectionHeading number="07" title="Challenges" />
                 <div className="space-y-5">
                   {cs.challenges.map((c, i) => (
                     <motion.div
@@ -483,10 +649,309 @@ export function CaseStudyView({ project, allProjects }: CaseStudyViewProps) {
               </section>
             )}
 
-            {/* ── Section 6: Impact ───────────────────────────────────── */}
+            {/* ── Section 8: Optimizations ────────────────────────────── */}
+            <section id="cs-perf" aria-label="Optimizations and performance">
+              <SectionHeading number="08" title="Optimizations" />
+              {cs?.optimizations && cs.optimizations.length > 0 ? (
+                <div className="space-y-5">
+                  {cs.optimizations.map((opt, i) => (
+                    <motion.div
+                      key={i}
+                      className="p-6 rounded-2xl border"
+                      style={{ background: "var(--srf-1)", borderColor: "var(--brd)" }}
+                      initial={reduced ? false : { opacity: 0, y: 14 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.08, duration: duration.slow, ease: ease.out }}
+                      viewport={viewport}
+                    >
+                      <h3
+                        className="font-serif text-foreground mb-3"
+                        style={{ fontSize: "clamp(0.95rem, 1.4vw, 1.05rem)" }}
+                      >
+                        {opt.title}
+                      </h3>
+                      <p
+                        className="font-light leading-[1.78] mb-4"
+                        style={{ fontSize: "13.5px", color: "var(--txt-muted)" }}
+                      >
+                        {opt.description}
+                      </p>
+                      {(opt.before || opt.after) && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                          {opt.before && (
+                            <div
+                              className="px-4 py-3 rounded-lg border"
+                              style={{ borderColor: "var(--brd)", background: "var(--srf-0)" }}
+                            >
+                              <p
+                                className="text-[var(--text-overline)] uppercase tracking-[0.14em] font-medium mb-1.5"
+                                style={{ fontSize: "9px", color: "var(--txt-subtle)" }}
+                              >
+                                Before
+                              </p>
+                              <p
+                                className="font-mono font-light leading-relaxed"
+                                style={{ fontSize: "12px", color: "var(--txt-muted)" }}
+                              >
+                                {opt.before}
+                              </p>
+                            </div>
+                          )}
+                          {opt.after && (
+                            <div
+                              className="px-4 py-3 rounded-lg border"
+                              style={{ borderColor: "rgba(34,197,94,0.25)", background: "rgba(34,197,94,0.04)" }}
+                            >
+                              <p
+                                className="text-[var(--text-overline)] uppercase tracking-[0.14em] font-medium mb-1.5"
+                                style={{ fontSize: "9px", color: "rgb(34,197,94)" }}
+                              >
+                                After
+                              </p>
+                              <p
+                                className="font-mono font-light leading-relaxed"
+                                style={{ fontSize: "12px", color: "var(--txt-muted)" }}
+                              >
+                                {opt.after}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div
+                  className="flex items-center gap-4 py-8 px-6 rounded-xl border"
+                  style={{ borderColor: "var(--brd)", borderStyle: "dashed", background: "var(--srf-1)" }}
+                >
+                  <span style={{ fontSize: "24px" }} aria-hidden="true">⚡</span>
+                  <p
+                    className="font-light italic"
+                    style={{ fontSize: "13.5px", color: "var(--txt-subtle)" }}
+                  >
+                    À compléter — optimizations made and measurable improvements.
+                  </p>
+                </div>
+              )}
+            </section>
+
+            {/* ── Section 9: Testing ──────────────────────────────────── */}
+            <section id="cs-testing" aria-label="Testing strategy">
+              <SectionHeading number="09" title="Testing" />
+              {cs?.testing ? (
+                <motion.div
+                  className="space-y-5"
+                  initial={reduced ? false : { opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: duration.slow, ease: ease.out }}
+                  viewport={viewport}
+                >
+                  {/* Strategy overview */}
+                  <div
+                    className="p-6 rounded-2xl border"
+                    style={{ background: "var(--srf-1)", borderColor: "var(--brd)" }}
+                  >
+                    <p
+                      className="text-[var(--text-overline)] uppercase tracking-[0.18em] font-medium mb-3 text-accent"
+                      style={{ fontSize: "10px" }}
+                    >
+                      Strategy
+                    </p>
+                    <p
+                      className="font-light leading-[1.78]"
+                      style={{ fontSize: "13.5px", color: "var(--txt-muted)" }}
+                    >
+                      {cs.testing.strategy}
+                    </p>
+                  </div>
+                  {/* Test types + coverage */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div
+                      className="p-5 rounded-xl border"
+                      style={{ background: "var(--srf-1)", borderColor: "var(--brd)" }}
+                    >
+                      <p
+                        className="text-[var(--text-overline)] uppercase tracking-[0.18em] font-medium mb-3"
+                        style={{ fontSize: "9px", color: "var(--txt-subtle)" }}
+                      >
+                        Test Types
+                      </p>
+                      <ul className="space-y-2">
+                        {cs.testing.types.map((t, i) => (
+                          <li
+                            key={i}
+                            className="flex items-start gap-2 font-light"
+                            style={{ fontSize: "13px", color: "var(--txt-muted)" }}
+                          >
+                            <span
+                              className="mt-[5px] shrink-0 w-1 h-1 rounded-full"
+                              style={{ background: "var(--acc)" }}
+                              aria-hidden="true"
+                            />
+                            {t}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div
+                      className="p-5 rounded-xl border"
+                      style={{ background: "var(--srf-1)", borderColor: "var(--brd)" }}
+                    >
+                      {cs.testing.tools && cs.testing.tools.length > 0 && (
+                        <>
+                          <p
+                            className="text-[var(--text-overline)] uppercase tracking-[0.18em] font-medium mb-3"
+                            style={{ fontSize: "9px", color: "var(--txt-subtle)" }}
+                          >
+                            Tools
+                          </p>
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            {cs.testing.tools.map((tool) => (
+                              <span
+                                key={tool}
+                                className="inline-flex items-center px-2.5 py-1 rounded-full border font-medium"
+                                style={{
+                                  fontSize: "10px",
+                                  borderColor: "var(--brd)",
+                                  color: "var(--txt-muted)",
+                                  background: "var(--srf-0)",
+                                }}
+                              >
+                                {tool}
+                              </span>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                      {cs.testing.coverage && (
+                        <>
+                          <p
+                            className="text-[var(--text-overline)] uppercase tracking-[0.18em] font-medium mb-1.5"
+                            style={{ fontSize: "9px", color: "var(--txt-subtle)" }}
+                          >
+                            Coverage
+                          </p>
+                          <p
+                            className="font-light"
+                            style={{ fontSize: "13px", color: "var(--txt-muted)" }}
+                          >
+                            {cs.testing.coverage}
+                          </p>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  {cs.testing.notes && (
+                    <div
+                      className="py-4 pl-5 rounded-r-lg"
+                      style={{
+                        borderLeft: "2px solid var(--brd-strong)",
+                        background: "var(--srf-1)",
+                      }}
+                    >
+                      <p
+                        className="font-light italic leading-[1.75]"
+                        style={{ fontSize: "13px", color: "var(--txt-muted)" }}
+                      >
+                        {cs.testing.notes}
+                      </p>
+                    </div>
+                  )}
+                </motion.div>
+              ) : (
+                <div
+                  className="flex items-center gap-4 py-8 px-6 rounded-xl border"
+                  style={{ borderColor: "var(--brd)", borderStyle: "dashed", background: "var(--srf-1)" }}
+                >
+                  <span style={{ fontSize: "24px" }} aria-hidden="true">🧪</span>
+                  <p
+                    className="font-light italic"
+                    style={{ fontSize: "13.5px", color: "var(--txt-subtle)" }}
+                  >
+                    À compléter — testing strategy, types, tools, and coverage.
+                  </p>
+                </div>
+              )}
+            </section>
+
+            {/* ── Section 10: Demo & Screenshots ──────────────────────── */}
+            <section id="cs-media" aria-label="Demo and screenshots">
+              <SectionHeading number="10" title="Demo &amp; Screenshots" />
+              {cs?.screenshots && cs.screenshots.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {cs.screenshots.map((shot, i) => (
+                    <motion.div
+                      key={i}
+                      className="rounded-xl border overflow-hidden"
+                      style={{ borderColor: "var(--brd)" }}
+                      initial={reduced ? false : { opacity: 0, y: 14 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.07, duration: duration.slow, ease: ease.out }}
+                      viewport={viewport}
+                    >
+                      {/* Placeholder frame */}
+                      <div
+                        className="relative flex flex-col items-center justify-center gap-3 aspect-video"
+                        style={{ background: "var(--srf-1)" }}
+                      >
+                        <span style={{ fontSize: "28px", opacity: 0.4 }} aria-hidden="true">📸</span>
+                        <span
+                          className="inline-flex items-center px-2.5 py-1 rounded-full uppercase font-medium tracking-[0.12em]"
+                          style={{
+                            fontSize: "9px",
+                            background: "rgba(183,110,121,0.10)",
+                            color: "var(--acc)",
+                            borderWidth: "1px",
+                            borderStyle: "dashed",
+                            borderColor: "var(--acc)",
+                          }}
+                        >
+                          À compléter
+                        </span>
+                      </div>
+                      {/* Caption */}
+                      <div
+                        className="px-4 py-3 border-t"
+                        style={{ background: "var(--srf-0)", borderColor: "var(--brd)" }}
+                      >
+                        <p
+                          className="font-medium mb-0.5"
+                          style={{ fontSize: "12px", color: "var(--txt-muted)" }}
+                        >
+                          {shot.label}
+                        </p>
+                        <p
+                          className="font-light leading-snug"
+                          style={{ fontSize: "11.5px", color: "var(--txt-subtle)" }}
+                        >
+                          {shot.description}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div
+                  className="flex items-center gap-4 py-8 px-6 rounded-xl border"
+                  style={{ borderColor: "var(--brd)", borderStyle: "dashed", background: "var(--srf-1)" }}
+                >
+                  <span style={{ fontSize: "24px" }} aria-hidden="true">🎬</span>
+                  <p
+                    className="font-light italic"
+                    style={{ fontSize: "13.5px", color: "var(--txt-subtle)" }}
+                  >
+                    À compléter — screenshots and demo recording.
+                  </p>
+                </div>
+              )}
+            </section>
+
+            {/* ── Section 11: Impact ───────────────────────────────────── */}
             {cs && (
               <section id="cs-impact" aria-label="Results and impact">
-                <SectionHeading number="06" title="Impact" />
+                <SectionHeading number="11" title="Impact" />
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                   {cs.impact.map(({ metric, description }, i) => (
                     <motion.div
@@ -516,10 +981,10 @@ export function CaseStudyView({ project, allProjects }: CaseStudyViewProps) {
               </section>
             )}
 
-            {/* ── Section 7: What I Learned ───────────────────────────── */}
+            {/* ── Section 12: What I Learned ──────────────────────────── */}
             {cs && (
               <section id="cs-learned" aria-label="What I learned">
-                <SectionHeading number="07" title="What I Learned" />
+                <SectionHeading number="12" title="What I Learned" />
                 <div className="space-y-8">
                   {cs.learned.map((item, i) => (
                     <motion.div
@@ -559,6 +1024,57 @@ export function CaseStudyView({ project, allProjects }: CaseStudyViewProps) {
                     </motion.div>
                   ))}
                 </div>
+
+                {/* Would Do Differently */}
+                {cs.wouldDoDifferently && cs.wouldDoDifferently.length > 0 && (
+                  <div className="mt-12 pt-8 border-t" style={{ borderColor: "var(--brd)" }}>
+                    <p
+                      className="text-[var(--text-overline)] uppercase tracking-[0.22em] font-medium mb-6"
+                      style={{ fontSize: "10px", color: "var(--txt-subtle)" }}
+                    >
+                      What I&apos;d Do Differently
+                    </p>
+                    <div className="space-y-6">
+                      {cs.wouldDoDifferently.map((item, i) => (
+                        <motion.div
+                          key={item.title}
+                          className="flex gap-5"
+                          initial={reduced ? false : { opacity: 0, y: 12 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          transition={{ delay: i * 0.09, duration: duration.slow, ease: ease.out }}
+                          viewport={viewport}
+                        >
+                          <div
+                            className="shrink-0 font-serif italic"
+                            style={{
+                              fontSize: "clamp(1.6rem, 2.5vw, 2rem)",
+                              color: "rgba(183,110,121,0.13)",
+                              lineHeight: 1,
+                              minWidth: "2.2rem",
+                            }}
+                            aria-hidden="true"
+                          >
+                            {String(i + 1).padStart(2, "0")}
+                          </div>
+                          <div>
+                            <h3
+                              className="font-serif text-foreground mb-1.5"
+                              style={{ fontSize: "clamp(0.95rem, 1.4vw, 1.05rem)" }}
+                            >
+                              {item.title}
+                            </h3>
+                            <p
+                              className="font-light leading-[1.82]"
+                              style={{ fontSize: "clamp(0.875rem, 1.2vw, 0.95rem)", color: "var(--txt-muted)" }}
+                            >
+                              {item.body}
+                            </p>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Tech stack */}
                 <div className="mt-12 pt-8 border-t" style={{ borderColor: "var(--brd)" }}>

@@ -8,7 +8,7 @@ import { ScrambleIn } from "@/components/ScrambleIn";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { siteConfig } from "@/data/site";
 
-const TECH = ["React", "Next.js", "TypeScript", "Python", "Django", "SQL"];
+const TECH = ["Python", "OpenCV", "SymPy", "React", "Django", "TypeScript"];
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -239,7 +239,7 @@ export function Hero() {
                 color: "var(--txt-muted)",
               }}
             >
-              I built the schema, the API, and the interface. Six projects. Solo.
+              Schema, API, model, interface — I built every layer. Ten projects. Solo.
             </p>
 
             {/* Identity context */}

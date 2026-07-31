@@ -62,12 +62,12 @@ const CATEGORIES = [
     bg: "rgba(183,110,121,0.07)",
     brd: "rgba(183,110,121,0.18)",
     skills: [
-      { name: "Pandas",           status: "shipped" },
+      { name: "OpenCV",           status: "shipped" },
+      { name: "SymPy",            status: "shipped" },
+      { name: "spaCy / NLP",      status: "shipped" },
       { name: "TensorFlow/Keras", status: "shipped" },
       { name: "Scikit-learn",     status: "shipped" },
-      { name: "NumPy",            status: "shipped" },
-      { name: "openpyxl",         status: "shipped" },
-      { name: "Matplotlib",       status: "shipped" },
+      { name: "Pandas / NumPy",   status: "daily"   },
     ],
   },
   {

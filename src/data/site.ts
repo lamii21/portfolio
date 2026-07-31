@@ -7,11 +7,11 @@
 
 export const siteConfig = {
   name: "Lamiae El Jabri",
-  role: "Software Engineer",
+  role: "AI Software Engineer",
   headline: "I build from both ends.",
   subHeadline: "The seams are where software breaks.",
   description:
-    "Software Engineering student at EMSI (Class of 2027), building full-stack web applications with React, Next.js, Django, and Python. Open to Software Engineer, Full-Stack, and Backend roles. Based in Rabat, Morocco.",
+    "Software Engineering student at EMSI (Class of 2027), building AI-integrated products with React, Next.js, Django, Python, OpenCV, and SymPy. Five of ten shipped projects have a direct AI/ML component. Open to AI Software Engineer, Full-Stack, and Software Engineer roles. Based in Rabat, Morocco.",
   location: "Rabat, Morocco",
   school: "EMSI — École Marocaine des Sciences de l'Ingénieur",
   program: "Génie Informatique",
@@ -35,16 +35,23 @@ export const siteConfig = {
 
   // ── SEO ─────────────────────────────────────────────────────────────────────
   keywords: [
+    "AI Software Engineer",
+    "AI Engineer",
     "Software Engineer",
-    "Full Stack Developer",
     "Full Stack Engineer",
+    "Full Stack Developer",
     "Backend Developer",
     "React Developer",
     "Next.js Developer",
     "Python Developer",
     "Django Developer",
     "TypeScript Developer",
-    "Web Developer",
+    "Machine Learning Engineer",
+    "Computer Vision",
+    "NLP Engineer",
+    "OpenCV",
+    "SymPy",
+    "Junior AI Engineer",
     "Junior Software Engineer",
     "Morocco",
     "Rabat",

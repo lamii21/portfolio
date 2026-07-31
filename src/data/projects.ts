@@ -36,6 +36,38 @@ export interface CaseStudyLearning {
   body: string;
 }
 
+export interface CaseStudyAlternative {
+  option: string;
+  why: string;
+  chosen: string;
+}
+
+export interface CaseStudyOptimization {
+  title: string;
+  description: string;
+  before?: string;
+  after?: string;
+}
+
+export interface CaseStudyTesting {
+  strategy: string;
+  types: string[];
+  coverage?: string;
+  tools?: string[];
+  notes?: string;
+}
+
+export interface CaseStudyDbField {
+  name: string;
+  type: string;
+  key?: "pk" | "fk";
+}
+
+export interface CaseStudyDbEntity {
+  name: string;
+  fields: CaseStudyDbField[];
+}
+
 export interface CaseStudy {
   context: string;
   objectives: string[];
@@ -44,6 +76,12 @@ export interface CaseStudy {
   challenges: CaseStudyChallenge[];
   impact: CaseStudyImpact[];
   learned: CaseStudyLearning[];
+  alternatives?: CaseStudyAlternative[];
+  optimizations?: CaseStudyOptimization[];
+  testing?: CaseStudyTesting;
+  wouldDoDifferently?: CaseStudyLearning[];
+  dbSchema?: CaseStudyDbEntity[];
+  screenshots?: { label: string; description: string }[];
 }
 
 // ── Project interface ─────────────────────────────────────────────────────────
@@ -127,6 +165,130 @@ export const projects: Project[] = [
           name: "Django REST",
           reason:
             "Python backend with a strong ORM. The data modeling primitives map directly to the schema: User, Exercise, Progress, SolverLog. Batteries included for auth, serialization, and the REST API.",
+        },
+      ],
+      alternatives: [
+        {
+          option: "Tesseract OCR (out-of-the-box, no preprocessing)",
+          why: "Tesseract performs well on standard printed text but fails on mathematical notation (∫, Σ, √, fractions) without custom training data. Without preprocessing, recognition rate on math problems was too low to be useful.",
+          chosen: "OpenCV for preprocessing (binarization, denoising, contour detection) fed into the OCR pipeline — domain-specific preparation before recognition rather than relying on a general-purpose model.",
+        },
+        {
+          option: "SciPy / NumPy numerical solver",
+          why: "Numerical solvers produce floating-point approximations — 0.33333... instead of 1/3, no intermediate steps. A student checking their work needs to see the algebraic transformations, not a decimal result.",
+          chosen: "SymPy — symbolic computation that produces exact answers (1/3, √2, π) and step-by-step intermediate expressions that match what a student would write on paper.",
+        },
+        {
+          option: "Firebase / Firestore (NoSQL)",
+          why: "Firebase was fast to set up, but the progress tracking requirement is inherently relational: a user completes many exercises, each exercise has many attempts, each attempt has a score and a timestamp. Modeling that in a document store required denormalization that made queries awkward.",
+          chosen: "Django REST with PostgreSQL — the ORM maps directly to the relational structure, and the Progress join table (user × exercise × attempt_count × score) became a natural, queryable entity.",
+        },
+        {
+          option: "React Native (mobile-first for camera access)",
+          why: "The camera integration is more natural on mobile. React Native was considered for direct camera access. Rejected because validating the OCR pipeline itself was the hard problem — adding mobile build complexity during development would have slowed that down.",
+          chosen: "React web with a file upload / camera input — simpler to build and debug. The OCR pipeline was validated first; mobile is the logical next step.",
+        },
+      ],
+      optimizations: [
+        {
+          title: "OCR preprocessing pipeline",
+          description: "Raw camera images produced inconsistent recognition on mathematical symbols. Added adaptive thresholding (not fixed threshold — adjusts per image region), Gaussian blur to reduce noise, and morphological operations to close gaps in symbol contours.",
+          before: "~60–70% recognition accuracy on printed problems, significantly lower on handwritten",
+          after: "~85–90% on printed input with the full preprocessing pipeline; handwritten improved but remains harder",
+        },
+        {
+          title: "Three.js renderer lifecycle hook",
+          description: "The initial Three.js integration created a new WebGLRenderer on every React render cycle, leaking GPU memory when navigating between exercises. Extracted into a custom useEffect hook that creates the renderer once, updates the scene on function change, and disposes renderer + geometry on unmount.",
+          before: "WebGLRenderer instances not disposed — GPU memory leak on navigation",
+          after: "Clean lifecycle — single renderer per component mount, fully disposed on unmount",
+        },
+        {
+          title: "Progress data model v2",
+          description: "Version 1 stored progress state as a field on the Exercise model — wrong cardinality. Rebuilt as a dedicated Progress join table between User and Exercise, with attempt_count, score, and completed_at as first-class fields. Queries for 'all exercises for user X' and 'completion rate per topic' became natural SQL joins.",
+          before: "Progress state on Exercise model — one row per exercise, no per-user state, impossible to track multiple attempts",
+          after: "Progress(user_id, exercise_id, score, attempt_count, completed_at) — correct cardinality, clean queries, per-user per-exercise tracking",
+        },
+      ],
+      testing: {
+        strategy: "Manual end-to-end testing of the OCR pipeline against a curated equation test set. Django REST Framework tests for API endpoint correctness. Manual UI testing across the exercise and progress flows.",
+        types: ["Manual OCR (curated equation test set)", "Django REST Framework API tests", "Manual UI flow testing"],
+        coverage: "À compléter — formal coverage percentages not tracked per module",
+        tools: ["Django REST Framework test client", "pytest", "Manual browser testing"],
+        notes: "OCR was tested against a set of handwritten and printed equations ranging from simple arithmetic to integrals and fractions. Edge cases discovered iteratively: symbol recognition improved through preprocessing tuning rather than model retraining.",
+      },
+      wouldDoDifferently: [
+        {
+          title: "Start with a constrained math subset.",
+          body: "Building OCR for the full range of mathematical notation from day one was too ambitious. Starting with basic algebra only — single variable, integer coefficients — would have let me validate the full pipeline (OCR → parse → solve → display) faster. Add integral and differential notation in a second pass.",
+        },
+        {
+          title: "Add asynchronous task processing from the start.",
+          body: "OCR and SymPy solving are both synchronous operations that block the request thread. For a classroom with concurrent students, this would create visible latency. I would add Celery with a Redis broker from the beginning — not as a later optimization.",
+        },
+        {
+          title: "Write OCR tests before the pipeline.",
+          body: "I wrote tests retroactively — after the OCR was working — which means they tested existing behavior rather than specified behavior. Test-first would have caught symbol dictionary gaps earlier and made the preprocessing tuning more systematic.",
+        },
+      ],
+      dbSchema: [
+        {
+          name: "User",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "email", type: "VARCHAR(255)" },
+            { name: "password_hash", type: "VARCHAR(255)" },
+            { name: "created_at", type: "TIMESTAMP" },
+          ],
+        },
+        {
+          name: "Exercise",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "topic", type: "VARCHAR(100)" },
+            { name: "difficulty", type: "SMALLINT" },
+            { name: "equation_raw", type: "TEXT" },
+            { name: "solution_steps", type: "JSONB" },
+          ],
+        },
+        {
+          name: "Progress",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "user_id", type: "UUID", key: "fk" },
+            { name: "exercise_id", type: "UUID", key: "fk" },
+            { name: "score", type: "SMALLINT" },
+            { name: "attempt_count", type: "INTEGER" },
+            { name: "completed_at", type: "TIMESTAMP" },
+          ],
+        },
+        {
+          name: "SolverLog",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "exercise_id", type: "UUID", key: "fk" },
+            { name: "raw_ocr_text", type: "TEXT" },
+            { name: "parsed_expr", type: "TEXT" },
+            { name: "solver_output", type: "JSONB" },
+            { name: "created_at", type: "TIMESTAMP" },
+          ],
+        },
+      ],
+      screenshots: [
+        {
+          label: "OCR capture flow",
+          description: "Student photographs handwritten equation → system shows the parsed expression for confirmation before solving — catches misreadings before they reach SymPy",
+        },
+        {
+          label: "Step-by-step solver UI",
+          description: "SymPy solution rendered as sequential algebraic transformations — each intermediate step visible, formatted to match what a student would write on paper",
+        },
+        {
+          label: "Three.js 3D function graph",
+          description: "Mathematical function rendered as an interactive 3D surface — student can rotate, zoom, and inspect the graph to understand geometric behavior",
+        },
+        {
+          label: "Progress dashboard",
+          description: "Per-topic completion rate, recent exercise history, difficulty progression over time — derived from the Progress join table",
         },
       ],
       timeline: [
@@ -268,6 +430,141 @@ export const projects: Project[] = [
             "AI analysis layer for recruitment scoring and workforce analytics. Same language as the backend — no separate service required for the ML component.",
         },
       ],
+      alternatives: [
+        {
+          option: "MongoDB / NoSQL for HR data",
+          why: "HR data is deeply relational: employees belong to departments, departments have managers, leave requests have approvers, candidates apply to postings. Modeling these relationships in documents requires denormalization and loses referential integrity.",
+          chosen: "PostgreSQL — relational schema where foreign keys and joins model HR relationships naturally, and row-level security enforces tenant isolation at the database engine level.",
+        },
+        {
+          option: "Single-tenant architecture (one DB per client)",
+          why: "One database per client is operationally expensive at scale — schema migrations require running against N databases, monitoring multiplies, and the deployment pipeline grows with each new client.",
+          chosen: "Multi-tenant with row-level security from day one. Every table has an org_id column; PostgreSQL RLS ensures every query is automatically scoped to the requesting tenant without application-level filtering.",
+        },
+        {
+          option: "Next.js SSR for the dashboard",
+          why: "Next.js would add SSR complexity to a dashboard that is entirely authenticated and user-specific. SEO is irrelevant for HR management dashboards — all content is behind a login.",
+          chosen: "React SPA with JWT authentication — no SSR overhead for content that is entirely behind authentication. Client-side routing handles the multi-role view switching.",
+        },
+        {
+          option: "Dedicated ML microservice (separate Python service)",
+          why: "A separate service for the AI scoring would require inter-service communication (HTTP or message queue), additional deployment complexity, and network latency on every recruitment scoring call.",
+          chosen: "Embedded Python AI module within the Django backend — same process, no network hop, simpler deployment at this scale.",
+        },
+      ],
+      optimizations: [
+        {
+          title: "Index on org_id for all RLS-scoped tables",
+          description: "Row-level security policies filter every query by org_id. Without an index, each query scans the full table before applying the RLS filter. Adding a B-tree index on org_id across all tenant-scoped tables ensures the RLS predicate is evaluated on the index, not the full table.",
+          before: "Full table scan on every RLS-filtered query — linear cost as tenant data grows",
+          after: "Index scan on org_id — constant-time tenant scoping regardless of total row count",
+        },
+        {
+          title: "Eager loading for HR dashboard aggregates",
+          description: "The executive dashboard showed headcount, department breakdown, leave pipeline, and open positions. Early version made a separate query per metric — 8 queries per page load. Consolidated into 3 aggregate queries using Django's annotate() and values().",
+          before: "8 separate database queries per dashboard page load",
+          after: "3 aggregate queries covering the same data — reduced DB round-trips, faster page paint",
+        },
+        {
+          title: "JWT role claim — no extra DB lookup per request",
+          description: "Early version fetched the user's role from the database on every authenticated request to determine RBAC permissions. Moved the role into the JWT payload at login — the API reads role from the token, not the database.",
+          before: "Extra database query per authenticated request to fetch user role",
+          after: "Role read from JWT token — zero extra DB lookup, stateless authorization",
+        },
+      ],
+      testing: {
+        strategy: "Django REST Framework tests for API endpoints with RBAC coverage. Manual multi-tenant isolation testing — verifying that authenticated requests from Tenant A never return data from Tenant B under any conditions.",
+        types: ["API endpoint tests (DRF)", "Multi-tenant isolation tests", "RBAC permission coverage", "Manual UI testing"],
+        coverage: "À compléter — formal test coverage percentages not tracked",
+        tools: ["Django REST Framework test client", "pytest", "Manual browser testing"],
+        notes: "Multi-tenant isolation was tested by creating two organizations with overlapping employee names and verifying that no cross-tenant data appeared in any API response. Every RBAC-restricted endpoint was tested with tokens for all three roles (HR manager, line manager, employee).",
+      },
+      wouldDoDifferently: [
+        {
+          title: "Build a single-tenant MVP first.",
+          body: "Multi-tenancy is the right architecture, but it added complexity to every layer from day one. A single-tenant version with correct HR data modeling would have been faster to validate. Adding multi-tenancy in a second phase — once the core HR flows were proven — would have been cleaner.",
+        },
+        {
+          title: "Separate the AI scoring into its own service.",
+          body: "Embedding the AI module in the Django backend was fast to build, but it creates a tight coupling between the scoring model and the API release cycle. A dedicated FastAPI service for AI scoring would let the model be updated independently of the rest of the platform.",
+        },
+        {
+          title: "Add Playwright E2E tests from the start.",
+          body: "Manual testing of multi-role views was time-consuming and error-prone. Playwright tests asserting that the HR manager view shows leave approvals, the employee view does not, and the line manager view shows only their team — written once and run on every change.",
+        },
+      ],
+      dbSchema: [
+        {
+          name: "Organization",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "name", type: "VARCHAR(200)" },
+            { name: "plan_type", type: "VARCHAR(50)" },
+            { name: "created_at", type: "TIMESTAMP" },
+          ],
+        },
+        {
+          name: "User",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "org_id", type: "UUID", key: "fk" },
+            { name: "email", type: "VARCHAR(255)" },
+            { name: "role", type: "VARCHAR(50)" },
+            { name: "is_active", type: "BOOLEAN" },
+          ],
+        },
+        {
+          name: "Employee",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "org_id", type: "UUID", key: "fk" },
+            { name: "user_id", type: "UUID", key: "fk" },
+            { name: "department_id", type: "UUID", key: "fk" },
+            { name: "contract_type", type: "VARCHAR(50)" },
+            { name: "start_date", type: "DATE" },
+          ],
+        },
+        {
+          name: "LeaveRequest",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "employee_id", type: "UUID", key: "fk" },
+            { name: "start_date", type: "DATE" },
+            { name: "end_date", type: "DATE" },
+            { name: "status", type: "VARCHAR(50)" },
+            { name: "approver_id", type: "UUID", key: "fk" },
+          ],
+        },
+        {
+          name: "Candidate",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "org_id", type: "UUID", key: "fk" },
+            { name: "cv_path", type: "TEXT" },
+            { name: "extracted_skills", type: "JSONB" },
+            { name: "overall_score", type: "NUMERIC(5,2)" },
+            { name: "status", type: "VARCHAR(50)" },
+          ],
+        },
+      ],
+      screenshots: [
+        {
+          label: "HR Manager Dashboard",
+          description: "Headcount overview, leave pipeline, open positions, recruitment funnel — all derived from live PostgreSQL aggregates",
+        },
+        {
+          label: "AI Recruitment Panel",
+          description: "Ranked candidate list with score chips — each candidate expandable to show per-dimension score breakdown (technical skills, experience level, domain match)",
+        },
+        {
+          label: "Employee Profile View",
+          description: "Contract details, leave history, department assignment, manager chain — role-scoped: employees see their own data, managers see their team",
+        },
+        {
+          label: "Leave Approval Workflow",
+          description: "Request creation → manager review → approval/rejection — status tracked in LeaveRequest table, visible across all role views simultaneously",
+        },
+      ],
       timeline: [
         {
           milestone: "Architecture Design",
@@ -405,6 +702,117 @@ export const projects: Project[] = [
             "Dashboard interface for HR managers — ranked candidate list, filtering by skill or score, individual profile view with score breakdown per dimension.",
         },
       ],
+      alternatives: [
+        {
+          option: "Fine-tuned BERT for named entity recognition",
+          why: "BERT-based NER achieves higher accuracy on skill extraction but requires GPU inference infrastructure and significant training time. For a v1 that needs to demonstrate the concept, the latency and infrastructure cost are not justified.",
+          chosen: "spaCy NER with a custom skill entity matcher — faster inference, no GPU required, accuracy sufficient for the explainability goal.",
+        },
+        {
+          option: "Regex-based skill matching",
+          why: "Regex matching on skill keywords fails on synonyms and abbreviations. 'JS', 'JavaScript', and 'ES6' are the same skill family but have zero string overlap. A regex approach requires manually maintaining thousands of patterns.",
+          chosen: "NLP normalization layer that maps surface variants to canonical skill names — iteratively built from real CV data.",
+        },
+        {
+          option: "Django REST for the ML API",
+          why: "Django REST is heavier than needed for an API layer that simply wraps a Python ML pipeline. The synchronous request handling would block on model inference.",
+          chosen: "FastAPI — async handlers, automatic OpenAPI docs, and native Pydantic integration for request/response validation.",
+        },
+        {
+          option: "Single aggregate score (black box)",
+          why: "A single score hides the reasoning. HR reviewers rejected the prototype because they couldn't understand why a candidate ranked 4th — they needed to see which dimensions drove the score.",
+          chosen: "Multi-dimensional score breakdown: technical skill match, experience level alignment, domain relevance — all visible per candidate in the dashboard.",
+        },
+      ],
+      optimizations: [
+        {
+          title: "CV text extraction caching",
+          description: "Parsing a PDF or DOCX to extract text is the most expensive step in the pipeline. The same CV file submitted to multiple job postings was being re-parsed each time. Added a content hash cache — if the same file is submitted again, text extraction is skipped and the cached result is used.",
+          before: "Full PDF/DOCX parse on every submission — even re-submissions of the same file",
+          after: "Cache hit on re-submission — text extraction skipped, only scoring recomputed",
+        },
+        {
+          title: "Batch CV processing",
+          description: "When a recruiter uploads 20+ CVs at once, processing them sequentially blocks the API response. Moved to async batch processing: upload returns immediately with a job ID, processing runs in the background, dashboard polls for completion.",
+          before: "Sequential processing — API blocked until all CVs scored, timeout risk on large batches",
+          after: "Async batch — immediate response, background scoring, dashboard updates as results arrive",
+        },
+        {
+          title: "NLP normalization dictionary",
+          description: "Skill extraction accuracy improved significantly as the normalization dictionary grew. Started with 50 canonical skills, expanded to 200+ through iterative testing on real CVs. Each alias maps to a canonical form — 'ReactJS', 'React.js', 'React' all map to 'React'.",
+          before: "50 canonical skills — many real-world CV variants unrecognized",
+          after: "200+ canonical skills with full alias coverage — À compléter with exact counts",
+        },
+      ],
+      testing: {
+        strategy: "Manual end-to-end testing with a curated set of CVs with known expected skill extractions. NLP normalization tested with variant skill forms. FastAPI endpoint tests for scoring API correctness.",
+        types: ["Manual CV test set (known-skill CVs)", "NLP normalization coverage (variant forms)", "FastAPI API endpoint tests"],
+        coverage: "À compléter — formal coverage percentages not tracked",
+        tools: ["FastAPI TestClient", "pytest", "Manual verification against expected extractions"],
+        notes: "NLP pipeline was tested by feeding CVs with known skills and verifying extracted skill lists matched. Normalization was tested with variant forms of the same skill: 'JS', 'JavaScript', 'ES6', 'Node.js' — verifying canonical mapping.",
+      },
+      wouldDoDifferently: [
+        {
+          title: "Use sentence embeddings instead of keyword NLP.",
+          body: "The keyword normalization approach works but requires manually maintaining a synonym dictionary. Vector embeddings (sentence-transformers) would capture semantic similarity automatically — 'proficient in React' and 'React developer' would match without needing a rule.",
+        },
+        {
+          title: "Add a recruiter feedback loop.",
+          body: "The model ranking is only as good as its definition of 'match'. Building in a way for HR reviewers to rate the ranking quality — 'this candidate was actually a good hire' — and using that feedback to improve the model would make it substantially more useful over time.",
+        },
+        {
+          title: "Start with a specific domain (tech CVs only).",
+          body: "A general-purpose CV parser faces enormous variation in format and terminology. Starting with only software engineering CVs would have produced a tighter normalization dictionary, cleaner extraction, and more useful skills scoring — before generalizing to other domains.",
+        },
+      ],
+      dbSchema: [
+        {
+          name: "JobPosting",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "org_id", type: "UUID" },
+            { name: "title", type: "VARCHAR(200)" },
+            { name: "required_skills", type: "JSONB" },
+            { name: "experience_level", type: "VARCHAR(50)" },
+            { name: "created_at", type: "TIMESTAMP" },
+          ],
+        },
+        {
+          name: "Candidate",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "posting_id", type: "UUID", key: "fk" },
+            { name: "cv_text", type: "TEXT" },
+            { name: "extracted_skills", type: "JSONB" },
+            { name: "overall_score", type: "NUMERIC(5,2)" },
+            { name: "rank", type: "INTEGER" },
+          ],
+        },
+        {
+          name: "MatchResult",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "candidate_id", type: "UUID", key: "fk" },
+            { name: "posting_id", type: "UUID", key: "fk" },
+            { name: "score_breakdown", type: "JSONB" },
+            { name: "created_at", type: "TIMESTAMP" },
+          ],
+        },
+      ],
+      screenshots: [
+        {
+          label: "HR Dashboard — Ranked Candidates",
+          description: "Sorted candidate list with score chips per applicant — filterable by skill, score threshold, experience level",
+        },
+        {
+          label: "Candidate Score Breakdown",
+          description: "Per-dimension score bars: technical skills match, experience level alignment, domain relevance — visible for each candidate profile",
+        },
+        {
+          label: "CV Upload & Processing",
+          description: "Drag-and-drop CV upload (PDF/DOCX), real-time extraction status indicator, skill list preview before scoring",
+        },
+      ],
       timeline: [
         {
           milestone: "Domain Research",
@@ -534,6 +942,130 @@ export const projects: Project[] = [
           name: "Google Apps Script",
           reason:
             "The bridge between the webhook and Google Sheets. GAS runs inside Google's infrastructure with direct write access to Sheets — no API key management on the Sheets side.",
+        },
+      ],
+      alternatives: [
+        {
+          option: "Zapier / Make (no-code automation)",
+          why: "No-code tools abstract the retry logic, error handling, and payload validation — but they also hide it. When a Zapier workflow fails silently, diagnosing it requires reading Zapier's logs rather than own code. The cost scales with order volume.",
+          chosen: "Custom Express.js webhook with explicit retry logic, Supabase fallback, and full control over failure modes — instrumented with own logging.",
+        },
+        {
+          option: "Google Sheets API v4 (direct REST calls)",
+          why: "The Sheets API requires OAuth2 with a service account, token refresh logic, and rate-limit handling. GAS runs inside Google's infrastructure with direct Sheets access — no OAuth flow to maintain.",
+          chosen: "Google Apps Script as the Sheets bridge — simpler, no OAuth management, sufficient for this write volume.",
+        },
+        {
+          option: "Next.js API routes for the webhook (instead of Express.js)",
+          why: "Next.js API routes would co-locate the webhook handler with the storefront — simpler deployment. Rejected because the webhook handler needs to be independently deployable and scalable, and the long-running retry logic doesn't fit Next.js's serverless function model.",
+          chosen: "Express.js as a dedicated webhook service — independently deployable, long-running process model, full control over retry behavior.",
+        },
+        {
+          option: "Supabase real-time subscriptions for Sheets sync (instead of webhooks)",
+          why: "Supabase real-time would trigger the GAS call from the database event, not the application layer. Harder to add retry logic and payload validation at the database event level.",
+          chosen: "Application-level webhook: validate → persist → sync, in that order, with retry on the sync step.",
+        },
+      ],
+      optimizations: [
+        {
+          title: "Persist-before-sync for reliability",
+          description: "The order is written to Supabase before the Google Sheets sync is attempted. If the GAS endpoint is unavailable, the order is not lost — it's in the database and the sync can be retried from there. This is the single most important reliability decision in the architecture.",
+          before: "Sync-first approach — if GAS call fails, order data is nowhere",
+          after: "Persist first — order always in Supabase, sync is a best-effort operation with retry",
+        },
+        {
+          title: "Batch sync for high-frequency periods",
+          description: "Google Apps Script has daily execution quotas. During a sale event with high order volume, individual GAS calls per order could exhaust the quota before end of day. Implemented accumulation window: under low load, orders sync individually; during bursts, orders batch and sync together in a single GAS call.",
+          before: "One GAS call per order — quota risk during high-volume events",
+          after: "Batch accumulation under burst conditions — single GAS call for multiple orders, quota preserved",
+        },
+        {
+          title: "Retry with exponential backoff",
+          description: "GAS calls can fail transiently. Initial implementation retried immediately — hitting the same transient error. Changed to exponential backoff: 1s → 2s → 4s → 8s, up to 3 retries before marking the event as failed and logging for manual resolution.",
+          before: "Immediate retry — repeated failures during the same transient error window",
+          after: "Exponential backoff — retries spread across the error recovery window",
+        },
+      ],
+      testing: {
+        strategy: "End-to-end flow testing: place an order → verify Supabase row → verify Google Sheets row appears. Failure simulation: disconnect GAS endpoint and verify orders remain in Supabase with failed sync status.",
+        types: ["E2E order-to-sheet flow", "Webhook failure simulation", "Retry logic verification", "Manual Sheets row format verification"],
+        coverage: "À compléter — automated test coverage not measured",
+        tools: ["Express.js test client", "Manual order placement + Sheets inspection", "Supabase dashboard for order verification"],
+        notes: "Failure scenarios tested by intentionally disconnecting the GAS endpoint and verifying: (1) orders persisted in Supabase, (2) retry logic re-attempted with backoff, (3) sheet row eventually appeared after reconnection.",
+      },
+      wouldDoDifferently: [
+        {
+          title: "Use a proper job queue (Bull/BullMQ) for retry logic.",
+          body: "The in-memory retry logic works but doesn't survive process restarts. A Bull queue backed by Redis would persist retry jobs across restarts, provide a UI for monitoring failed jobs, and handle concurrency safely. The right infrastructure for production webhook processing.",
+        },
+        {
+          title: "Add a dead letter queue for permanently failed syncs.",
+          body: "After N retries, the sync attempt is currently logged and abandoned. A dead letter queue — and an admin UI to view and replay failed syncs — would make the system observable and recoverable without manual database queries.",
+        },
+        {
+          title: "Add order analytics from the start.",
+          body: "The data is all in Supabase. Revenue by day, product performance, average order value — all derivable from the orders table. The dashboard was built for order status only; analytics was deferred and never added.",
+        },
+      ],
+      dbSchema: [
+        {
+          name: "Product",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "name", type: "VARCHAR(200)" },
+            { name: "price", type: "NUMERIC(10,2)" },
+            { name: "stock", type: "INTEGER" },
+            { name: "created_at", type: "TIMESTAMP" },
+          ],
+        },
+        {
+          name: "Order",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "customer_name", type: "VARCHAR(200)" },
+            { name: "customer_email", type: "VARCHAR(255)" },
+            { name: "total", type: "NUMERIC(10,2)" },
+            { name: "status", type: "VARCHAR(50)" },
+            { name: "created_at", type: "TIMESTAMP" },
+          ],
+        },
+        {
+          name: "OrderItem",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "order_id", type: "UUID", key: "fk" },
+            { name: "product_id", type: "UUID", key: "fk" },
+            { name: "quantity", type: "INTEGER" },
+            { name: "unit_price", type: "NUMERIC(10,2)" },
+          ],
+        },
+        {
+          name: "WebhookEvent",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "order_id", type: "UUID", key: "fk" },
+            { name: "sync_status", type: "VARCHAR(50)" },
+            { name: "attempts", type: "INTEGER" },
+            { name: "last_attempted_at", type: "TIMESTAMP" },
+          ],
+        },
+      ],
+      screenshots: [
+        {
+          label: "Next.js Storefront — Product Catalog",
+          description: "Product grid with color, price, stock indicator — SSR for initial load, client-side cart management",
+        },
+        {
+          label: "Cart & Checkout Flow",
+          description: "Multi-step checkout: cart summary → customer details → order confirmation — triggers webhook on submission",
+        },
+        {
+          label: "Google Sheets — Live Sync",
+          description: "Operations sheet with new order row appearing automatically within seconds of placement — matching the team's existing column format exactly",
+        },
+        {
+          label: "Admin Dashboard — Order Status",
+          description: "Order list with status chips and sync state indicator — shows which orders are synced to Sheets, which are pending, which failed",
         },
       ],
       timeline: [
@@ -669,6 +1201,114 @@ export const projects: Project[] = [
             "Dashboard for the engineering team to inspect the pipeline's output — BOM hierarchy visualization, processing status, exception log. TypeScript caught prop mismatches at build time.",
         },
       ],
+      alternatives: [
+        {
+          option: "pandas.read_excel() (out-of-the-box)",
+          why: "pandas.read_excel() works on well-structured Excel files. The Yazaki BOM files had merged cells spanning multiple columns, shifted header rows, and custom indentation to encode BOM hierarchy — none of which pandas.read_excel() handles correctly without manual preprocessing.",
+          chosen: "openpyxl for cell-level access — read the raw cell grid, detect format variant, then parse with explicit logic per variant.",
+        },
+        {
+          option: "Apache Airflow for scheduling",
+          why: "Airflow is the standard for production ETL scheduling, but it requires a separate server, a metadata database, and operational overhead not justified for a single-pipeline weekly job.",
+          chosen: "Custom Python script with scheduled execution — simpler, no infrastructure overhead at this scale.",
+        },
+        {
+          option: "SQLite for persistence",
+          why: "SQLite is file-based and requires no server. Rejected because the manufacturing team's downstream tools (Power BI, existing reporting scripts) expected a connectable database, not a file.",
+          chosen: "SQLAlchemy with a proper database backend — clean ORM interface, standard connection string for downstream tools.",
+        },
+        {
+          option: "Power BI direct connector (no FastAPI layer)",
+          why: "Power BI can connect directly to Excel or a database without a FastAPI intermediary. But the FastAPI layer provides a clean, versioned API contract for any future downstream consumer — not just Power BI.",
+          chosen: "FastAPI as an intermediary — any tool can consume the clean data through a standard HTTP API, not just the current visualization tool.",
+        },
+      ],
+      optimizations: [
+        {
+          title: "Format detection before full parse — fail fast",
+          description: "The v1 parser assumed all files had the same format. It would process a file completely before detecting that the output was wrong. v2 detects the format variant in the first 20 rows before attempting a full parse. Unknown formats are rejected immediately with a clear error rather than silently producing wrong output.",
+          before: "Full parse before format check — wrong output discovered after processing",
+          after: "Format detection in first 20 rows — reject unknown formats before any data processing",
+        },
+        {
+          title: "openpyxl read-only (streaming) mode for large files",
+          description: "Loading large Excel files into memory with openpyxl's default mode was slow and memory-intensive. Switched to read_only mode (streaming) for the initial format detection pass — reads cells without loading the entire file into memory.",
+          before: "Full file load into memory for format detection — slow on large BOM files",
+          after: "Streaming read for format detection — low memory overhead, faster first-row inspection",
+        },
+        {
+          title: "Output schema validation before FastAPI exposure",
+          description: "Added a Pydantic validation step between the Pandas transform and the FastAPI endpoint. If the transformed output doesn't match the expected BomRecord schema, the pipeline fails loudly before any consumer sees wrong data.",
+          before: "No output validation — malformed data could reach FastAPI consumers",
+          after: "Pydantic schema check before exposure — invalid output caught at the pipeline boundary",
+        },
+      ],
+      testing: {
+        strategy: "Full regression testing against the production archive: every historical BOM file run through the v2 pipeline and output verified. Edge case catalogue built from v1 failure modes — each failure became a named test case.",
+        types: ["Full archive regression (all historical files)", "Edge case catalogue from v1 failures", "FastAPI endpoint tests", "Output schema validation tests"],
+        coverage: "100% of known production file format variants handled after v2",
+        tools: ["pytest", "FastAPI TestClient", "Manual output comparison against expected BOM structure"],
+        notes: "The v1 failure mode catalogue was the most valuable testing artifact. Each formatting variant that broke v1 was documented, named, and turned into a specific test case. v2 was built against these test cases, not discovered from them.",
+      },
+      wouldDoDifferently: [
+        {
+          title: "Run the full archive against the parser before shipping v1.",
+          body: "v1 was built and tested on a small sample of 'nice' files. Running it against the full production archive before declaring it complete would have caught the formatting variants immediately — before they caused a silent failure in production. Test breadth over test depth for a parser.",
+        },
+        {
+          title: "Build the format detector as a standalone module with its own tests.",
+          body: "The format detector was embedded in the parser in v1. Extracting it into a separate module with its own test suite would have made it easier to add new format variants incrementally — and would have prevented the detector from being accidentally coupled to the parsing logic.",
+        },
+        {
+          title: "Write a format specification document with Yazaki engineering.",
+          body: "The BOM file format was implicit knowledge in the manufacturing team's heads. A one-page document specifying the expected format variants, header row positions, and hierarchy encoding — reviewed and signed off by the engineering team — would have caught format assumptions before they became parser bugs.",
+        },
+      ],
+      dbSchema: [
+        {
+          name: "BomRecord",
+          fields: [
+            { name: "id", type: "INTEGER", key: "pk" },
+            { name: "part_number", type: "VARCHAR(100)" },
+            { name: "description", type: "TEXT" },
+            { name: "quantity", type: "NUMERIC(10,3)" },
+            { name: "level", type: "INTEGER" },
+            { name: "parent_id", type: "INTEGER", key: "fk" },
+            { name: "file_source", type: "VARCHAR(255)" },
+            { name: "processed_at", type: "TIMESTAMP" },
+          ],
+        },
+        {
+          name: "ProcessingLog",
+          fields: [
+            { name: "id", type: "INTEGER", key: "pk" },
+            { name: "filename", type: "VARCHAR(255)" },
+            { name: "format_variant", type: "VARCHAR(50)" },
+            { name: "status", type: "VARCHAR(50)" },
+            { name: "records_count", type: "INTEGER" },
+            { name: "error_message", type: "TEXT" },
+            { name: "processed_at", type: "TIMESTAMP" },
+          ],
+        },
+      ],
+      screenshots: [
+        {
+          label: "React Dashboard — BOM Hierarchy View",
+          description: "Tree visualization of the assembly structure — top-level assembly expands to sub-assemblies, sub-assemblies expand to individual parts with quantities",
+        },
+        {
+          label: "Processing Log",
+          description: "Per-file processing status, format variant detected, record count, processing time, error message for failed files",
+        },
+        {
+          label: "FastAPI — OpenAPI Documentation",
+          description: "Auto-generated /docs endpoint showing all BOM API endpoints, request/response schemas, and example payloads",
+        },
+        {
+          label: "Before/After — Weekly Processing Comparison",
+          description: "8 hours of manual Excel work vs. 4 minutes of automated pipeline — the quantified impact of the automation",
+        },
+      ],
       timeline: [
         {
           milestone: "Domain Study",
@@ -801,6 +1441,129 @@ export const projects: Project[] = [
             "Relational data for products, orders, inventory. Color metadata stored as structured attributes on each product — the recommendation query is a SQL join, not a separate ML model call.",
         },
       ],
+      alternatives: [
+        {
+          option: "ML model for color recommendations (trained)",
+          why: "Training an ML model for color recommendations requires labeled data: product pairs rated as 'good match' / 'bad match'. This data doesn't exist at launch. A model trained on generic color data wouldn't capture the domain-specific rules of modest fashion styling.",
+          chosen: "Rule-based color theory: explicit logic for complementary, analogous, and neutral combinations. Transparent, explainable, and doesn't require training data. The rules can be updated by a stylist without retraining.",
+        },
+        {
+          option: "Shopify (hosted e-commerce platform)",
+          why: "Shopify would eliminate backend work, but it also eliminates control over the product data model. The color recommendation system requires color metadata (hue, tone, saturation) as first-class product attributes — Shopify's product model doesn't support this natively.",
+          chosen: "Next.js with a custom PostgreSQL schema — full control over the product model, color attributes as first-class fields.",
+        },
+        {
+          option: "Real-time recommendation computation (on page load)",
+          why: "Computing color recommendations in real-time on every product page view would add latency proportional to the catalog size. As the catalog grows, page load time grows with it.",
+          chosen: "Pre-computed recommendations at product creation: when a product is added, its compatible products are computed once and stored in a ColorCompatibility table. Page load is a simple index scan, not a computation.",
+        },
+        {
+          option: "Supabase (instead of direct PostgreSQL)",
+          why: "Supabase adds a hosted Postgres with a REST API and real-time capabilities. The real-time capability is not needed for a product catalog. Direct PostgreSQL gives more control over the color recommendation query.",
+          chosen: "Direct PostgreSQL with full SQL control over color compatibility joins.",
+        },
+      ],
+      optimizations: [
+        {
+          title: "Pre-computed color compatibility",
+          description: "Color recommendations are computed once when a product is created and stored in the ColorCompatibility table. Every product page load reads from this table — no computation at request time. When a new product is added, its compatibility with the existing catalog is computed in the background.",
+          before: "Real-time computation on page load — O(catalog size) computation per page view",
+          after: "Pre-computed at product creation — O(1) lookup per page view, computation paid once",
+        },
+        {
+          title: "SSR for product pages — SEO and first paint",
+          description: "Product pages are server-rendered: complete HTML including product data and recommendations on the initial response. Search engine crawlers see full content. The first paint is a complete page, not a loading skeleton waiting for client-side data fetching.",
+          before: "Client-side rendering — crawlers saw empty HTML, slower first meaningful paint",
+          after: "SSR — crawlable HTML, faster first paint, recommendations included in initial payload",
+        },
+        {
+          title: "Progressive disclosure for mobile recommendations",
+          description: "The recommendation panel adds visual complexity that overwhelms small screens. Fashion e-commerce receives the majority of its traffic on mobile. Collapsed the recommendation panel by default on mobile; expanded on tap. Desktop shows it inline.",
+          before: "Full recommendation panel shown on all screen sizes — overwhelming on mobile",
+          after: "Progressive disclosure — collapsed on mobile, expanded on tap, inline on desktop",
+        },
+      ],
+      testing: {
+        strategy: "Manual color recommendation verification across product hue families. Checkout flow testing for cart state and order creation. Mobile responsive testing using browser DevTools emulation.",
+        types: ["Manual color recommendation verification", "Checkout flow E2E", "Mobile responsive testing", "SSR output verification"],
+        coverage: "À compléter — automated test coverage not measured",
+        tools: ["Manual browser testing", "Chrome DevTools mobile emulation", "Next.js dev mode for SSR verification"],
+        notes: "Color recommendations were manually verified for representative products across all hue families (warm rose, cool blue, neutral beige) and saturation levels. Each complementary, analogous, and neutral pairing rule was tested with at least one product.",
+      },
+      wouldDoDifferently: [
+        {
+          title: "Add payment processing from the start.",
+          body: "The checkout flow ends without a real payment step — the order is created but no money moves. Integrating Stripe from the beginning would have made the platform actually usable for a real launch. Payment integration is harder to retrofit than to design in.",
+        },
+        {
+          title: "Use vector similarity for recommendations.",
+          body: "Rule-based color theory works but requires manually encoding fashion expertise. A product embedding model — where products are represented as vectors and recommendations are nearest neighbors — would capture more nuanced style relationships without requiring explicit rules.",
+        },
+        {
+          title: "Add photography guidelines for product images.",
+          body: "Fashion e-commerce lives or dies on image quality. The platform has no constraints on how product photos are taken — inconsistent lighting, backgrounds, and angles make the catalog look incoherent. A style guide for product photography would have been more impactful than the recommendation engine.",
+        },
+      ],
+      dbSchema: [
+        {
+          name: "Product",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "name", type: "VARCHAR(200)" },
+            { name: "price", type: "NUMERIC(10,2)" },
+            { name: "stock", type: "INTEGER" },
+            { name: "primary_hue", type: "VARCHAR(50)" },
+            { name: "tone", type: "VARCHAR(20)" },
+            { name: "saturation_level", type: "VARCHAR(20)" },
+            { name: "category", type: "VARCHAR(100)" },
+          ],
+        },
+        {
+          name: "ColorCompatibility",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "product_id", type: "UUID", key: "fk" },
+            { name: "recommended_id", type: "UUID", key: "fk" },
+            { name: "compatibility_type", type: "VARCHAR(50)" },
+          ],
+        },
+        {
+          name: "Cart",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "session_id", type: "VARCHAR(255)" },
+            { name: "created_at", type: "TIMESTAMP" },
+          ],
+        },
+        {
+          name: "Order",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "customer_email", type: "VARCHAR(255)" },
+            { name: "total", type: "NUMERIC(10,2)" },
+            { name: "status", type: "VARCHAR(50)" },
+            { name: "created_at", type: "TIMESTAMP" },
+          ],
+        },
+      ],
+      screenshots: [
+        {
+          label: "Product Page with Color Recommendations",
+          description: "Product detail with inline complementary product carousel — each recommended item shows its compatibility type (complementary / analogous / neutral)",
+        },
+        {
+          label: "Mobile View — Progressive Disclosure",
+          description: "Recommendation panel collapsed by default on mobile → expanded on tap — same content, context-appropriate presentation",
+        },
+        {
+          label: "Cart & Checkout Flow",
+          description: "Cart summary with product thumbnails → customer details form → order confirmation with order ID",
+        },
+        {
+          label: "Admin — Product Management",
+          description: "Product list with color attribute chips visible — hue, tone, saturation editable per product — recommendation preview on update",
+        },
+      ],
       timeline: [
         {
           milestone: "Product Catalog + Color Schema",
@@ -927,6 +1690,130 @@ export const projects: Project[] = [
             "Code-first migrations, type-safe queries, clean mapping between C# domain models and the database schema. Same ORM pattern as Django — different syntax, same mental model.",
         },
       ],
+      alternatives: [
+        {
+          option: "MySQL instead of SQL Server",
+          why: "MySQL is open-source and would have reduced licensing cost. The client's Windows server had an existing SQL Server license and their hosting provider's support team knew SQL Server — switching would have created a support gap.",
+          chosen: "SQL Server — consistent with the client's existing infrastructure and support capability.",
+        },
+        {
+          option: "Django / Python backend",
+          why: "Django would have been faster to build in. The client's IT contact was a .NET developer who would maintain the system after handoff — Python was unfamiliar to them.",
+          chosen: "ASP.NET Core — technology the client's team could maintain and extend without external help.",
+        },
+        {
+          option: "Desktop application (Windows Forms / WPF)",
+          why: "A desktop app would have required installation on each device in the restaurant. The kitchen tablet, the owner's phone, and the cashier terminal all needed access — a web application is device-agnostic.",
+          chosen: "Web application — accessible from any device on the restaurant's network without installation.",
+        },
+        {
+          option: "Manual inventory decrement (application logic)",
+          why: "Decrementing inventory in the application service layer (not the database) requires manually handling partial failures: what if the order is created but the inventory update fails? Two separate operations, possible inconsistency.",
+          chosen: "Database transaction: Order creation + OrderLineItems + inventory decrement as a single atomic operation in EF Core. Either everything commits or nothing does.",
+        },
+      ],
+      optimizations: [
+        {
+          title: "Atomic order creation via EF Core transaction",
+          description: "The order creation flow involves three operations: create the Order row, create all OrderLineItem rows, and decrement the stock for each MenuItem. Wrapped in a single EF Core transaction — if any step fails, the entire operation rolls back. No partial orders, no phantom inventory decrements.",
+          before: "Three separate database operations — partial failure possible, inventory inconsistency risk",
+          after: "Single atomic transaction — all three operations commit together or not at all",
+        },
+        {
+          title: "Date-range index for daily reports",
+          description: "The daily revenue report queries all orders within a date range. Without an index on created_at, this is a full table scan that grows linearly as orders accumulate. Added a clustered index on created_at — report query time stays constant regardless of order history size.",
+          before: "Full table scan for date-range report queries",
+          after: "Clustered index scan on created_at — constant-time report generation",
+        },
+        {
+          title: "Eager loading for order detail views",
+          description: "Loading an order's detail view triggered N+1 queries: one query for the order, then one query per line item to fetch the MenuItem name. Used EF Core's Include() to eager-load the OrderLineItems with their MenuItems in a single JOIN query.",
+          before: "N+1 queries per order detail view — 1 + (number of line items) queries",
+          after: "Single JOIN query — one database round-trip for the complete order detail",
+        },
+      ],
+      testing: {
+        strategy: "Weekly client UAT sessions with working demos as the primary feedback loop. Manual testing of order flow, inventory decrement, and report generation. SQL query verification against known test data.",
+        types: ["Weekly client UAT (User Acceptance Testing)", "Manual order → inventory flow", "Daily report total verification", "SQL constraint testing"],
+        coverage: "À compléter — no automated test suite; client review was the primary validation mechanism",
+        tools: ["Manual browser testing", "SQL Server Management Studio for data verification", "Weekly client demo sessions"],
+        notes: "Requirements that emerged during client demo sessions (weekly inventory snapshots, table number field on orders, item availability toggle) were incorporated between sessions. Client demos were more valuable than upfront specification.",
+      },
+      wouldDoDifferently: [
+        {
+          title: "Add inventory reorder alerts.",
+          body: "The system tracks stock levels but doesn't notify the owner when a menu item runs low. A simple threshold check on each inventory update — email or SMS when stock drops below a set level — would have been the most requested feature after handoff.",
+        },
+        {
+          title: "Automate daily PDF report delivery.",
+          body: "The daily revenue report is available in the dashboard but requires the owner to log in and export it manually. A scheduled task that emails the report at closing time would have eliminated the main remaining manual step.",
+        },
+        {
+          title: "Write the API specification before building.",
+          body: "Mid-project additions (table number, item availability, weekly snapshots) required schema migrations that would have been caught by an upfront API specification. A one-page data dictionary reviewed by the client before coding would have avoided the migration rewrites.",
+        },
+      ],
+      dbSchema: [
+        {
+          name: "MenuItem",
+          fields: [
+            { name: "id", type: "INT", key: "pk" },
+            { name: "name", type: "NVARCHAR(200)" },
+            { name: "price", type: "DECIMAL(10,2)" },
+            { name: "category", type: "NVARCHAR(100)" },
+            { name: "current_stock", type: "INT" },
+            { name: "is_available", type: "BIT" },
+          ],
+        },
+        {
+          name: "Order",
+          fields: [
+            { name: "id", type: "INT", key: "pk" },
+            { name: "table_number", type: "INT" },
+            { name: "created_at", type: "DATETIME" },
+            { name: "total", type: "DECIMAL(10,2)" },
+            { name: "status", type: "NVARCHAR(50)" },
+          ],
+        },
+        {
+          name: "OrderLineItem",
+          fields: [
+            { name: "id", type: "INT", key: "pk" },
+            { name: "order_id", type: "INT", key: "fk" },
+            { name: "menu_item_id", type: "INT", key: "fk" },
+            { name: "quantity", type: "INT" },
+            { name: "unit_price", type: "DECIMAL(10,2)" },
+          ],
+        },
+        {
+          name: "InventoryLog",
+          fields: [
+            { name: "id", type: "INT", key: "pk" },
+            { name: "menu_item_id", type: "INT", key: "fk" },
+            { name: "change_quantity", type: "INT" },
+            { name: "reason", type: "NVARCHAR(100)" },
+            { name: "recorded_at", type: "DATETIME" },
+          ],
+        },
+      ],
+      screenshots: [
+        {
+          label: "Order Entry — Waiter View",
+          description: "Table number selector, menu item grid with availability indicators, running order total — one-tap item addition",
+        },
+        {
+          label: "Inventory Dashboard",
+          description: "Current stock per menu item, low-stock visual indicators, quick adjustment for manual stock corrections",
+        },
+        {
+          label: "Daily Revenue Report",
+          description: "Orders by hour, top-selling items, total revenue for the day — all queried from live Order data, no manual input",
+        },
+        {
+          label: "Owner Admin Panel",
+          description: "Menu management: add/edit/remove items, set price, toggle availability — changes reflect immediately in the waiter view",
+        },
+      ],
       timeline: [
         {
           milestone: "Domain Modeling",
@@ -1030,6 +1917,120 @@ export const projects: Project[] = [
         { name: "Next.js", reason: "SSR for SEO. Properties need to appear in search results, not just in client-rendered HTML that crawlers can't parse." },
         { name: "Prisma", reason: "Type-safe ORM. Schema defined in code, migrations automatic, type system catches mismatches between data model and API at compile time." },
         { name: "TypeScript", reason: "Caught prop mismatches between API response shape and component props during development, not at runtime." },
+      ],
+      alternatives: [
+        {
+          option: "TypeORM instead of Prisma",
+          why: "TypeORM is decorator-based and integrates closely with TypeScript class syntax. Prisma's schema-first approach with auto-generated types was cleaner for this project — the Prisma schema file became the single source of truth for both the database structure and the TypeScript types.",
+          chosen: "Prisma — schema-first, auto-generated TypeScript client, cleaner migration workflow.",
+        },
+        {
+          option: "Gatsby (static site generator)",
+          why: "Gatsby would have been fast for static listing pages. But filtering requires either client-side data fetching on every filter change or rebuilding the entire site on each property update. Neither is acceptable for a live listing platform.",
+          chosen: "Next.js — SSR for initial load (SEO + first paint), client-side filtering over already-loaded data.",
+        },
+        {
+          option: "Server-side filtering (API call per filter change)",
+          why: "Server-side filtering is the standard for large catalogs. For a family real-estate business with a small number of properties, fetching all listings once and filtering client-side produces faster interactive filtering with no additional API calls.",
+          chosen: "Single full data load on page render, client-side filter over in-memory data — no API round-trips on filter change.",
+        },
+        {
+          option: "Mapbox / Google Maps for property location",
+          why: "A map view would be the most natural interface for property browsing. Rejected for v1 — the complexity of map integration was not justified before validating that the core listing + filtering flow was useful.",
+          chosen: "Text-based listing with location zone as a filter — simpler, faster to build, map view planned for v2.",
+        },
+      ],
+      optimizations: [
+        {
+          title: "Single data load + client-side filter",
+          description: "All property listings are loaded on the initial SSR page render. Client-side filter state (zone, type, price range, surface area) operates over the already-loaded data — no additional API calls. For a catalog of this size, the single payload is faster than multiple filtered requests.",
+          before: "Separate API call per filter combination — network round-trip on each filter change",
+          after: "Single payload on load, instant client-side filter — no network requests after initial load",
+        },
+        {
+          title: "URL query parameter filter state",
+          description: "All active filters are reflected in the URL query string. Every filtered view is a unique URL — bookmarkable, shareable, and browser-back-navigable. The filter state is re-hydrated from the URL on page load.",
+          before: "Filter state in React component state only — lost on navigation, not shareable",
+          after: "Filter state in URL params — persistent, shareable, browser-history-integrated",
+        },
+        {
+          title: "Next.js Image for property photos",
+          description: "Property photos served through Next.js Image component — automatic format conversion (WebP/AVIF), lazy loading, and size optimization based on the viewport. Fashion e-commerce traffic is mobile-heavy; optimized images are critical for mobile performance.",
+          before: "Raw <img> tags — no format optimization, no lazy loading, no size adaptation",
+          after: "next/image — WebP/AVIF, lazy load, viewport-appropriate sizes",
+        },
+      ],
+      testing: {
+        strategy: "Manual verification of every filter combination and URL state persistence. SSR output verification to confirm crawlers receive complete HTML. Mobile responsive testing across screen sizes.",
+        types: ["Manual filter combination testing", "URL state persistence verification", "SSR output verification", "Mobile responsive testing"],
+        coverage: "À compléter — no automated test suite",
+        tools: ["Manual browser testing", "Prisma Studio for data verification", "Chrome DevTools for responsive and SSR inspection"],
+        notes: "Every filter combination (zone × type × surface area range × price range) was manually verified to produce correct results. URL state was tested by copying filter URLs and verifying they loaded the correct filtered view on a clean tab.",
+      },
+      wouldDoDifferently: [
+        {
+          title: "Add a map view from the start.",
+          body: "Property location is the primary decision factor for real estate buyers. A map showing all available properties — with filter pins — would be more useful than a list with a zone dropdown. The map view was planned for v2 but never built.",
+        },
+        {
+          title: "Use Prisma's full-text search for property descriptions.",
+          body: "Filtering by zone, type, and price is useful but doesn't capture what buyers often search for: 'near school', 'quiet neighborhood', 'corner plot'. Full-text search on the property description field would have covered these cases.",
+        },
+        {
+          title: "Add a property comparison feature.",
+          body: "Buyers often narrow to 2-3 properties and need to compare surface area, price per m², and location side-by-side. A compare mode — select two properties, see them side-by-side — would have addressed the most common post-filter action.",
+        },
+      ],
+      dbSchema: [
+        {
+          name: "Zone",
+          fields: [
+            { name: "id", type: "INT", key: "pk" },
+            { name: "name", type: "VARCHAR(100)" },
+            { name: "governorate", type: "VARCHAR(100)" },
+          ],
+        },
+        {
+          name: "Property",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "title", type: "VARCHAR(255)" },
+            { name: "surface_area", type: "NUMERIC(10,2)" },
+            { name: "zone_id", type: "INT", key: "fk" },
+            { name: "type", type: "VARCHAR(100)" },
+            { name: "price", type: "NUMERIC(12,2)" },
+            { name: "status", type: "VARCHAR(50)" },
+            { name: "description", type: "TEXT" },
+            { name: "created_at", type: "TIMESTAMP" },
+          ],
+        },
+        {
+          name: "PropertyImage",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "property_id", type: "UUID", key: "fk" },
+            { name: "url", type: "TEXT" },
+            { name: "display_order", type: "INTEGER" },
+          ],
+        },
+      ],
+      screenshots: [
+        {
+          label: "Property Listing Grid",
+          description: "Filterable property cards — surface area, zone, type, and price visible at a glance as chips on each card",
+        },
+        {
+          label: "Filter Panel",
+          description: "Zone dropdown, property type selector, price range slider, surface area range — all reflected in the URL on change",
+        },
+        {
+          label: "Property Detail Page",
+          description: "Full description, photo gallery (next/image optimized), location zone, contact CTA — complete HTML on initial server render",
+        },
+        {
+          label: "URL-reflected Filter State",
+          description: "Browser address bar showing active filter params — ?zone=agdal&type=terrain&maxPrice=500000 — shareable and bookmarkable",
+        },
       ],
       timeline: [
         { milestone: "Domain Modeling", duration: "Week 1", description: "Prisma schema for property listings: surface area, location zone, type, price, availability status." },

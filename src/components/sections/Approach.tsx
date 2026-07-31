@@ -13,7 +13,7 @@ const PRINCIPLES = [
   {
     number: "01",
     title: "Systems, not layers.",
-    body: "A request doesn't care which team owns which layer. I trace it from the React component to the SQL query and back — because the bug is usually where the handoff happens, not inside any single layer. Every project I've shipped, I built every layer of it. That's what 'full-stack' actually means.",
+    body: "A request doesn't care which team owns which layer. I trace it from the React component through the API, the model, and the SQL query — because the bug is usually where the handoff happens, not inside any single layer. Every project I've shipped, I built every layer of it. Schema, model, API, interface.",
   },
   {
     number: "02",

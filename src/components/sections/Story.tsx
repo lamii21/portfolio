@@ -21,7 +21,7 @@ import { siteConfig } from "@/data/site";
 const QUOTE_LINES = [
   { text: "I follow the request", accent: false },
   { text: "all the way down.",    accent: true  },
-  { text: "Schema, API,",         accent: false },
+  { text: "Schema, API, model,",  accent: false },
   { text: "interface.",           accent: false },
 ] as const;
 
@@ -29,7 +29,7 @@ const FACTS = [
   { label: "Program",  value: siteConfig.program },
   { label: "School",   value: "EMSI, Rabat" },
   { label: "Class of", value: siteConfig.yearOfGraduation },
-  { label: "Open to",  value: "SWE · Full-Stack · Backend" },
+  { label: "Open to",  value: "AI Engineer · Full-Stack · SWE" },
 ] as const;
 
 export function Story() {
@@ -149,9 +149,10 @@ export function Story() {
               I started coding because I wanted to understand how things actually work — not just use them.
               Four years into a Software Engineering degree at{" "}
               <strong className="font-medium">EMSI</strong>, that question has gotten more specific:
-              why does the frontend report success when the backend already knew it would fail?
-              Where in the pipeline did the data lose its shape?
-              The moment a problem becomes traceable — a real request, a real query, a real failure — is when I start paying attention.
+              how does a photograph of a handwritten equation become a step-by-step algebraic solution?
+              How does a CV become a ranked score? What exactly happens between the input and the answer?
+              The moment a system becomes traceable — a real request, a real model call, a real failure —
+              is when I start paying attention.
             </motion.p>
 
             <motion.p
@@ -163,13 +164,14 @@ export function Story() {
               whileInView="visible"
               viewport={viewport}
             >
-              My stack is React and Next.js on the client, Django and Python on the server.
-              At Yazaki — a global automotive manufacturer — I spent two days reading
-              manufacturing domain specs before writing a line of Python.
-              The script I built afterward reduced their weekly BOM processing from 8 hours
-              to 4 minutes. That sequence — understand the domain first, then automate —
-              is how I approach every problem, whether it's a web application,
-              a data pipeline, or a machine learning model.
+              My stack is Python and Django on the server, React and Next.js on the client —
+              with an AI layer in between. I&apos;ve built an OCR pipeline that reads handwritten equations,
+              a symbolic solver that explains each algebraic step, an NLP engine that scores CVs against
+              job requirements, and a color-theory recommendation system for e-commerce.
+              The pattern is always the same: understand the domain before choosing the technology,
+              then build the model that fits the problem — not the other way around.
+              At Yazaki, that meant two days reading manufacturing specs before writing the BOM parser
+              that reduced their weekly processing from 8 hours to 4 minutes.
             </motion.p>
 
             <motion.p
@@ -184,10 +186,10 @@ export function Story() {
               whileInView="visible"
               viewport={viewport}
             >
-              I'm graduating in {siteConfig.yearOfGraduation} and looking for my first
-              engineering role — Software Engineer, Full-Stack Developer, or Backend Developer.
+              I&apos;m graduating in {siteConfig.yearOfGraduation} and looking for my first
+              engineering role — AI Software Engineer, Full-Stack Engineer, or Software Engineer.
               I learn fast, I ask specific questions, and when something breaks in a way
-              I've never seen before, I stay until I understand it.
+              I&apos;ve never seen before, I stay until I understand it.
             </motion.p>
 
             {/* Honest note — clip reveal + left accent border */}
