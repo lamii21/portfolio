@@ -26,7 +26,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: `${siteConfig.name} — Software Engineer`,
+    default: `${siteConfig.name} — ${siteConfig.role}`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
@@ -40,14 +40,14 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: `${siteConfig.name} — Software Engineer`,
+    title: `${siteConfig.name} — ${siteConfig.role}`,
     description: siteConfig.description,
     images: [
       {
         url: siteConfig.ogImage,
         width: 1200,
         height: 630,
-        alt: `${siteConfig.name} — Software Engineer`,
+        alt: `${siteConfig.name} — ${siteConfig.role}`,
       },
     ],
   },
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
   // ── Twitter / X ──
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} — Software Engineer`,
+    title: `${siteConfig.name} — ${siteConfig.role}`,
     description: siteConfig.description,
     images: [siteConfig.ogImage],
   },
@@ -92,7 +92,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: siteConfig.name,
-  jobTitle: `${siteConfig.program} Student · Software Engineer`,
+  jobTitle: `${siteConfig.program} Student · ${siteConfig.role}`,
   url: siteConfig.url,
   sameAs: [siteConfig.links.github, siteConfig.links.linkedin],
   alumniOf: {

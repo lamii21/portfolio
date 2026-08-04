@@ -14,7 +14,7 @@ export const siteConfig = {
     "Software Engineering student at EMSI (Class of 2027), building AI-integrated products with React, Next.js, Django, Python, OpenCV, and SymPy. Five of ten shipped projects have a direct AI/ML component. Open to AI Software Engineer, Full-Stack, and Software Engineer roles. Based in Rabat, Morocco.",
   location: "Rabat, Morocco",
   school: "EMSI — École Marocaine des Sciences de l'Ingénieur",
-  program: "Génie Informatique",
+  program: "DDSI — Développement Digital et Systèmes d'Informations",
   yearOfGraduation: "2027",
   availableFrom: "2027",
 
@@ -26,6 +26,7 @@ export const siteConfig = {
 
   // ── Contact ─────────────────────────────────────────────────────────────────
   email: "lamiaeeljabri00@gmail.com",
+  phone: "+212 664 470 516",
 
   // ── Social ──────────────────────────────────────────────────────────────────
   links: {
@@ -56,7 +57,7 @@ export const siteConfig = {
     "Morocco",
     "Rabat",
     "EMSI",
-    "Génie Informatique",
+    "DDSI",
   ],
 } as const;
 

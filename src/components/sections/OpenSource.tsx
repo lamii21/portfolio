@@ -16,14 +16,14 @@ const REPOS = [
     name: "HandyMath",
     description: "Full-stack math education platform. Django REST, React, PostgreSQL.",
     stack: ["Django", "React", "PostgreSQL"],
-    href: siteConfig.links.github,
+    href: "https://github.com/lamii21/HandyMath",
     highlight: true,
   },
   {
     name: "FlowForge ETL",
     description: "Automated industrial data pipeline. Ingest → transform → expose via FastAPI.",
     stack: ["Python", "Pandas", "FastAPI"],
-    href: siteConfig.links.github,
+    href: "https://github.com/lamii21/FlowForge-ETL",
     highlight: false,
   },
   {
@@ -121,7 +121,7 @@ export function OpenSource() {
                 className="font-serif italic leading-relaxed mb-8"
                 style={{ fontSize: "clamp(1.1rem, 2vw, 1.5rem)", color: "#E8E4DE", lineHeight: 1.42 }}
               >
-                All six projects are public. The code is readable.
+                Six project repositories are public. The code is readable.
               </p>
 
               <p

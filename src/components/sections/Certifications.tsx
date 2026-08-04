@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { GraduationCap, BookOpen, Target, Clock } from "lucide-react";
+import { GraduationCap, Award, Target } from "lucide-react";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { staggerContainer, staggerChild, clipReveal, viewport } from "@/lib/motion";
 
@@ -13,7 +13,7 @@ import { staggerContainer, staggerChild, clipReveal, viewport } from "@/lib/moti
 const CREDENTIALS = [
   {
     icon: GraduationCap,
-    title: "Génie Informatique",
+    title: "DDSI — Développement Digital et Systèmes d'Informations",
     org: "EMSI — École Marocaine des Sciences de l'Ingénieur",
     status: "in-progress",
     statusLabel: "2022 – 2027",
@@ -22,24 +22,34 @@ const CREDENTIALS = [
     color: "#82B4D4",
   },
   {
-    icon: BookOpen,
-    title: "Machine Learning",
-    org: "Self-directed · TensorFlow / Keras",
-    status: "applied",
-    statusLabel: "Applied in production",
+    icon: Award,
+    title: "Project Management",
+    org: "Google · Coursera",
+    status: "certified",
+    statusLabel: "Certified",
     description:
-      "LSTM time-series forecasting, Scikit-learn preprocessing, Keras model architecture — learned through building FinTech Predict, not through courses alone.",
+      "Google Project Management Professional Certificate, earned through Coursera.",
     color: "#C97F89",
   },
   {
-    icon: BookOpen,
-    title: "Full-Stack Development",
-    org: "Self-directed · Multiple stacks",
-    status: "applied",
-    statusLabel: "Applied in production",
+    icon: Award,
+    title: "Generative AI & AI for Machine Learning",
+    org: "Microsoft",
+    status: "certified",
+    statusLabel: "Certified",
     description:
-      "Django + React + PostgreSQL, Next.js + Prisma, C# + Entity Framework + SQL Server. Learned by building 6 projects across 3 different stacks.",
+      "Microsoft certification in Generative AI and AI for Machine Learning applications.",
     color: "#6BA878",
+  },
+  {
+    icon: Award,
+    title: "Python for Data Science & BPMN",
+    org: "IBM · Coursera",
+    status: "certified",
+    statusLabel: "Certified",
+    description:
+      "IBM Python for Data Science certificate and BPMN Process Management course, both via Coursera.",
+    color: "#D4A76A",
   },
   {
     icon: Target,
@@ -49,15 +59,15 @@ const CREDENTIALS = [
     statusLabel: "In progress",
     description:
       "Linux, Docker, and cloud infrastructure are the next layer. Actively working through Docker fundamentals; AWS/Azure exposure is the next deliberate step.",
-    color: "#D4A76A",
+    color: "#B49BD4",
   },
 ] as const;
 
-type CredentialStatus = "in-progress" | "applied" | "building";
+type CredentialStatus = "in-progress" | "certified" | "building";
 
 const STATUS_STYLE: Record<CredentialStatus, { bg: string; color: string; label: string }> = {
   "in-progress": { bg: "rgba(130,180,212,0.10)", color: "#82B4D4", label: "In progress" },
-  applied:       { bg: "rgba(107,168,120,0.10)", color: "#6BA878", label: "Applied in projects" },
+  certified:     { bg: "rgba(183,110,121,0.12)", color: "#C97F89", label: "Certified" },
   building:      { bg: "rgba(212,167,106,0.10)", color: "#D4A76A", label: "Building toward" },
 };
 
@@ -91,7 +101,7 @@ export function Certifications() {
           whileInView="visible"
           viewport={viewport}
         >
-          No certification badges yet — just a degree in progress and skills applied in real projects.
+          Four certifications from Google, Microsoft, and IBM — earned alongside the degree.
           The credentials that matter most are the ones you can point to in a codebase.
         </motion.p>
 

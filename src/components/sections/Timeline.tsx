@@ -19,8 +19,8 @@ const EVENTS = [
   {
     year: "2022",
     label: "EMSI — Year 1",
-    title: "Génie Informatique begins.",
-    body: "Enrolled in a 5-year Software Engineering program at EMSI, Rabat. First encounter with algorithms, data structures, and the idea that software has layers.",
+    title: "DDSI begins.",
+    body: "Enrolled in the DDSI — Développement Digital et Systèmes d'Informations program at EMSI, Rabat. First encounter with algorithms, data structures, and the idea that software has layers.",
     tag: "Education",
     accent: false,
   },
@@ -50,9 +50,17 @@ const EVENTS = [
   },
   {
     year: "2024",
-    label: "Yazaki Internship",
+    label: "EduAction",
+    title: "Solidarity tutoring, built.",
+    body: "Founded EduAction at EMSI — a community initiative connecting students who need academic support with peers who can provide it. Built to make tutoring accessible inside the school.",
+    tag: "Community",
+    accent: false,
+  },
+  {
+    year: "2025",
+    label: "Stagiaire Data Analyst — Yazaki Morocco",
     title: "8 hours → 4 minutes.",
-    body: "Industrial internship at Yazaki. Built a Python automation script for BOM data processing — reducing weekly manual work from 8 hours to under 4 minutes. Domain knowledge came before any code.",
+    body: "Industrial internship at Yazaki Morocco, Kénitra — Juillet–Août 2025, 2 months. Built a Python automation pipeline for BOM data processing — reducing the weekly manual cycle from 8 hours to under 4 minutes. Domain knowledge came before any code.",
     tag: "Experience",
     accent: true,
   },
@@ -61,6 +69,14 @@ const EVENTS = [
     label: "Machine Learning",
     title: "FinTech Predict.",
     body: "LSTM time-series forecasting model with a full preprocessing pipeline. TensorFlow/Keras, Scikit-learn, Pandas. The model is only as trustworthy as the pipeline that feeds it.",
+    tag: "Project",
+    accent: false,
+  },
+  {
+    year: "2025",
+    label: "Annassim2 — Freelance",
+    title: "HR platform, independently built.",
+    body: "Freelance project: a web-based HR management platform. Built independently, alongside the final year of the DDSI program.",
     tag: "Project",
     accent: false,
   },
@@ -76,7 +92,7 @@ const EVENTS = [
     year: "2027",
     label: "Graduation",
     title: "First engineering role.",
-    body: "Finishing the Génie Informatique degree at EMSI. Open to Software Engineer, Full-Stack, and Backend roles. Ready to spend the next decade getting better at this.",
+    body: "Finishing the DDSI degree at EMSI. Open to AI Software Engineer, Full-Stack, and SWE roles. Ready to spend the next decade getting better at this.",
     tag: "Upcoming",
     accent: false,
   },
@@ -88,6 +104,7 @@ const TAG_COLORS: Record<string, { bg: string; color: string }> = {
   Experience: { bg: "rgba(183,110,121,0.14)", color: "#C97F89" },
   Craft:      { bg: "rgba(180,155,212,0.10)", color: "#B49BD4" },
   Upcoming:   { bg: "rgba(212,167,106,0.10)", color: "#D4A76A" },
+  Community:  { bg: "rgba(130,180,212,0.10)", color: "#82B4D4" },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────

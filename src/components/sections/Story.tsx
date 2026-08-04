@@ -26,10 +26,11 @@ const QUOTE_LINES = [
 ] as const;
 
 const FACTS = [
-  { label: "Program",  value: siteConfig.program },
-  { label: "School",   value: "EMSI, Rabat" },
-  { label: "Class of", value: siteConfig.yearOfGraduation },
-  { label: "Open to",  value: "AI Engineer · Full-Stack · SWE" },
+  { label: "Program",   value: siteConfig.program },
+  { label: "School",    value: "EMSI, Rabat" },
+  { label: "Class of",  value: siteConfig.yearOfGraduation },
+  { label: "Open to",   value: "AI Engineer · Full-Stack · SWE" },
+  { label: "Languages", value: "Arabic C2 · French B2 · English B2" },
 ] as const;
 
 export function Story() {

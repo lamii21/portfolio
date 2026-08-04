@@ -18,9 +18,9 @@ import {
 } from "@/lib/motion";
 
 const CURRENTLY = [
-  { label: "Status",      value: "Software Engineering · EMSI"                  },
+  { label: "Status",      value: "DDSI · EMSI"                                  },
   { label: "Class of",    value: siteConfig.yearOfGraduation                    },
-  { label: "Seeking",     value: "Software Engineer · Full-Stack · Backend"     },
+  { label: "Seeking",     value: "AI Software Engineer · Full-Stack · SWE"      },
   { label: "Based",       value: siteConfig.location                            },
   { label: "Open to",     value: "On-site · Remote · Hybrid"                   },
 ] as const;
@@ -136,8 +136,8 @@ export function Contact() {
               transition={{ duration: duration.slow, ease: ease.out }}
               viewport={viewport}
             >
-              If you're hiring a Software Engineer, Full-Stack Developer, or Backend
-              Developer — I'm available from 2027 and I respond to every message.
+              If you're looking for an AI Software Engineer, Full-Stack Engineer, or SWE
+              — I'm available from 2027 and I respond to every message.
               No cover letter needed. Tell me what you're building
               and I'll tell you how I'd approach it.
             </motion.p>

@@ -126,7 +126,7 @@ export const projects: Project[] = [
     honest:
       "The first schema had no native place for session-based progress state. Real users revealed it the moment they tried to resume their work. I rebuilt the data model in week three — the second version was significantly cleaner, and the rebuild took two days.",
     tech: ["React", "TypeScript", "Django REST", "Python", "JWT", "OpenCV", "SymPy", "Three.js"],
-    repo: "https://github.com/lamii21",
+    repo: "https://github.com/lamii21/HandyMath",
     demo: null,
     metrics: "Solo build · 4 months · OCR + SymPy + 3D",
     problem:
@@ -394,7 +394,7 @@ export const projects: Project[] = [
     outcome:
       "A deployed multi-tenant SaaS HR platform with AI-powered recruitment, employee management, leave workflows, and HR analytics dashboards. Delivered as the final-year engineering project.",
     tech: ["React", "TypeScript", "Django", "Python", "PostgreSQL", "AI", "Tailwind CSS"],
-    repo: null,
+    repo: "https://github.com/lamii21/RH",
     demo: null,
     metrics: "Final-year project · Multi-tenant SaaS · AI recruitment",
     problem:
@@ -662,7 +662,7 @@ export const projects: Project[] = [
     outcome:
       "Automated CV parsing, skill extraction, and candidate scoring with a React dashboard. Candidates ranked by match quality with score breakdown by dimension.",
     tech: ["Python", "NLP", "Machine Learning", "React", "FastAPI"],
-    repo: null,
+    repo: "https://github.com/lamii21/RecrutAI",
     demo: null,
     metrics: "Automated CV matching · Explainable scoring",
     problem:
@@ -904,7 +904,7 @@ export const projects: Project[] = [
     outcome:
       "Real-time order synchronization between a Next.js storefront and Google Sheets via webhook triggers. Order data flows automatically — no manual export, no copy-paste, no lag.",
     tech: ["Next.js", "React", "TypeScript", "Supabase", "Google Apps Script", "Express.js"],
-    repo: null,
+    repo: "https://github.com/lamii21/OrderHub",
     demo: null,
     metrics: "Real-time sync · Zero manual steps",
     problem:
@@ -1150,7 +1150,7 @@ export const projects: Project[] = [
     id: "flowforge-etl",
     title: "FlowForge ETL",
     category: "Data Engineering · Automation",
-    year: "2024",
+    year: "2025",
     featured: false,
     system:
       "Built during my internship at Yazaki. Ingest, transform, expose. Raw BOM Excel files go in; clean, queryable output comes out of a FastAPI endpoint. A React dashboard visualizes the pipeline output. No manual steps in between.",
@@ -1161,7 +1161,7 @@ export const projects: Project[] = [
     honest:
       "Version one broke on Excel formatting variants I hadn't seen in the test files. Defensive parsing is harder than happy-path parsing. Version two handled every production format variant without exception.",
     tech: ["Python", "Pandas", "FastAPI", "React", "TypeScript", "openpyxl"],
-    repo: "https://github.com/lamii21",
+    repo: "https://github.com/lamii21/FlowForge-ETL",
     demo: null,
     metrics: "8 hours → 4 minutes · Yazaki internship",
     problem:
@@ -1406,7 +1406,7 @@ export const projects: Project[] = [
     outcome:
       "A deployed e-commerce platform with product catalog, cart, checkout, order management, and an AI color pairing recommendation engine for modest fashion.",
     tech: ["Next.js", "TypeScript", "Python", "AI", "Tailwind CSS", "PostgreSQL"],
-    repo: null,
+    repo: "https://github.com/lamii21/HijabiShop",
     demo: null,
     metrics: "Full-stack · AI color recommendations",
     problem:
@@ -2061,7 +2061,7 @@ export const projects: Project[] = [
     id: "yazaki",
     title: "Yazaki Internship",
     category: "Industrial Automation · Python",
-    year: "2024",
+    year: "2025",
     featured: false,
     system:
       "Built during my internship at Yazaki — a global automotive manufacturer. A Python script that cut the weekly BOM processing cycle from 8 hours of manual Excel work to under 4 minutes.",
