@@ -551,6 +551,20 @@ const ProjectCard = React.memo(function ProjectCard({ project, index }: CardProp
             >
               {project.title}
             </h3>
+            {project.status === "in-progress" && (
+              <span className="inline-flex items-center gap-1.5 mt-2">
+                <span
+                  className="w-1.5 h-1.5 rounded-full animate-pulse"
+                  style={{ background: "#D4A76A" }}
+                />
+                <span
+                  className="uppercase tracking-[0.15em] font-medium"
+                  style={{ fontSize: "8.5px", color: "#D4A76A" }}
+                >
+                  In Progress
+                </span>
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-2 shrink-0 pt-0.5">
             <span
@@ -997,51 +1011,6 @@ function ProjectVisual({ id }: { id: string }) {
     );
   }
 
-  if (id === "orderhub") {
-    return (
-      <div className="absolute inset-0" style={{ background: "var(--srf-1)" }} aria-hidden="true">
-        {BG}
-        <svg viewBox="0 0 320 148" className={base}>
-          <defs>
-            <linearGradient id="oh-g" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="var(--acc)" stopOpacity="0.45" />
-              <stop offset="100%" stopColor="var(--acc)" stopOpacity="0.1" />
-            </linearGradient>
-          </defs>
-          {/* Store */}
-          <rect x="12" y="50" width="60" height="48" rx="7" fill="rgba(183,110,121,0.06)" stroke="rgba(183,110,121,0.22)" strokeWidth="0.8" />
-          <text x="42" y="72" textAnchor="middle" fontSize="13" fontFamily="inherit">🛒</text>
-          <text x="42" y="85" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">Next.js</text>
-          <text x="42" y="95" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="inherit">Storefront</text>
-          {/* Webhook */}
-          <line x1="72" y1="74" x2="100" y2="74" stroke="url(#oh-g)" strokeWidth="1.2" strokeDasharray="4 3" />
-          <rect x="100" y="54" width="60" height="40" rx="7" fill="rgba(183,110,121,0.10)" stroke="var(--acc)" strokeWidth="1.1" />
-          <text x="130" y="72" textAnchor="middle" fontSize="7.5" fill="var(--acc)" fontFamily="monospace" fontWeight="700">Webhook</text>
-          <text x="130" y="83" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="inherit">Express.js</text>
-          {/* Supabase */}
-          <line x1="160" y1="74" x2="188" y2="74" stroke="url(#oh-g)" strokeWidth="1.2" strokeDasharray="4 3" />
-          <rect x="188" y="54" width="56" height="40" rx="7" fill="rgba(183,110,121,0.06)" stroke="rgba(183,110,121,0.25)" strokeWidth="0.8" />
-          <text x="216" y="72" textAnchor="middle" fontSize="7.5" fill="var(--txt)" fontFamily="inherit">Supabase</text>
-          <text x="216" y="83" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="inherit">PostgreSQL</text>
-          {/* Google Sheets */}
-          <line x1="244" y1="74" x2="270" y2="74" stroke="url(#oh-g)" strokeWidth="1.2" strokeDasharray="4 3" />
-          <rect x="270" y="54" width="40" height="40" rx="7" fill="rgba(183,110,121,0.05)" stroke="rgba(183,110,121,0.2)" strokeWidth="0.7" />
-          <text x="290" y="71" textAnchor="middle" fontSize="12" fontFamily="inherit">📊</text>
-          <text x="290" y="84" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="inherit">Sheets</text>
-          {/* Animated sync dot */}
-          <circle r="2.5" fill="var(--acc)" opacity="0.8">
-            <animateMotion dur="2s" repeatCount="indefinite"><mpath href="#oh-path" /></animateMotion>
-          </circle>
-          <path id="oh-path" d="M72,74 L270,74" fill="none" />
-          {/* Real-time badge */}
-          <rect x="90" y="108" width="140" height="18" rx="4" fill="rgba(183,110,121,0.07)" stroke="rgba(183,110,121,0.18)" strokeWidth="0.7" />
-          <text x="160" y="120" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="inherit">Real-time sync · 0 manual steps</text>
-          <circle r="2" fill="rgb(34,197,94)" opacity="0.9" cx="98" cy="119" />
-        </svg>
-      </div>
-    );
-  }
-
   if (id === "hijabshop") {
     return (
       <div className="absolute inset-0" style={{ background: "var(--srf-1)" }} aria-hidden="true">
@@ -1086,6 +1055,100 @@ function ProjectVisual({ id }: { id: string }) {
             </g>
           ))}
           <text x="258" y="130" textAnchor="middle" fontSize="6.5" fill="var(--txt-subtle)" fontFamily="monospace" opacity="0.8">Color theory · AI</text>
+        </svg>
+      </div>
+    );
+  }
+
+  if (id === "orderhub") {
+    return (
+      <div className="absolute inset-0" style={{ background: "var(--srf-1)" }} aria-hidden="true">
+        {BG}
+        <svg viewBox="0 0 320 148" className={base}>
+          <defs>
+            <linearGradient id="oh-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="var(--acc)" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="var(--acc)" stopOpacity="0.12" />
+            </linearGradient>
+            <filter id="oh-glow">
+              <feGaussianBlur stdDeviation="2.5" in="SourceGraphic" result="b" />
+              <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+
+          {/* Left: source stores */}
+          {(["Store A", "Store B", "Store C"] as const).map((label, i) => (
+            <g key={label}>
+              <rect x="10" y={18 + i * 36} width="52" height="24" rx="5"
+                fill="rgba(183,110,121,0.05)" stroke="rgba(183,110,121,0.2)" strokeWidth="0.7" />
+              <text x="36" y={33 + i * 36} textAnchor="middle" fontSize="6.5"
+                fill="var(--txt-subtle)" fontFamily="monospace">{label}</text>
+              <line x1="62" y1={30 + i * 36} x2="102" y2="74"
+                stroke="rgba(183,110,121,0.15)" strokeWidth="0.8" strokeDasharray="3 2" />
+            </g>
+          ))}
+
+          {/* Center: OrderHub backend */}
+          <rect x="100" y="46" width="82" height="56" rx="8"
+            fill="rgba(183,110,121,0.12)" stroke="var(--acc)" strokeWidth="1.3" filter="url(#oh-glow)" />
+          <text x="141" y="66" textAnchor="middle" fontSize="8" fill="var(--acc)" fontFamily="monospace" fontWeight="700">OrderHub</text>
+          <text x="141" y="79" textAnchor="middle" fontSize="6.5" fill="var(--txt)" fontFamily="inherit">Webhook · API</text>
+          <text x="141" y="91" textAnchor="middle" fontSize="6" fill="var(--txt-subtle)" fontFamily="monospace">Supabase</text>
+
+          {/* Arrow to dashboard */}
+          <line x1="182" y1="74" x2="206" y2="74" stroke="url(#oh-grad)" strokeWidth="1.2" strokeDasharray="4 3" />
+          <polygon points="206,70 213,74 206,78" fill="rgba(183,110,121,0.45)" />
+
+          {/* Right: dashboard */}
+          <rect x="211" y="18" width="100" height="112" rx="7"
+            fill="rgba(183,110,121,0.06)" stroke="rgba(183,110,121,0.2)" strokeWidth="0.8" />
+          <rect x="211" y="18" width="100" height="18" rx="7"
+            fill="rgba(183,110,121,0.09)" />
+          <text x="261" y="30" textAnchor="middle" fontSize="6.5" fill="var(--acc)" fontFamily="monospace" fontWeight="700">Dashboard</text>
+
+          {/* Order rows */}
+          {[
+            { oid: "#001", status: "New",     fill: "rgba(183,110,121,0.3)",  clr: "var(--acc)" },
+            { oid: "#002", status: "Shipped", fill: "rgba(107,168,120,0.28)", clr: "#6BA878" },
+            { oid: "#003", status: "Pending", fill: "rgba(212,167,106,0.28)", clr: "#D4A76A" },
+            { oid: "#004", status: "Done",    fill: "rgba(34,197,94,0.18)",   clr: "rgb(34,197,94)" },
+          ].map(({ oid, status, fill, clr }, i) => (
+            <g key={oid}>
+              <text x="220" y={50 + i * 22} fontSize="6.5" fill="var(--txt-subtle)" fontFamily="monospace">{oid}</text>
+              <rect x="244" y={40 + i * 22} width="40" height="13" rx="3" fill={fill} />
+              <text x="264" y={50 + i * 22} textAnchor="middle" fontSize="6" fill={clr} fontFamily="inherit">{status}</text>
+            </g>
+          ))}
+
+          {/* Animated flow dots */}
+          <circle r="2" fill="var(--acc)" opacity="0.85">
+            <animateMotion dur="2.2s" repeatCount="indefinite">
+              <mpath href="#oh-p1" />
+            </animateMotion>
+          </circle>
+          <path id="oh-p1" d="M62,30 L102,74" fill="none" />
+          <circle r="2" fill="var(--acc)" opacity="0.85">
+            <animateMotion dur="2.2s" begin="0.7s" repeatCount="indefinite">
+              <mpath href="#oh-p2" />
+            </animateMotion>
+          </circle>
+          <path id="oh-p2" d="M62,66 L102,74" fill="none" />
+          <circle r="2" fill="var(--acc)" opacity="0.85">
+            <animateMotion dur="1.4s" begin="0.4s" repeatCount="indefinite">
+              <mpath href="#oh-p3" />
+            </animateMotion>
+          </circle>
+          <path id="oh-p3" d="M182,74 L206,74" fill="none" />
+
+          {/* In-progress pulse */}
+          <circle cx="302" cy="28" r="3.5" fill="#D4A76A" opacity="0.6">
+            <animate attributeName="opacity" values="0.3;0.85;0.3" dur="2.2s" repeatCount="indefinite" />
+          </circle>
+          <text x="302" y="44" textAnchor="middle" fontSize="5.5" fill="#D4A76A" fontFamily="monospace">dev</text>
+
+          <text x="10" y="140" fontSize="7" fill="var(--txt-subtle)" fontFamily="monospace" opacity="0.6">
+            Multi-store · Real-time sync · YZY DigiTech
+          </text>
         </svg>
       </div>
     );

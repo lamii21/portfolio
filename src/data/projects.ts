@@ -96,6 +96,7 @@ export interface Project {
   seam: string;
   outcome: string;
   honest?: string;
+  status?: "in-progress" | "complete";
   tech: string[];
   repo: string | null;
   demo: string | null;
@@ -885,261 +886,6 @@ export const projects: Project[] = [
         {
           title: "NLP normalization is the hardest part.",
           body: "Parsing text from a CV is easy. Knowing that 'React.js', 'ReactJS', and 'React' are the same skill — and that 'JavaScript' and 'Node.js' are related but distinct — requires a normalization layer that takes real domain knowledge to build.",
-        },
-      ],
-    },
-  },
-
-  // ── 4. OrderHub ─────────────────────────────────────────────────────────────
-  {
-    id: "orderhub",
-    title: "OrderHub",
-    category: "SaaS · E-Commerce · Automation",
-    year: "2024",
-    featured: false,
-    system:
-      "SaaS order management platform with real-time Google Sheets sync via webhooks. Orders placed in the Next.js store appear immediately in the team's operational spreadsheet — zero manual copy-paste.",
-    seam:
-      "Built the e-commerce frontend, the Express.js webhook layer, and the Supabase backend as one system — then built the Google Apps Script bridge to meet the client's actual operational workflow. The sync is invisible to the team.",
-    outcome:
-      "Real-time order synchronization between a Next.js storefront and Google Sheets via webhook triggers. Order data flows automatically — no manual export, no copy-paste, no lag.",
-    tech: ["Next.js", "React", "TypeScript", "Supabase", "Google Apps Script", "Express.js"],
-    repo: "https://github.com/lamii21/OrderHub",
-    demo: null,
-    metrics: "Real-time sync · Zero manual steps",
-    problem:
-      "A small e-commerce team was managing orders in Google Sheets manually — each new order required copy-pasting customer details, items, and totals from the store admin. Errors and delays were constant.",
-    solution:
-      "A webhook-triggered sync that writes every new order directly into the team's Google Sheets the moment it is placed. The team's operational workflow didn't change — the data just arrived automatically.",
-    architecture:
-      "Next.js storefront → order event → Express.js webhook → Supabase persist → Google Apps Script → Google Sheets row",
-    caseStudy: {
-      context:
-        "A small e-commerce team was managing order data across two systems: their Next.js store and a Google Sheets spreadsheet used for daily operations. Every order required manual copy-paste from the store admin into the sheet. This project replaced that copy-paste loop with an automated sync.",
-      objectives: [
-        "Real-time order sync from Next.js store to Google Sheets via webhook",
-        "Zero manual steps between order placement and spreadsheet row",
-        "Order data in Supabase for querying and reporting",
-        "Admin dashboard for order status and tracking",
-      ],
-      techChoices: [
-        {
-          name: "Next.js / TypeScript",
-          reason:
-            "Full-stack framework for the storefront — server-side rendering for product pages, client-side for cart and checkout. TypeScript throughout: prop mismatches caught at compile time.",
-        },
-        {
-          name: "Supabase",
-          reason:
-            "Postgres-based backend with real-time capabilities. Order data is persisted in Supabase — the webhook reads from here to trigger the Sheets sync. Real-time listeners for the dashboard.",
-        },
-        {
-          name: "Express.js",
-          reason:
-            "Lightweight webhook receiver. Validates the incoming order payload, writes to Supabase, then calls the Google Apps Script endpoint. Retry logic for failed sync attempts.",
-        },
-        {
-          name: "Google Apps Script",
-          reason:
-            "The bridge between the webhook and Google Sheets. GAS runs inside Google's infrastructure with direct write access to Sheets — no API key management on the Sheets side.",
-        },
-      ],
-      alternatives: [
-        {
-          option: "Zapier / Make (no-code automation)",
-          why: "No-code tools abstract the retry logic, error handling, and payload validation — but they also hide it. When a Zapier workflow fails silently, diagnosing it requires reading Zapier's logs rather than own code. The cost scales with order volume.",
-          chosen: "Custom Express.js webhook with explicit retry logic, Supabase fallback, and full control over failure modes — instrumented with own logging.",
-        },
-        {
-          option: "Google Sheets API v4 (direct REST calls)",
-          why: "The Sheets API requires OAuth2 with a service account, token refresh logic, and rate-limit handling. GAS runs inside Google's infrastructure with direct Sheets access — no OAuth flow to maintain.",
-          chosen: "Google Apps Script as the Sheets bridge — simpler, no OAuth management, sufficient for this write volume.",
-        },
-        {
-          option: "Next.js API routes for the webhook (instead of Express.js)",
-          why: "Next.js API routes would co-locate the webhook handler with the storefront — simpler deployment. Rejected because the webhook handler needs to be independently deployable and scalable, and the long-running retry logic doesn't fit Next.js's serverless function model.",
-          chosen: "Express.js as a dedicated webhook service — independently deployable, long-running process model, full control over retry behavior.",
-        },
-        {
-          option: "Supabase real-time subscriptions for Sheets sync (instead of webhooks)",
-          why: "Supabase real-time would trigger the GAS call from the database event, not the application layer. Harder to add retry logic and payload validation at the database event level.",
-          chosen: "Application-level webhook: validate → persist → sync, in that order, with retry on the sync step.",
-        },
-      ],
-      optimizations: [
-        {
-          title: "Persist-before-sync for reliability",
-          description: "The order is written to Supabase before the Google Sheets sync is attempted. If the GAS endpoint is unavailable, the order is not lost — it's in the database and the sync can be retried from there. This is the single most important reliability decision in the architecture.",
-          before: "Sync-first approach — if GAS call fails, order data is nowhere",
-          after: "Persist first — order always in Supabase, sync is a best-effort operation with retry",
-        },
-        {
-          title: "Batch sync for high-frequency periods",
-          description: "Google Apps Script has daily execution quotas. During a sale event with high order volume, individual GAS calls per order could exhaust the quota before end of day. Implemented accumulation window: under low load, orders sync individually; during bursts, orders batch and sync together in a single GAS call.",
-          before: "One GAS call per order — quota risk during high-volume events",
-          after: "Batch accumulation under burst conditions — single GAS call for multiple orders, quota preserved",
-        },
-        {
-          title: "Retry with exponential backoff",
-          description: "GAS calls can fail transiently. Initial implementation retried immediately — hitting the same transient error. Changed to exponential backoff: 1s → 2s → 4s → 8s, up to 3 retries before marking the event as failed and logging for manual resolution.",
-          before: "Immediate retry — repeated failures during the same transient error window",
-          after: "Exponential backoff — retries spread across the error recovery window",
-        },
-      ],
-      testing: {
-        strategy: "End-to-end flow testing: place an order → verify Supabase row → verify Google Sheets row appears. Failure simulation: disconnect GAS endpoint and verify orders remain in Supabase with failed sync status.",
-        types: ["E2E order-to-sheet flow", "Webhook failure simulation", "Retry logic verification", "Manual Sheets row format verification"],
-        coverage: "À compléter — automated test coverage not measured",
-        tools: ["Express.js test client", "Manual order placement + Sheets inspection", "Supabase dashboard for order verification"],
-        notes: "Failure scenarios tested by intentionally disconnecting the GAS endpoint and verifying: (1) orders persisted in Supabase, (2) retry logic re-attempted with backoff, (3) sheet row eventually appeared after reconnection.",
-      },
-      wouldDoDifferently: [
-        {
-          title: "Use a proper job queue (Bull/BullMQ) for retry logic.",
-          body: "The in-memory retry logic works but doesn't survive process restarts. A Bull queue backed by Redis would persist retry jobs across restarts, provide a UI for monitoring failed jobs, and handle concurrency safely. The right infrastructure for production webhook processing.",
-        },
-        {
-          title: "Add a dead letter queue for permanently failed syncs.",
-          body: "After N retries, the sync attempt is currently logged and abandoned. A dead letter queue — and an admin UI to view and replay failed syncs — would make the system observable and recoverable without manual database queries.",
-        },
-        {
-          title: "Add order analytics from the start.",
-          body: "The data is all in Supabase. Revenue by day, product performance, average order value — all derivable from the orders table. The dashboard was built for order status only; analytics was deferred and never added.",
-        },
-      ],
-      dbSchema: [
-        {
-          name: "Product",
-          fields: [
-            { name: "id", type: "UUID", key: "pk" },
-            { name: "name", type: "VARCHAR(200)" },
-            { name: "price", type: "NUMERIC(10,2)" },
-            { name: "stock", type: "INTEGER" },
-            { name: "created_at", type: "TIMESTAMP" },
-          ],
-        },
-        {
-          name: "Order",
-          fields: [
-            { name: "id", type: "UUID", key: "pk" },
-            { name: "customer_name", type: "VARCHAR(200)" },
-            { name: "customer_email", type: "VARCHAR(255)" },
-            { name: "total", type: "NUMERIC(10,2)" },
-            { name: "status", type: "VARCHAR(50)" },
-            { name: "created_at", type: "TIMESTAMP" },
-          ],
-        },
-        {
-          name: "OrderItem",
-          fields: [
-            { name: "id", type: "UUID", key: "pk" },
-            { name: "order_id", type: "UUID", key: "fk" },
-            { name: "product_id", type: "UUID", key: "fk" },
-            { name: "quantity", type: "INTEGER" },
-            { name: "unit_price", type: "NUMERIC(10,2)" },
-          ],
-        },
-        {
-          name: "WebhookEvent",
-          fields: [
-            { name: "id", type: "UUID", key: "pk" },
-            { name: "order_id", type: "UUID", key: "fk" },
-            { name: "sync_status", type: "VARCHAR(50)" },
-            { name: "attempts", type: "INTEGER" },
-            { name: "last_attempted_at", type: "TIMESTAMP" },
-          ],
-        },
-      ],
-      screenshots: [
-        {
-          label: "Next.js Storefront — Product Catalog",
-          description: "Product grid with color, price, stock indicator — SSR for initial load, client-side cart management",
-        },
-        {
-          label: "Cart & Checkout Flow",
-          description: "Multi-step checkout: cart summary → customer details → order confirmation — triggers webhook on submission",
-        },
-        {
-          label: "Google Sheets — Live Sync",
-          description: "Operations sheet with new order row appearing automatically within seconds of placement — matching the team's existing column format exactly",
-        },
-        {
-          label: "Admin Dashboard — Order Status",
-          description: "Order list with status chips and sync state indicator — shows which orders are synced to Sheets, which are pending, which failed",
-        },
-      ],
-      timeline: [
-        {
-          milestone: "Storefront + Checkout",
-          duration: "Weeks 1–3",
-          description:
-            "Next.js product catalog, cart, and checkout flow. Order model defined in Supabase. TypeScript throughout — type mismatches caught at build time.",
-        },
-        {
-          milestone: "Webhook Architecture",
-          duration: "Week 4",
-          description:
-            "Express.js webhook receiver. Validates incoming order events, persists to Supabase, calls the Google Apps Script endpoint. Retry logic for failed sync attempts.",
-        },
-        {
-          milestone: "Google Sheets Sync",
-          duration: "Week 5",
-          description:
-            "Google Apps Script that appends a new row to the operations sheet on each webhook call. Format matched the team's existing sheet structure exactly — no retraining needed.",
-        },
-        {
-          milestone: "Dashboard + Testing",
-          duration: "Weeks 6–7",
-          description:
-            "React admin dashboard for order status and tracking. End-to-end testing from order placement to sheet row appearing.",
-        },
-      ],
-      challenges: [
-        {
-          title: "Webhook reliability",
-          body: "Webhooks can fail — network timeouts, transient errors, Google Apps Script execution limits. An order that triggers no sheet row is invisible to the operations team.",
-          solution:
-            "Retry logic on the Express.js webhook handler. Each webhook event is persisted to Supabase before the Sheets sync — if the sync fails, the order is still in the database and can be resent from there.",
-        },
-        {
-          title: "Google Apps Script execution limits",
-          body: "GAS has daily execution quotas and per-call time limits. High order volume could exhaust the quota before the end of the business day.",
-          solution:
-            "Batched sync for high-frequency periods — instead of one GAS call per order, the webhook accumulates orders and sends them in batches. Individual orders under low load still sync immediately.",
-        },
-        {
-          title: "Matching the team's existing sheet structure",
-          body: "The team had been using their Google Sheets format for years. A sync that produced different column names or row formats would require retraining the team — or they'd reject the tool.",
-          solution:
-            "Built the sync output to match their existing format exactly: same column order, same date format, same status vocabulary. The tool was invisible to their workflow — it just removed the manual step.",
-        },
-      ],
-      impact: [
-        {
-          metric: "Real-time",
-          description: "Orders appear in Google Sheets the moment they are placed",
-        },
-        {
-          metric: "0 manual steps",
-          description: "Between order placement and operational spreadsheet row",
-        },
-        {
-          metric: "Full stack",
-          description: "Next.js storefront, Express webhook, Supabase, Google Sheets",
-        },
-      ],
-      learned: [
-        {
-          title: "Match the team's existing workflow.",
-          body: "The best automation is invisible. If the sync had changed the sheet's column structure, the team would have needed to change their processes. Matching the existing format exactly meant the tool required zero adoption effort.",
-        },
-        {
-          title: "Webhook reliability requires defensive design.",
-          body: "Persisting the event before processing it means no order is ever lost even if downstream systems fail. The retry logic and the Supabase fallback are not optional — they're what makes the sync trustworthy.",
-        },
-        {
-          title: "Google Apps Script is the right tool for Sheets integration.",
-          body: "GAS runs inside Google's infrastructure with direct write access to Sheets. No API key management, no OAuth flow to maintain. Easier than the Sheets API and sufficient for this use case.",
         },
       ],
     },
@@ -2083,7 +1829,145 @@ export const projects: Project[] = [
       "openpyxl (parsing) → pandas (transform logic) → Power BI output; defensive parsing built to handle every edge-case formatting variant encountered.",
   },
 
-  // ── 10. FinTech Predict ──────────────────────────────────────────────────────
+  // ── 10. OrderHub ────────────────────────────────────────────────────────────────
+  {
+    id: "orderhub",
+    title: "OrderHub",
+    category: "SaaS · E-commerce · Automation · Full-Stack",
+    year: "2025",
+    featured: false,
+    status: "in-progress",
+    system:
+      "A SaaS order management platform built during my internship at YZY DigiTech. OrderHub centralises orders from multiple e-commerce stores, automates ingestion via Google Apps Script and webhooks, and exposes a unified dashboard backed by Supabase.",
+    seam:
+      "Building the full stack as one system: Next.js frontend and API routes, an Express.js webhook layer, the Google Apps Script automation that connects existing Google Sheets workflows to the platform, and Supabase as the persistent store.",
+    outcome:
+      "Currently under development. Results and production metrics will be added after deployment.",
+    honest:
+      "This project is in active development during my internship at YZY DigiTech. Architecture and implementation details reflect the current state of the build — not a completed system.",
+    tech: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Supabase", "Express.js", "Google Apps Script"],
+    repo: "https://github.com/lamii21/OrderHub",
+    demo: null,
+    metrics: "In Progress · YZY DigiTech Internship",
+    problem:
+      "E-commerce operations generate order data spread across multiple stores and platforms. Teams spend significant time manually extracting, reconciling, and tracking orders — a process that's error-prone and doesn't scale as order volume grows.",
+    solution:
+      "A centralised SaaS platform that ingests orders from multiple e-commerce stores via webhooks and Google Apps Script, synchronises with Google Sheets, persists everything in Supabase, and exposes a unified dashboard for order tracking and status management.",
+    architecture:
+      "E-commerce Store → Google Sheets → Google Apps Script → Webhook → OrderHub Backend (Next.js / Express.js) → Supabase → Dashboard",
+    caseStudy: {
+      context:
+        "Developed during my internship at YZY DigiTech in 2025. The platform addresses a real operational problem: e-commerce teams losing time to manual order reconciliation across multiple stores. The project gave me exposure to real SaaS architecture constraints — multi-store integration, webhook reliability, real-time synchronisation, and the requirements of a tool that production teams depend on.",
+      objectives: [
+        "Centralise order data from multiple e-commerce stores into a single platform",
+        "Automate order ingestion via Google Apps Script and webhooks — zero manual steps in the data flow",
+        "Real-time synchronisation between Google Sheets and the OrderHub database (Supabase)",
+        "Unified dashboard for order tracking, status management, and workflow automation",
+        "REST API layer exposing order data to downstream tools",
+      ],
+      techChoices: [
+        {
+          name: "Next.js",
+          reason:
+            "Full-stack framework for both the dashboard frontend and API routes. Co-locating the frontend and backend in one codebase simplifies deployment and keeps the type system shared across both layers.",
+        },
+        {
+          name: "Supabase",
+          reason:
+            "Managed PostgreSQL with a real-time subscription layer and a built-in REST API. The real-time capabilities are directly useful for a dashboard that needs to reflect order status changes as they happen across multiple stores.",
+        },
+        {
+          name: "Google Apps Script",
+          reason:
+            "The existing e-commerce workflow at YZY DigiTech is already built around Google Sheets. Apps Script lets the platform integrate with those existing sheets rather than requiring teams to change their workflow — lower adoption friction when the integration meets people where they already are.",
+        },
+        {
+          name: "Express.js",
+          reason:
+            "Supplemental backend layer for webhook handling and more complex request routing where Express middleware is more appropriate than Next.js API routes.",
+        },
+      ],
+      challenges: [
+        {
+          title: "[To be documented during development]",
+          body: "Technical challenges will be documented as implementation progresses. This section will be updated before the project is marked complete.",
+          solution: "[Will be documented after implementation]",
+        },
+      ],
+      impact: [
+        {
+          metric: "In progress",
+          description: "Currently under development. Results and production metrics will be added after deployment.",
+        },
+      ],
+      learned: [
+        {
+          title: "[To be documented]",
+          body: "Key learnings will be added as the project progresses and reaches production.",
+        },
+      ],
+      timeline: [
+        {
+          milestone: "Architecture & Setup",
+          duration: "Weeks 1–2",
+          description: "Project architecture, Supabase schema design, Next.js project initialisation, and Google Apps Script integration planning.",
+        },
+        {
+          milestone: "Webhook Integration",
+          duration: "In progress",
+          description: "Google Apps Script trigger setup, webhook endpoint implementation, and order ingestion pipeline.",
+        },
+        {
+          milestone: "Dashboard UI",
+          duration: "In progress",
+          description: "Order management interface, status tracking, and workflow automation controls.",
+        },
+        {
+          milestone: "Production deployment",
+          duration: "Upcoming",
+          description: "Final integration testing, deployment, and production handoff to YZY DigiTech.",
+        },
+      ],
+      dbSchema: [
+        {
+          name: "orders",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "store_id", type: "UUID", key: "fk" },
+            { name: "external_order_id", type: "VARCHAR(255)" },
+            { name: "customer_name", type: "VARCHAR(255)" },
+            { name: "status", type: "VARCHAR(100)" },
+            { name: "total_amount", type: "DECIMAL(10,2)" },
+            { name: "created_at", type: "TIMESTAMP" },
+            { name: "updated_at", type: "TIMESTAMP" },
+          ],
+        },
+        {
+          name: "stores",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "name", type: "VARCHAR(255)" },
+            { name: "platform", type: "VARCHAR(100)" },
+            { name: "webhook_secret", type: "VARCHAR(255)" },
+            { name: "sheets_id", type: "VARCHAR(255)" },
+            { name: "created_at", type: "TIMESTAMP" },
+          ],
+        },
+        {
+          name: "workflows",
+          fields: [
+            { name: "id", type: "UUID", key: "pk" },
+            { name: "store_id", type: "UUID", key: "fk" },
+            { name: "trigger_status", type: "VARCHAR(100)" },
+            { name: "action_type", type: "VARCHAR(100)" },
+            { name: "is_active", type: "BOOLEAN" },
+          ],
+        },
+      ],
+    },
+  },
+
+  // ── 11. FinTech Predict ──────────────────────────────────────────────────────
   {
     id: "fintech-predict",
     title: "FinTech Predict",
