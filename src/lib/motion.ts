@@ -65,7 +65,7 @@ export const spring = {
   /** 3D avatar tilt — HeroScene */
   tilt:       { type: "spring" as const, stiffness: 140, damping: 20 },
   /** Cursor orbit ring — trails with deliberate lag */
-  orbit:      { type: "spring" as const, stiffness: 120, damping: 16 },
+  orbit:      { type: "spring" as const, stiffness: 200, damping: 22 },
   /** Ambient floating elements */
   float:      { type: "spring" as const, stiffness: 60,  damping: 18 },
   /** Cursor dot — near-instant, sub-frame response */

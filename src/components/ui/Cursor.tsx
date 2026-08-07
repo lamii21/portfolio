@@ -54,9 +54,9 @@ export function Cursor() {
   const mouseX = useMotionValue(-200);
   const mouseY = useMotionValue(-200);
 
-  // Dot — near-instant
-  const dotX = useSpring(mouseX, spring.cursorDot);
-  const dotY = useSpring(mouseY, spring.cursorDot);
+  // Dot — direct, no spring: follows the real cursor with zero lag
+  const dotX = mouseX;
+  const dotY = mouseY;
 
   // Ring — deliberate orbital lag
   const ringX = useSpring(mouseX, spring.orbit);
