@@ -18,9 +18,25 @@ import { staggerContainer, staggerChild, ease, duration, viewportEarly, spring }
 const EVENTS = [
   {
     year: "2022",
-    label: "EMSI — Year 1",
-    title: "DDSI begins.",
-    body: "Enrolled in the DDSI — Développement Digital et Systèmes d'Informations program at EMSI, Rabat. First encounter with algorithms, data structures, and the idea that software has layers.",
+    label: "EMSI — Classes Préparatoires",
+    title: "Les années prépa.",
+    body: "Two years of intensive preparatory classes at EMSI, Casablanca — mathematics, physics, and the fundamentals before engineering begins. Learning how to learn under pressure.",
+    tag: "Education",
+    accent: false,
+  },
+  {
+    year: "2024",
+    label: "EMSI — Ingénierie Informatique et Réseaux",
+    title: "Cycle ingénieur.",
+    body: "Start of the engineering cycle — computer science and networks: systems, databases, algorithms, architecture. The year HandyMath and the first real projects were built.",
+    tag: "Education",
+    accent: false,
+  },
+  {
+    year: "2025",
+    label: "EMSI — DDSI",
+    title: "Spécialisation DDSI.",
+    body: "Développement Digital et Systèmes d'Information — software engineering specialization focused on full-stack development, AI integration, and information systems design.",
     tag: "Education",
     accent: false,
   },
