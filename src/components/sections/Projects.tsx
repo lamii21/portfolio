@@ -726,7 +726,7 @@ function ProjectVisual({ id }: { id: string }) {
 
   const base = "absolute inset-0 w-full h-full";
 
-  if (id === "darlbanat") {
+  if (id === "riad-lbanat") {
     return (
       <div className="absolute inset-0" style={{ background: "var(--srf-1)" }} aria-hidden="true">
         {BG}

@@ -1288,10 +1288,10 @@ export const projects: Project[] = [
     },
   },
 
-  // ── 7. Darlbanat ────────────────────────────────────────────────────────────
+  // ── 7. Riad Lbanat ──────────────────────────────────────────────────────────
   {
-    id: "darlbanat",
-    title: "Darlbanat",
+    id: "riad-lbanat",
+    title: "Riad Lbanat",
     category: "Restaurant System · Backend",
     year: "2024",
     featured: false,
@@ -1667,10 +1667,10 @@ export const projects: Project[] = [
     },
   },
 
-  // ── 11. FinTech Predict ──────────────────────────────────────────────────────
+  // ── 11. NovaBank360 ──────────────────────────────────────────────────────────
   {
     id: "fintech-predict",
-    title: "FinTech Predict",
+    title: "NovaBank360",
     category: "Machine Learning · Finance",
     year: "2024",
     featured: false,
@@ -1681,7 +1681,7 @@ export const projects: Project[] = [
     outcome:
       "LSTM-based forecasting model with a Python data pipeline. The focus was on understanding prediction boundaries, not on achieving arbitrary accuracy targets.",
     tech: ["Python", "TensorFlow/Keras", "Pandas", "Scikit-learn", "Matplotlib"],
-    repo: null,
+    repo: "https://github.com/lamii21/novabank360",
     demo: null,
     problem:
       "A forecasting model without a transparent data pipeline produces outputs that can't be verified — the model and its inputs are equally important to understand.",

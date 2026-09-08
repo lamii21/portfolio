@@ -1414,7 +1414,7 @@ function ArchitectureDiagram({ project }: { project: Project }) {
   }
 
   // ── Darlbanat ── Web UI → ASP.NET Core → EF → SQL Server + entities
-  if (id === "darlbanat") {
+  if (id === "riad-lbanat") {
     return (
       <div style={containerStyle} aria-hidden="true">
         {BG}{dotGrid}
