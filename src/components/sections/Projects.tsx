@@ -1154,6 +1154,77 @@ function ProjectVisual({ id }: { id: string }) {
     );
   }
 
+  if (id === "kawaii-memory-game") {
+    return (
+      <div className="absolute inset-0" style={{ background: "var(--srf-1)" }} aria-hidden="true">
+        {BG}
+        <svg viewBox="0 0 320 148" className={base}>
+          {/* Title */}
+          <text x="14" y="20" fontSize="8.5" fill="var(--acc)" fontFamily="monospace" fontWeight="700" opacity="0.8">Kawaii Memory Game</text>
+
+          {/* Card grid — 4 cols × 3 rows */}
+          {[
+            /* row 1 */
+            { x: 14,  y: 28, state: "matched", sym: "♡" },
+            { x: 64,  y: 28, state: "matched", sym: "♡" },
+            { x: 114, y: 28, state: "up",      sym: "★" },
+            { x: 164, y: 28, state: "up",      sym: "★" },
+            { x: 214, y: 28, state: "down",    sym: ""  },
+            { x: 264, y: 28, state: "down",    sym: ""  },
+            /* row 2 */
+            { x: 14,  y: 75, state: "down",    sym: ""  },
+            { x: 64,  y: 75, state: "matched", sym: "✿" },
+            { x: 114, y: 75, state: "down",    sym: ""  },
+            { x: 164, y: 75, state: "matched", sym: "✿" },
+            { x: 214, y: 75, state: "down",    sym: ""  },
+            { x: 264, y: 75, state: "down",    sym: ""  },
+            /* row 3 */
+            { x: 14,  y: 122, state: "down",   sym: ""  },
+            { x: 64,  y: 122, state: "down",   sym: ""  },
+            { x: 114, y: 122, state: "down",   sym: ""  },
+            { x: 164, y: 122, state: "down",   sym: ""  },
+            { x: 214, y: 122, state: "down",   sym: ""  },
+            { x: 264, y: 122, state: "down",   sym: ""  },
+          ].map(({ x, y, state, sym }, i) => (
+            <g key={i}>
+              {state === "down" && (
+                <>
+                  <rect x={x} y={y} width="44" height="38" rx="5"
+                    fill="rgba(183,110,121,0.10)" stroke="rgba(183,110,121,0.22)" strokeWidth="0.8" />
+                  {/* kawaii back pattern — two small dots */}
+                  <circle cx={x + 16} cy={y + 19} r="2.5" fill="rgba(183,110,121,0.30)" />
+                  <circle cx={x + 28} cy={y + 19} r="2.5" fill="rgba(183,110,121,0.30)" />
+                </>
+              )}
+              {state === "up" && (
+                <>
+                  <rect x={x} y={y} width="44" height="38" rx="5"
+                    fill="rgba(183,110,121,0.18)" stroke="rgba(183,110,121,0.55)" strokeWidth="1" />
+                  <text x={x + 22} y={y + 24} textAnchor="middle" fontSize="16"
+                    fill="var(--acc)" dominantBaseline="middle">{sym}</text>
+                </>
+              )}
+              {state === "matched" && (
+                <>
+                  <rect x={x} y={y} width="44" height="38" rx="5"
+                    fill="rgba(107,168,120,0.12)" stroke="rgba(107,168,120,0.35)" strokeWidth="0.8" />
+                  <text x={x + 22} y={y + 24} textAnchor="middle" fontSize="16"
+                    fill="rgba(107,168,120,0.9)" dominantBaseline="middle">{sym}</text>
+                </>
+              )}
+            </g>
+          ))}
+
+          {/* Score */}
+          <rect x="14" y="30" width="0" height="0" />
+          <text x="306" y="20" textAnchor="end" fontSize="7.5" fill="var(--txt-muted)" fontFamily="monospace">
+            Pairs: 3 / 9
+          </text>
+        </svg>
+      </div>
+    );
+  }
+
   // Default fallback (shouldn't be reached for known IDs)
   return (
     <div

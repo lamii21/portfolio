@@ -1302,7 +1302,7 @@ export const projects: Project[] = [
     outcome:
       "Replaced a manual paper-based process. Order tracking and inventory management in one system. ASP.NET Core API with a structured SQL schema.",
     tech: ["C#", "ASP.NET Core", "SQL Server", "Entity Framework"],
-    repo: null,
+    repo: "https://github.com/lamii21/Riad-lbanat",
     demo: null,
     metrics: "Real client · Live deployment",
     problem:
@@ -1667,7 +1667,32 @@ export const projects: Project[] = [
     },
   },
 
-  // ── 11. NovaBank360 ──────────────────────────────────────────────────────────
+  // ── 11. Kawaii Memory Game ──────────────────────────────────────────────────
+  {
+    id: "kawaii-memory-game",
+    title: "Kawaii Memory Game",
+    category: "Game · Desktop · Java",
+    year: "2024",
+    featured: false,
+    system:
+      "A card-matching memory game built in JavaFX with a kawaii Japanese aesthetic. Flip pairs of cards to find matching symbols — custom graphics, card-flip animations, and a score tracker.",
+    seam:
+      "Built the game loop, the card-flip state machine, the matching logic, and the JavaFX UI as one system. The visual state and the game state are the same object — no duplicate state between the model and the view.",
+    outcome:
+      "A playable desktop memory game in Java with custom kawaii-styled cards, card-flip animations, and a match-tracking score system.",
+    tech: ["Java", "JavaFX"],
+    repo: "https://github.com/lamii21/KawaiiMemoryGame",
+    demo: null,
+    metrics: "Desktop game · JavaFX · Custom graphics",
+    problem:
+      "Building a game in JavaFX means managing UI state and game state together — a card flip is both a visual event and a game logic event that must be kept consistent.",
+    solution:
+      "A state machine for each card (face-down, face-up, matched) that drives the JavaFX animations directly. The UI reads from the card state — the animation is a consequence of the state, not a separate concern.",
+    architecture:
+      "JavaFX Scene → CardGrid → Card (state: face-down / face-up / matched) → match-check logic → score update",
+  },
+
+  // ── 12. NovaBank360 ──────────────────────────────────────────────────────────
   {
     id: "fintech-predict",
     title: "NovaBank360",
@@ -1681,7 +1706,7 @@ export const projects: Project[] = [
     outcome:
       "LSTM-based forecasting model with a Python data pipeline. The focus was on understanding prediction boundaries, not on achieving arbitrary accuracy targets.",
     tech: ["Python", "TensorFlow/Keras", "Pandas", "Scikit-learn", "Matplotlib"],
-    repo: "https://github.com/lamii21/novabank360",
+    repo: "https://github.com/lamii21/Novabank360",
     demo: null,
     problem:
       "A forecasting model without a transparent data pipeline produces outputs that can't be verified — the model and its inputs are equally important to understand.",

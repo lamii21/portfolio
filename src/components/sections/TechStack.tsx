@@ -71,11 +71,26 @@ const CATEGORIES = [
     ],
   },
   {
-    id: "tools",
-    label: "Tools",
+    id: "scripting",
+    label: "Scripting",
     accent: "rgba(180,155,212,1)",
     bg: "rgba(180,155,212,0.07)",
     brd: "rgba(180,155,212,0.18)",
+    skills: [
+      { name: "Google Apps Script", status: "shipped"  },
+      { name: "openpyxl",           status: "shipped"  },
+      { name: "Excel Automation",   status: "shipped"  },
+      { name: "Java / JavaFX",      status: "shipped"  },
+      { name: "Bash / Shell",       status: "shipped"  },
+      { name: "Pandas pipelines",   status: "daily"    },
+    ],
+  },
+  {
+    id: "tools",
+    label: "Tools",
+    accent: "rgba(130,180,180,1)",
+    bg: "rgba(130,180,180,0.07)",
+    brd: "rgba(130,180,180,0.18)",
     skills: [
       { name: "Git / GitHub", status: "daily"   },
       { name: "Power BI",     status: "shipped" },
