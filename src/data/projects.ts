@@ -213,7 +213,6 @@ export const projects: Project[] = [
       testing: {
         strategy: "Manual end-to-end testing of the OCR pipeline against a curated equation test set. Django REST Framework tests for API endpoint correctness. Manual UI testing across the exercise and progress flows.",
         types: ["Manual OCR (curated equation test set)", "Django REST Framework API tests", "Manual UI flow testing"],
-        coverage: "À compléter — formal coverage percentages not tracked per module",
         tools: ["Django REST Framework test client", "pytest", "Manual browser testing"],
         notes: "OCR was tested against a set of handwritten and printed equations ranging from simple arithmetic to integrals and fractions. Edge cases discovered iteratively: symbol recognition improved through preprocessing tuning rather than model retraining.",
       },
@@ -476,7 +475,6 @@ export const projects: Project[] = [
       testing: {
         strategy: "Spring Boot integration tests for API endpoints with RBAC coverage. Manual multi-tenant isolation testing — verifying that authenticated requests from Tenant A never return data from Tenant B under any conditions.",
         types: ["API endpoint tests (Spring Boot)", "Multi-tenant isolation tests", "RBAC permission coverage", "Manual UI testing"],
-        coverage: "À compléter — formal test coverage percentages not tracked",
         tools: ["Spring Boot Test / JUnit", "Manual browser testing"],
         notes: "Multi-tenant isolation was tested by creating two organizations with overlapping employee names and verifying that no cross-tenant data appeared in any API response. Every RBAC-restricted endpoint was tested with tokens for all three roles (HR manager, line manager, employee).",
       },
@@ -713,7 +711,6 @@ export const projects: Project[] = [
       testing: {
         strategy: "Manual testing with sample interview questions across different response lengths and speaking speeds. Transcription accuracy tested against known answers. NLP scoring tested against a set of strong and weak sample responses.",
         types: ["Manual transcription accuracy testing", "NLP scoring validation (strong vs. weak responses)", "End-to-end flow testing"],
-        coverage: "À compléter — formal coverage percentages not tracked",
         tools: ["Manual testing", "Python"],
         notes: "The most important test was whether the scoring produced meaningful differentiation between a strong and a weak answer to the same question. Transcription errors were catalogued to understand where accuracy dropped.",
       },
@@ -1133,7 +1130,6 @@ export const projects: Project[] = [
       testing: {
         strategy: "Manual color recommendation verification across product hue families. Checkout flow testing for cart state and order creation. Mobile responsive testing using browser DevTools emulation.",
         types: ["Manual color recommendation verification", "Checkout flow E2E", "Mobile responsive testing", "SSR output verification"],
-        coverage: "À compléter — automated test coverage not measured",
         tools: ["Manual browser testing", "Chrome DevTools mobile emulation", "Next.js dev mode for SSR verification"],
         notes: "Color recommendations were manually verified for representative products across all hue families (warm rose, cool blue, neutral beige) and saturation levels. Each complementary, analogous, and neutral pairing rule was tested with at least one product.",
       },
@@ -1382,7 +1378,6 @@ export const projects: Project[] = [
       testing: {
         strategy: "Weekly client UAT sessions with working demos as the primary feedback loop. Manual testing of order flow, inventory decrement, and report generation. SQL query verification against known test data.",
         types: ["Weekly client UAT (User Acceptance Testing)", "Manual order → inventory flow", "Daily report total verification", "SQL constraint testing"],
-        coverage: "À compléter — no automated test suite; client review was the primary validation mechanism",
         tools: ["Manual browser testing", "SQL Server Management Studio for data verification", "Weekly client demo sessions"],
         notes: "Requirements that emerged during client demo sessions (weekly inventory snapshots, table number field on orders, item availability toggle) were incorporated between sessions. Client demos were more valuable than upfront specification.",
       },
