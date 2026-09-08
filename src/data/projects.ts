@@ -1401,7 +1401,7 @@ export const projects: Project[] = [
     outcome:
       "Replaced a manual paper-based process. Order tracking and inventory management in one system. ASP.NET Core API with a structured SQL schema.",
     tech: ["C#", "ASP.NET Core", "SQL Server", "Entity Framework"],
-    repo: "https://github.com/lamii21",
+    repo: null,
     demo: null,
     metrics: "Real client · Live deployment",
     problem:
@@ -1642,7 +1642,7 @@ export const projects: Project[] = [
     outcome:
       "Replaced static listings with a dynamic, searchable platform. Built on Next.js with server-side rendering for performance.",
     tech: ["Next.js", "TypeScript", "Tailwind CSS", "Prisma"],
-    repo: "https://github.com/lamii21",
+    repo: null,
     demo: null,
     problem:
       "A family real-estate business was showing properties through static HTML listings — no search, no filtering, no way to compare land parcels.",
@@ -1818,7 +1818,7 @@ export const projects: Project[] = [
     honest:
       "Version one broke on Excel formatting variants I hadn't seen in the test files. Defensive parsing is harder than happy-path parsing. Version two handled every production format variant without exception.",
     tech: ["Python", "openpyxl", "pandas", "Power BI"],
-    repo: "https://github.com/lamii21",
+    repo: null,
     demo: null,
     metrics: "8 hours → 4 minutes per week",
     problem:
@@ -1981,7 +1981,7 @@ export const projects: Project[] = [
     outcome:
       "LSTM-based forecasting model with a Python data pipeline. The focus was on understanding prediction boundaries, not on achieving arbitrary accuracy targets.",
     tech: ["Python", "TensorFlow/Keras", "Pandas", "Scikit-learn", "Matplotlib"],
-    repo: "https://github.com/lamii21",
+    repo: null,
     demo: null,
     problem:
       "A forecasting model without a transparent data pipeline produces outputs that can't be verified — the model and its inputs are equally important to understand.",
