@@ -52,6 +52,16 @@ const CREDENTIALS = [
     color: "#D4A76A",
   },
   {
+    icon: Award,
+    title: "OCI AI Foundations 2026",
+    org: "Oracle Cloud Infrastructure",
+    status: "certified",
+    statusLabel: "Certified 2026",
+    description:
+      "Oracle Cloud Infrastructure AI Foundations certification — covers AI/ML fundamentals, deep learning, generative AI, and Oracle's cloud AI services.",
+    color: "#D4795A",
+  },
+  {
     icon: Target,
     title: "Cloud & DevOps",
     org: "Building toward",
@@ -101,7 +111,7 @@ export function Certifications() {
           whileInView="visible"
           viewport={viewport}
         >
-          Four certifications from Google, Microsoft, and IBM — earned alongside the degree.
+          Five certifications from Google, Microsoft, IBM, and Oracle — earned alongside the degree.
           The credentials that matter most are the ones you can point to in a codebase.
         </motion.p>
 
