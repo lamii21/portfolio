@@ -394,7 +394,7 @@ export const projects: Project[] = [
       "Designed the full SaaS architecture — data isolation, role-based access, AI analysis, and dashboard — as one integrated system. The AI scoring module needed the employee data model to be designed for analysis from the start.",
     outcome:
       "A deployed multi-tenant SaaS HR platform with AI-powered recruitment, employee management, leave workflows, and HR analytics dashboards. Delivered as the final-year engineering project.",
-    tech: ["React", "TypeScript", "Django", "Python", "PostgreSQL", "AI", "Tailwind CSS"],
+    tech: ["Next.js", "TypeScript", "Spring Boot", "Java", "PostgreSQL", "AI", "Tailwind CSS"],
     repo: "https://github.com/lamii21/RH",
     demo: null,
     metrics: "Final-year project · Multi-tenant SaaS · AI recruitment",
@@ -403,7 +403,7 @@ export const projects: Project[] = [
     solution:
       "A unified SaaS platform where all HR data lives in one system. AI-assisted recruitment scoring reduces manual screening time. Row-level security ensures complete data isolation between client companies. Dashboards give HR managers real-time visibility into their workforce.",
     architecture:
-      "React SaaS dashboard → Django REST API (RBAC) → PostgreSQL (row-level security per tenant) → Python AI analysis layer → automated workflow engine",
+      "Next.js SaaS dashboard → Spring Boot REST API (RBAC) → PostgreSQL (row-level security per tenant) → AI analysis layer → automated workflow engine",
     caseStudy: {
       context:
         "Final-year engineering project at EMSI. The brief was to design and build a production-quality SaaS application demonstrating architecture, AI integration, and system design. We chose HR management because the domain has real, unsolved complexity — most SMEs manage HR with spreadsheets, and the gap between what's possible and what they have is large.",
@@ -416,19 +416,19 @@ export const projects: Project[] = [
       ],
       techChoices: [
         {
-          name: "React / TypeScript",
+          name: "Next.js / TypeScript",
           reason:
-            "Complex SaaS dashboard with role-based views, multi-step forms, and real-time data. TypeScript caught the majority of UI state bugs at compile time — critical for a system where role mismatches could expose the wrong data.",
+            "Complex SaaS dashboard with role-based views, multi-step forms, and real-time data. Next.js SSR provides fast initial loads for authenticated pages; TypeScript caught the majority of UI state bugs at compile time — critical for a system where role mismatches could expose the wrong data.",
         },
         {
-          name: "Django / PostgreSQL",
+          name: "Spring Boot / PostgreSQL",
           reason:
-            "Django's ORM is well-suited to the relational complexity of HR data. PostgreSQL's row-level security enforces tenant isolation at the database level — not just in application code.",
+            "Spring Boot's security and REST ecosystem handled RBAC enforcement at the API layer. PostgreSQL's row-level security enforces tenant isolation at the database level — not just in application code.",
         },
         {
-          name: "Python / AI",
+          name: "AI (recruitment scoring)",
           reason:
-            "AI analysis layer for recruitment scoring and workforce analytics. Same language as the backend — no separate service required for the ML component.",
+            "AI analysis layer for recruitment scoring and workforce analytics — CV skill extraction and candidate ranking integrated with the backend.",
         },
       ],
       alternatives: [
@@ -443,9 +443,9 @@ export const projects: Project[] = [
           chosen: "Multi-tenant with row-level security from day one. Every table has an org_id column; PostgreSQL RLS ensures every query is automatically scoped to the requesting tenant without application-level filtering.",
         },
         {
-          option: "Next.js SSR for the dashboard",
-          why: "Next.js would add SSR complexity to a dashboard that is entirely authenticated and user-specific. SEO is irrelevant for HR management dashboards — all content is behind a login.",
-          chosen: "React SPA with JWT authentication — no SSR overhead for content that is entirely behind authentication. Client-side routing handles the multi-role view switching.",
+          option: "Django REST Framework (Python backend)",
+          why: "Django would have been faster to prototype. Rejected because the team had stronger Java expertise and the Spring Boot security model mapped cleanly to the RBAC requirements.",
+          chosen: "Spring Boot — Spring Security handles RBAC enforcement with a well-defined model; JWT role claims are a first-class concept in the Spring security context.",
         },
         {
           option: "Dedicated ML microservice (separate Python service)",
@@ -462,7 +462,7 @@ export const projects: Project[] = [
         },
         {
           title: "Eager loading for HR dashboard aggregates",
-          description: "The executive dashboard showed headcount, department breakdown, leave pipeline, and open positions. Early version made a separate query per metric — 8 queries per page load. Consolidated into 3 aggregate queries using Django's annotate() and values().",
+          description: "The executive dashboard showed headcount, department breakdown, leave pipeline, and open positions. Early version made a separate query per metric — 8 queries per page load. Consolidated into 3 aggregate queries using Spring Data JPA projections.",
           before: "8 separate database queries per dashboard page load",
           after: "3 aggregate queries covering the same data — reduced DB round-trips, faster page paint",
         },
@@ -474,10 +474,10 @@ export const projects: Project[] = [
         },
       ],
       testing: {
-        strategy: "Django REST Framework tests for API endpoints with RBAC coverage. Manual multi-tenant isolation testing — verifying that authenticated requests from Tenant A never return data from Tenant B under any conditions.",
-        types: ["API endpoint tests (DRF)", "Multi-tenant isolation tests", "RBAC permission coverage", "Manual UI testing"],
+        strategy: "Spring Boot integration tests for API endpoints with RBAC coverage. Manual multi-tenant isolation testing — verifying that authenticated requests from Tenant A never return data from Tenant B under any conditions.",
+        types: ["API endpoint tests (Spring Boot)", "Multi-tenant isolation tests", "RBAC permission coverage", "Manual UI testing"],
         coverage: "À compléter — formal test coverage percentages not tracked",
-        tools: ["Django REST Framework test client", "pytest", "Manual browser testing"],
+        tools: ["Spring Boot Test / JUnit", "Manual browser testing"],
         notes: "Multi-tenant isolation was tested by creating two organizations with overlapping employee names and verifying that no cross-tenant data appeared in any API response. Every RBAC-restricted endpoint was tested with tokens for all three roles (HR manager, line manager, employee).",
       },
       wouldDoDifferently: [
@@ -653,239 +653,140 @@ export const projects: Project[] = [
   {
     id: "recrute-ai",
     title: "RecruteAI",
-    category: "AI · Recruitment · NLP",
+    category: "AI · Speech · NLP · Simulation",
     year: "2024",
     featured: false,
     system:
-      "Intelligent recruitment platform using ML and NLP to automate candidate matching, skill extraction, and scoring. CV goes in; ranked candidates with explainable scores come out. HR reviewers see the reasoning, not just the number.",
+      "A Python-based vocal interview simulator. The system poses interview questions, captures the candidate's spoken response, transcribes it with speech-to-text processing, and evaluates the answer using NLP techniques to produce a score and structured feedback.",
     seam:
-      "Built the NLP parsing pipeline, the ML scoring model, and the HR dashboard as one system. The scoring model output directly shapes what recruiters see — a model that can't explain its ranking is a model the reviewers won't trust.",
+      "Built the full pipeline as one system: question generation, audio capture, transcription, and NLP evaluation. The transcription quality directly determines scoring accuracy — each stage feeds the next.",
     outcome:
-      "Automated CV parsing, skill extraction, and candidate scoring with a React dashboard. Candidates ranked by match quality with score breakdown by dimension.",
-    tech: ["Python", "NLP", "Machine Learning", "React", "FastAPI"],
+      "A working vocal interview practice tool built in Python. Candidates receive questions, speak their answers, and receive an NLP-scored evaluation of their response.",
+    tech: ["Python", "Speech Recognition", "NLP", "Machine Learning"],
     repo: "https://github.com/lamii21/RecrutAI",
     demo: null,
-    metrics: "Automated CV matching · Explainable scoring",
+    metrics: "Voice input · NLP scoring · Automated feedback",
     problem:
-      "Manual CV screening is slow, inconsistent, and biased toward keyword matching rather than actual capability. Skilled candidates get filtered out before a human reads their file. Recruiters spend hours on a task that could be automated.",
+      "Practicing for technical interviews requires another person to play the interviewer — or a static list of questions with no feedback. Candidates have no way to practice verbal answers and receive structured feedback outside of real interviews.",
     solution:
-      "An ML pipeline that parses CVs, extracts skills, and scores candidates against job requirements — with a React dashboard that makes the ranking visible, filterable, and explainable by dimension.",
+      "An automated vocal interview simulator: the system poses a question, captures the candidate's spoken answer, transcribes it with speech-to-text processing, and evaluates it using NLP to provide a score and structured feedback.",
     architecture:
-      "CV upload → NLP parser → skill extractor → ML matcher → score API (FastAPI) → React HR dashboard",
+      "Question prompt → audio capture → speech-to-text transcription → NLP analysis → score + feedback",
     caseStudy: {
       context:
-        "Recruitment processes rely on manual CV review that is slow, inconsistent, and prone to keyword-matching bias. This platform automates the screening stage using NLP and ML — so recruiters spend time on candidates the system has already ranked, not on reading every file in a stack.",
+        "Built RecruteAI as a Python-based vocal interview practice tool. The core challenge was building a pipeline that goes from a spoken answer to a meaningful evaluation — covering audio capture, speech-to-text transcription, and NLP-based scoring in one system. Practice sessions previously required a human interviewer; RecruteAI removes that dependency.",
       objectives: [
-        "Automate CV parsing and skill extraction with NLP",
-        "Score candidates against job requirements with a trained ML model",
-        "Build a dashboard that makes rankings visible, filterable, and explainable",
-        "Reduce time-to-shortlist without reducing candidate quality",
+        "Generate interview questions and pose them to the candidate",
+        "Capture the candidate's spoken response as audio",
+        "Transcribe the spoken answer to text using speech-to-text processing",
+        "Evaluate the transcribed answer with NLP techniques and return a score with structured feedback",
       ],
       techChoices: [
         {
-          name: "Python / NLP",
+          name: "Python",
           reason:
-            "Natural language processing for CV parsing and skill extraction — tokenization, entity recognition, semantic similarity. Python's NLP ecosystem is the standard for this type of pipeline.",
+            "Python is the natural choice for a speech + NLP pipeline. The audio, transcription, and NLP libraries are all well-supported in Python, and a single-language stack avoided the overhead of inter-service communication.",
         },
         {
-          name: "Machine Learning",
+          name: "Speech Recognition",
           reason:
-            "Supervised scoring model trained on job-candidate match patterns. The model produces a score, not a binary filter — HR reviewers can see the breakdown and adjust thresholds.",
+            "The core technical challenge of this project is getting from spoken audio to text that NLP can evaluate. Speech-to-text accuracy directly determines the quality of the downstream scoring — the transcription stage is the most critical part of the pipeline.",
         },
         {
-          name: "FastAPI",
+          name: "NLP / ML Scoring",
           reason:
-            "Async Python API layer between the ML pipeline and the React frontend. Automatic OpenAPI documentation. The right exposure layer when the consumer is the HR dashboard, not a browser user.",
-        },
-        {
-          name: "React",
-          reason:
-            "Dashboard interface for HR managers — ranked candidate list, filtering by skill or score, individual profile view with score breakdown per dimension.",
+            "Evaluating a verbal answer requires more than keyword matching — the system needs to assess structure, relevance, and coverage. NLP analysis of the transcription produces a score and identifies specific areas for improvement.",
         },
       ],
       alternatives: [
         {
-          option: "Fine-tuned BERT for named entity recognition",
-          why: "BERT-based NER achieves higher accuracy on skill extraction but requires GPU inference infrastructure and significant training time. For a v1 that needs to demonstrate the concept, the latency and infrastructure cost are not justified.",
-          chosen: "spaCy NER with a custom skill entity matcher — faster inference, no GPU required, accuracy sufficient for the explainability goal.",
+          option: "Human interviewer for evaluation (no NLP scoring)",
+          why: "A human evaluator produces higher-quality feedback than an NLP model, but requires scheduling and availability — defeating the purpose of an always-available practice tool.",
+          chosen: "Automated NLP scoring — lower evaluation quality than a human, but available on demand and consistent across sessions.",
         },
         {
-          option: "Regex-based skill matching",
-          why: "Regex matching on skill keywords fails on synonyms and abbreviations. 'JS', 'JavaScript', and 'ES6' are the same skill family but have zero string overlap. A regex approach requires manually maintaining thousands of patterns.",
-          chosen: "NLP normalization layer that maps surface variants to canonical skill names — iteratively built from real CV data.",
-        },
-        {
-          option: "Django REST for the ML API",
-          why: "Django REST is heavier than needed for an API layer that simply wraps a Python ML pipeline. The synchronous request handling would block on model inference.",
-          chosen: "FastAPI — async handlers, automatic OpenAPI docs, and native Pydantic integration for request/response validation.",
-        },
-        {
-          option: "Single aggregate score (black box)",
-          why: "A single score hides the reasoning. HR reviewers rejected the prototype because they couldn't understand why a candidate ranked 4th — they needed to see which dimensions drove the score.",
-          chosen: "Multi-dimensional score breakdown: technical skill match, experience level alignment, domain relevance — all visible per candidate in the dashboard.",
-        },
-      ],
-      optimizations: [
-        {
-          title: "CV text extraction caching",
-          description: "Parsing a PDF or DOCX to extract text is the most expensive step in the pipeline. The same CV file submitted to multiple job postings was being re-parsed each time. Added a content hash cache — if the same file is submitted again, text extraction is skipped and the cached result is used.",
-          before: "Full PDF/DOCX parse on every submission — even re-submissions of the same file",
-          after: "Cache hit on re-submission — text extraction skipped, only scoring recomputed",
-        },
-        {
-          title: "Batch CV processing",
-          description: "When a recruiter uploads 20+ CVs at once, processing them sequentially blocks the API response. Moved to async batch processing: upload returns immediately with a job ID, processing runs in the background, dashboard polls for completion.",
-          before: "Sequential processing — API blocked until all CVs scored, timeout risk on large batches",
-          after: "Async batch — immediate response, background scoring, dashboard updates as results arrive",
-        },
-        {
-          title: "NLP normalization dictionary",
-          description: "Skill extraction accuracy improved significantly as the normalization dictionary grew. Started with 50 canonical skills, expanded to 200+ through iterative testing on real CVs. Each alias maps to a canonical form — 'ReactJS', 'React.js', 'React' all map to 'React'.",
-          before: "50 canonical skills — many real-world CV variants unrecognized",
-          after: "200+ canonical skills with full alias coverage — À compléter with exact counts",
+          option: "Typed answers instead of spoken",
+          why: "Text input avoids the speech-to-text transcription step entirely, eliminating the accuracy risk. But the goal is specifically vocal interview practice — the speaking and speech clarity aspects are part of what's being practiced.",
+          chosen: "Voice input — the transcription challenge is inherent to the goal of the project.",
         },
       ],
       testing: {
-        strategy: "Manual end-to-end testing with a curated set of CVs with known expected skill extractions. NLP normalization tested with variant skill forms. FastAPI endpoint tests for scoring API correctness.",
-        types: ["Manual CV test set (known-skill CVs)", "NLP normalization coverage (variant forms)", "FastAPI API endpoint tests"],
+        strategy: "Manual testing with sample interview questions across different response lengths and speaking speeds. Transcription accuracy tested against known answers. NLP scoring tested against a set of strong and weak sample responses.",
+        types: ["Manual transcription accuracy testing", "NLP scoring validation (strong vs. weak responses)", "End-to-end flow testing"],
         coverage: "À compléter — formal coverage percentages not tracked",
-        tools: ["FastAPI TestClient", "pytest", "Manual verification against expected extractions"],
-        notes: "NLP pipeline was tested by feeding CVs with known skills and verifying extracted skill lists matched. Normalization was tested with variant forms of the same skill: 'JS', 'JavaScript', 'ES6', 'Node.js' — verifying canonical mapping.",
+        tools: ["Manual testing", "Python"],
+        notes: "The most important test was whether the scoring produced meaningful differentiation between a strong and a weak answer to the same question. Transcription errors were catalogued to understand where accuracy dropped.",
       },
       wouldDoDifferently: [
         {
-          title: "Use sentence embeddings instead of keyword NLP.",
-          body: "The keyword normalization approach works but requires manually maintaining a synonym dictionary. Vector embeddings (sentence-transformers) would capture semantic similarity automatically — 'proficient in React' and 'React developer' would match without needing a rule.",
+          title: "Handle transcription errors explicitly.",
+          body: "When speech-to-text misrecognizes a word, the NLP scoring is penalized for a transcription failure rather than an answer quality failure. A confidence score from the transcription step — flagging low-confidence words — would let the scoring layer distinguish between unclear speech and weak content.",
         },
         {
-          title: "Add a recruiter feedback loop.",
-          body: "The model ranking is only as good as its definition of 'match'. Building in a way for HR reviewers to rate the ranking quality — 'this candidate was actually a good hire' — and using that feedback to improve the model would make it substantially more useful over time.",
-        },
-        {
-          title: "Start with a specific domain (tech CVs only).",
-          body: "A general-purpose CV parser faces enormous variation in format and terminology. Starting with only software engineering CVs would have produced a tighter normalization dictionary, cleaner extraction, and more useful skills scoring — before generalizing to other domains.",
-        },
-      ],
-      dbSchema: [
-        {
-          name: "JobPosting",
-          fields: [
-            { name: "id", type: "UUID", key: "pk" },
-            { name: "org_id", type: "UUID" },
-            { name: "title", type: "VARCHAR(200)" },
-            { name: "required_skills", type: "JSONB" },
-            { name: "experience_level", type: "VARCHAR(50)" },
-            { name: "created_at", type: "TIMESTAMP" },
-          ],
-        },
-        {
-          name: "Candidate",
-          fields: [
-            { name: "id", type: "UUID", key: "pk" },
-            { name: "posting_id", type: "UUID", key: "fk" },
-            { name: "cv_text", type: "TEXT" },
-            { name: "extracted_skills", type: "JSONB" },
-            { name: "overall_score", type: "NUMERIC(5,2)" },
-            { name: "rank", type: "INTEGER" },
-          ],
-        },
-        {
-          name: "MatchResult",
-          fields: [
-            { name: "id", type: "UUID", key: "pk" },
-            { name: "candidate_id", type: "UUID", key: "fk" },
-            { name: "posting_id", type: "UUID", key: "fk" },
-            { name: "score_breakdown", type: "JSONB" },
-            { name: "created_at", type: "TIMESTAMP" },
-          ],
-        },
-      ],
-      screenshots: [
-        {
-          label: "HR Dashboard — Ranked Candidates",
-          description: "Sorted candidate list with score chips per applicant — filterable by skill, score threshold, experience level",
-        },
-        {
-          label: "Candidate Score Breakdown",
-          description: "Per-dimension score bars: technical skills match, experience level alignment, domain relevance — visible for each candidate profile",
-        },
-        {
-          label: "CV Upload & Processing",
-          description: "Drag-and-drop CV upload (PDF/DOCX), real-time extraction status indicator, skill list preview before scoring",
+          title: "Add per-question scoring rubrics.",
+          body: "A generic NLP score across any answer to any question doesn't capture what a strong answer to that specific question looks like. Domain-specific rubrics — expected key points per question type — would produce more useful feedback.",
         },
       ],
       timeline: [
         {
-          milestone: "Domain Research",
+          milestone: "Pipeline design",
           duration: "Week 1",
           description:
-            "Researched what 'good match' means in recruitment — skills, experience weight, role specificity. The ML model needed a definition of the target before feature engineering.",
+            "Designed the audio → transcription → NLP evaluation pipeline. The transcription accuracy problem was identified as the critical dependency — everything downstream depends on it.",
         },
         {
-          milestone: "CV Parser + NLP Pipeline",
+          milestone: "Speech-to-text + NLP implementation",
           duration: "Weeks 2–3",
           description:
-            "CV text extraction, NLP entity recognition for skills, education, experience. Every CV becomes structured data — the pipeline is the foundation of the scoring model.",
+            "Audio capture and speech-to-text transcription. NLP analysis of transcribed answers — keyword coverage, structure evaluation, relevance scoring.",
         },
         {
-          milestone: "ML Matching Model",
-          duration: "Weeks 4–5",
+          milestone: "Scoring + feedback output",
+          duration: "Week 4",
           description:
-            "Feature engineering from extracted skills + job requirements. Trained scoring model. Output: a ranked score per candidate-job pair with dimension breakdown.",
-        },
-        {
-          milestone: "FastAPI + React Dashboard",
-          duration: "Weeks 6–8",
-          description:
-            "Score API, then the HR dashboard — ranked candidate list, filters by skill or score, individual profile view with score breakdown by dimension.",
+            "Score calculation and structured feedback generation from NLP output. Testing against sample answers of varying quality.",
         },
       ],
       challenges: [
         {
-          title: "Defining 'match' formally",
-          body: "A match is not just keyword overlap. A senior candidate for a junior role is also a mismatch. The model needed a definition of good match that captured level, relevance, and breadth of skills.",
+          title: "Speech-to-text accuracy determines scoring quality",
+          body: "A transcription error silently degrades the NLP score — the system penalizes content it never heard correctly. This is a fundamental constraint of the speech → text → NLP pipeline.",
           solution:
-            "Feature engineering that included skill-level alignment (not just presence), experience weight, and role-specific importance scores. The training signal came from feedback on historical candidates.",
+            "Testing with varied speaking speeds and noise conditions to understand the accuracy boundaries. Designed the scoring output to surface transcription confidence alongside the NLP score.",
         },
         {
-          title: "CV format diversity",
-          body: "CVs arrive in PDF and DOCX with wildly different layouts. Skill names are inconsistent — 'JavaScript', 'JS', and 'Node.js' refer to overlapping but distinct concepts.",
+          title: "Defining what 'good answer' means in NLP terms",
+          body: "An interview answer is assessed on structure, relevance, and coverage of expected points — dimensions that don't map directly to standard NLP metrics.",
           solution:
-            "Format-agnostic text extraction, then an NLP normalization layer that maps surface variations to canonical skill names. The normalization dictionary was built iteratively from real CV data.",
-        },
-        {
-          title: "Explainability for HR reviewers",
-          body: "A score without explanation is not trusted. 'Why is this candidate ranked 4th?' needs a real answer — not just a number.",
-          solution:
-            "Score breakdown by category: technical skills match, experience level alignment, domain relevance. The dashboard shows which factors drove the score, visible per candidate.",
+            "Translated interview evaluation criteria into NLP-computable features: keyword coverage, sentence-level structure, length appropriateness. The scoring is a weighted combination, not a single metric.",
         },
       ],
       impact: [
         {
           metric: "Automated",
-          description: "CV parsing, skill extraction, and scoring in one pipeline",
+          description: "Voice input to NLP-scored feedback in one Python pipeline",
         },
         {
-          metric: "Ranked",
-          description: "Candidates ordered by match quality, not submission order",
+          metric: "Always-available",
+          description: "Practice sessions without scheduling a human interviewer",
         },
         {
-          metric: "Explainable",
-          description: "Score breakdown per dimension visible in the HR dashboard",
+          metric: "Spoken practice",
+          description: "Specifically targets verbal communication, not just written answers",
         },
       ],
       learned: [
         {
-          title: "Domain expertise shapes the model.",
-          body: "The ML model is only as good as its definition of 'match'. Getting that definition right required understanding the recruitment domain before building features — what HR reviewers actually care about, not what's easy to quantify.",
+          title: "Transcription accuracy is the pipeline's bottleneck.",
+          body: "Every downstream component — NLP analysis, scoring, feedback — depends on the transcription being correct. A transcription error doesn't produce a visible failure; it produces a silently wrong score. Understanding the accuracy boundary of the transcription step was prerequisite to trusting the output.",
         },
         {
-          title: "Explainability is a feature, not an afterthought.",
-          body: "HR reviewers don't trust a black-box score. Building the score breakdown into the interface from the start — not as a later addition — made the tool actually usable in practice.",
+          title: "NLP scoring requires a definition of 'good'.",
+          body: "A generic NLP metric doesn't capture what a strong interview answer looks like. Translating human evaluation criteria — structure, coverage, relevance — into computable features was the key design challenge.",
         },
         {
-          title: "NLP normalization is the hardest part.",
-          body: "Parsing text from a CV is easy. Knowing that 'React.js', 'ReactJS', and 'React' are the same skill — and that 'JavaScript' and 'Node.js' are related but distinct — requires a normalization layer that takes real domain knowledge to build.",
+          title: "Voice input changes the user experience entirely.",
+          body: "Building for voice interaction is different from building for typed input. The pipeline needs to handle pauses, filler words, and varying audio quality as part of normal use — not as edge cases.",
         },
       ],
     },
@@ -1800,33 +1701,6 @@ export const projects: Project[] = [
         { title: "Prisma's schema-first approach is a clean design tool.", body: "Schema defined in code, migrations auto-generated, type-safe queries — a complete feedback loop." },
       ],
     },
-  },
-
-  // ── 9. Yazaki Internship ────────────────────────────────────────────────────
-  {
-    id: "yazaki",
-    title: "Yazaki Internship",
-    category: "Industrial Automation · Python",
-    year: "2025",
-    featured: false,
-    system:
-      "Built during my internship at Yazaki — a global automotive manufacturer. A Python script that cut the weekly BOM processing cycle from 8 hours of manual Excel work to under 4 minutes.",
-    seam:
-      "The BOM files were Excel-based. I had to understand the manufacturing logic before I could write a script that processed it correctly — domain knowledge first, automation second.",
-    outcome:
-      "Reduced weekly BOM processing from approximately 8 hours of manual work to under 4 minutes of automated processing.",
-    honest:
-      "Version one broke on Excel formatting variants I hadn't seen in the test files. Defensive parsing is harder than happy-path parsing. Version two handled every production format variant without exception.",
-    tech: ["Python", "openpyxl", "pandas", "Power BI"],
-    repo: null,
-    demo: null,
-    metrics: "8 hours → 4 minutes per week",
-    problem:
-      "BOM files from manufacturing systems arrived as complex, inconsistently-formatted Excel exports — ~8 hours of manual processing per week, prone to transcription errors.",
-    solution:
-      "A Python script that understands the manufacturing domain logic embedded in the file structure. Domain knowledge first, automation second.",
-    architecture:
-      "openpyxl (parsing) → pandas (transform logic) → Power BI output; defensive parsing built to handle every edge-case formatting variant encountered.",
   },
 
   // ── 10. OrderHub ────────────────────────────────────────────────────────────────
