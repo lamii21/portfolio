@@ -1856,7 +1856,7 @@ export const projects: Project[] = [
 
   // ── 12. NovaBank360 ──────────────────────────────────────────────────────────
   {
-    id: "fintech-predict",
+    id: "novabank360",
     title: "NovaBank360",
     category: "Machine Learning · Finance",
     year: "2024",

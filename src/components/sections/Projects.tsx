@@ -878,7 +878,7 @@ function ProjectVisual({ id }: { id: string }) {
     );
   }
 
-  if (id === "fintech-predict") {
+  if (id === "novabank360") {
     return (
       <div className="absolute inset-0" style={{ background: "var(--srf-1)" }} aria-hidden="true">
         {BG}

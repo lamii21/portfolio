@@ -1632,7 +1632,7 @@ function ArchitectureDiagram({ project }: { project: Project }) {
   }
 
   // ── FinTech Predict ── CSV → Preprocessing → Scaler → Window → LSTM → MC Dropout → Output
-  if (id === "fintech-predict") {
+  if (id === "novabank360") {
     return (
       <div style={containerStyle} aria-hidden="true">
         {BG}{dotGrid}
