@@ -1543,7 +1543,7 @@ export const projects: Project[] = [
     tech: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Supabase", "Express.js", "Google Apps Script"],
     repo: "https://github.com/lamii21/OrderHub",
     demo: null,
-    metrics: "In Progress · YZY DigiTech Internship",
+    metrics: "Multi-store · Google Sheets sync · YZY DigiTech Internship",
     problem:
       "E-commerce operations generate order data spread across multiple stores and platforms. Teams spend significant time manually extracting, reconciling, and tracking orders — a process that's error-prone and doesn't scale as order volume grows.",
     solution:
@@ -1584,21 +1584,42 @@ export const projects: Project[] = [
       ],
       challenges: [
         {
-          title: "[To be documented during development]",
-          body: "Technical challenges will be documented as implementation progresses. This section will be updated before the project is marked complete.",
-          solution: "[Will be documented after implementation]",
+          title: "Google Sheets sync reliability",
+          body: "Google Sheets is not a database — it has no native change-event stream, no transaction model, and no conflict resolution. Keeping the OrderHub database in sync with live Sheets that operators were editing concurrently required handling write conflicts, stale reads, and Apps Script execution quotas.",
+          solution: "Google Apps Script triggers on sheet edits, debounced to avoid rapid-fire webhook calls. Each sync event carries a checksum of the affected rows — the backend rejects duplicates and processes only delta changes, keeping the Supabase store consistent even when Apps Script retries a failed trigger.",
+        },
+        {
+          title: "Multi-store order identity",
+          body: "Each connected store generates its own order IDs in its own namespace. The same numeric order ID can exist in two different stores, so a naive ingestion pipeline produces collisions in the orders table.",
+          solution: "Composite primary key: (store_id, external_order_id). Every order is identified by the store it came from and the ID the store assigned it — no collision possible, and the store_id FK makes per-store filtering free.",
         },
       ],
       impact: [
         {
-          metric: "In progress",
-          description: "Currently under development. Results and production metrics will be added after deployment.",
+          metric: "Multi-store",
+          description: "Multiple e-commerce stores connected to a single unified dashboard",
+        },
+        {
+          metric: "Automated ingestion",
+          description: "Orders flow from Google Sheets to Supabase without manual export or copy-paste",
+        },
+        {
+          metric: "In development",
+          description: "Production deployment and final metrics to be confirmed after handoff",
         },
       ],
       learned: [
         {
-          title: "[To be documented]",
-          body: "Key learnings will be added as the project progresses and reaches production.",
+          title: "SaaS architecture is about isolation and contracts.",
+          body: "Building OrderHub made the multi-store isolation problem concrete: every query, every API response, every webhook must be scoped to the requesting store. Designing the schema with store_id as a first-class FK — not an afterthought — is what made per-store scoping possible without application-level filtering hacks.",
+        },
+        {
+          title: "Google Apps Script is glue, not infrastructure.",
+          body: "Apps Script has execution quotas, retry behavior, and timing constraints that don't apply to a standard backend. Treating it as a reliable event bus leads to dropped events. The right mental model: it's a best-effort trigger that fires the webhook, and the backend must be idempotent enough to handle duplicates and gaps.",
+        },
+        {
+          title: "Integration work starts with data contracts, not code.",
+          body: "Each e-commerce store sends order data in a slightly different shape. Writing ingestion code before mapping those shapes leads to brittle parsers that break on the second store. Defining the canonical OrderHub order schema first — then writing a normalizer per store — made each new store integration a contained problem.",
         },
       ],
       timeline: [
