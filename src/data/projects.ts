@@ -1730,6 +1730,169 @@ export const projects: Project[] = [
       "An LSTM model paired with a clean, inspectable preprocessing pipeline. The focus was on understanding prediction boundaries, not chasing arbitrary accuracy targets.",
     architecture:
       "Pandas (preprocessing) → Keras LSTM → Matplotlib; pipeline clarity prioritized so every model input and output stays explainable.",
+    caseStudy: {
+      context:
+        "Built NovaBank360 as a financial risk prediction model using LSTM — a recurrent architecture suited to time-series dependencies in sequential financial data. The project started from an existing dataset. The core thesis: a model's output is only as trustworthy as the pipeline that produced its inputs. The preprocessing and the model were built together, not one after the other.",
+      objectives: [
+        "Train an LSTM model to predict financial risk from sequential data",
+        "Build a transparent preprocessing pipeline — every transformation inspectable and documented",
+        "Understand and characterize prediction boundaries, not just optimize loss",
+        "Visualize model behavior with Matplotlib to validate outputs aren't artifacts of the pipeline",
+      ],
+      techChoices: [
+        {
+          name: "TensorFlow / Keras",
+          reason:
+            "Keras provides a clean API for defining LSTM layers, configuring sequence inputs, and adding regularization (Dropout, EarlyStopping). The high-level abstraction let me focus on architecture decisions rather than low-level tensor management.",
+        },
+        {
+          name: "Pandas",
+          reason:
+            "Tabular financial data manipulation — feature engineering, rolling windows, normalization, train/test split with temporal ordering preserved. Pandas operations are inspectable at every step, which was essential to the 'transparent pipeline' goal.",
+        },
+        {
+          name: "Scikit-learn",
+          reason:
+            "MinMaxScaler for feature normalization before LSTM input, and evaluation metrics. Scikit-learn scalers serialize cleanly — the same scaler used at training time can be applied at inference time, preventing data leakage.",
+        },
+        {
+          name: "Matplotlib",
+          reason:
+            "Visualizing predicted vs. actual risk, training loss curves, and feature distributions. Plots were the primary tool for understanding where the model failed and whether failures were model problems or pipeline problems.",
+        },
+      ],
+      alternatives: [
+        {
+          option: "ARIMA / traditional time-series models",
+          why: "ARIMA is interpretable and well-suited to stationary time series. Financial risk data has non-linear dependencies that ARIMA cannot capture — its assumptions about linearity and stationarity don't hold for the patterns in this dataset.",
+          chosen: "LSTM — captures long-range temporal dependencies and non-linear patterns without requiring stationarity assumptions.",
+        },
+        {
+          option: "Random Forest / Gradient Boosting (tabular ML)",
+          why: "Tree-based models perform well on tabular data and are fast to train. They treat each row independently — there is no native concept of sequence. Financial risk depends on what happened in the previous N periods, not just the current snapshot.",
+          chosen: "LSTM with sequence windows — the model explicitly receives the last N time steps as its input, preserving the temporal structure.",
+        },
+        {
+          option: "Larger LSTM model (more layers, more units)",
+          why: "A deeper model has more capacity to capture complex patterns. On a financial dataset of this size, it also overfits faster — the model memorizes the training data instead of generalizing.",
+          chosen: "Constrained LSTM architecture with Dropout and EarlyStopping — fewer parameters, regularization at each recurrent layer, training stopped when validation loss stopped improving.",
+        },
+      ],
+      optimizations: [
+        {
+          title: "Dropout on LSTM layers to reduce overfitting",
+          description: "The model initially memorized training sequences — training loss dropped smoothly while validation loss diverged after a few epochs. Added recurrent Dropout within the LSTM cells (not just between layers) to prevent co-adaptation of units on specific sequences.",
+          before: "Validation loss diverged from training loss after ~10 epochs — classic overfitting signature",
+          after: "Dropout rate tuned to reduce the train/validation gap — model generalizes rather than memorizes",
+        },
+        {
+          title: "EarlyStopping on validation loss",
+          description: "Without early stopping, training continued past the generalization peak — validation loss increased while training loss kept decreasing. EarlyStopping with patience=10 halts training at the epoch with the lowest validation loss and restores those weights.",
+          before: "Fixed epoch count — training continued into overfit territory",
+          after: "EarlyStopping with weight restoration — model saved at its generalization peak, not its training minimum",
+        },
+        {
+          title: "Temporal train/test split — no shuffle",
+          description: "Standard random train/test splits leak future data into the training set when applied to time series. A random split means some 'training' examples come from later in the sequence than 'test' examples — the model sees the future. Applied a strict temporal split: all training data precedes all test data.",
+          before: "Random split — future data leaking into training set, inflated evaluation metrics",
+          after: "Temporal split — training set ends before test set begins, evaluation reflects real-world conditions",
+        },
+      ],
+      testing: {
+        strategy: "Train/validation/test split with temporal ordering preserved. Loss curves plotted at each epoch to detect overfitting early. Predicted vs. actual risk visualized with Matplotlib for qualitative evaluation alongside quantitative metrics.",
+        types: ["Temporal train/validation/test split", "Loss curve monitoring (training vs. validation)", "Predicted vs. actual visualization", "Overfitting diagnosis via Dropout ablation"],
+        tools: ["Keras callbacks (EarlyStopping, ModelCheckpoint)", "Matplotlib", "Scikit-learn metrics"],
+        notes: "Overfitting was the dominant failure mode throughout. Each architectural decision — number of layers, units, Dropout rate — was evaluated by its effect on the train/validation gap, not on training loss alone.",
+      },
+      wouldDoDifferently: [
+        {
+          title: "Baseline model first.",
+          body: "Starting with LSTM immediately made it hard to know whether the complexity was justified. A simple linear regression or ARIMA baseline first would have quantified exactly how much the LSTM improved over a trivial model — and would have set a realistic expectation for what 'good' looks like on this data.",
+        },
+        {
+          title: "Feature importance analysis before architecture tuning.",
+          body: "Tuning LSTM architecture while unsure which input features actually contain signal is backwards. A feature importance pass — even with a simple tree model — before LSTM training would have identified which features to include and which to drop before spending training time on them.",
+        },
+        {
+          title: "Track experiments systematically.",
+          body: "Each configuration — Dropout rate, sequence length, number of layers — was evaluated manually by reading Matplotlib plots. A lightweight experiment tracker (even a spreadsheet) mapping hyperparameter combinations to validation loss would have made the search faster and reproducible.",
+        },
+      ],
+      timeline: [
+        {
+          milestone: "Data exploration and preprocessing",
+          duration: "Week 1–2",
+          description:
+            "Exploratory analysis of the existing dataset — distributions, missing values, temporal structure. Feature engineering: rolling statistics, normalization with MinMaxScaler, sequence window construction. Temporal train/test split.",
+        },
+        {
+          milestone: "Baseline LSTM architecture",
+          duration: "Week 3",
+          description:
+            "First LSTM model: two layers, no regularization. Trained to convergence. Observed overfitting immediately — validation loss diverged from training loss within 15 epochs.",
+        },
+        {
+          milestone: "Regularization and architecture tuning",
+          duration: "Week 4",
+          description:
+            "Introduced recurrent Dropout, EarlyStopping, and ModelCheckpoint. Tested different sequence window lengths and layer sizes. Tracked train/validation gap across configurations.",
+        },
+        {
+          milestone: "Visualization and evaluation",
+          duration: "Week 5",
+          description:
+            "Predicted vs. actual risk plots. Loss curve analysis. Characterizing prediction boundaries — where the model is reliable and where it isn't.",
+        },
+      ],
+      challenges: [
+        {
+          title: "Overfitting on financial time-series data",
+          body: "Financial data is noisy and has relatively few truly independent observations — sequential data points are correlated. The LSTM learned training sequences instead of generalizing patterns. Validation loss diverged while training loss kept decreasing.",
+          solution:
+            "Recurrent Dropout within LSTM cells (not just between layers), EarlyStopping with patience=10 and weight restoration to the best epoch, and a reduced model complexity. The combination of regularization and early stopping contained the train/validation gap.",
+        },
+        {
+          title: "Temporal data leakage",
+          body: "A random train/test split on time-series data leaks future information into the training set — some 'training' examples are chronologically later than 'test' examples. The model appears to generalize but is actually trained on the future.",
+          solution:
+            "Strict temporal split: the training set ends at a fixed cutpoint, the test set begins after it. No shuffling at any stage of the pipeline. The evaluation metric reflects what the model would actually see in deployment.",
+        },
+        {
+          title: "Pipeline transparency vs. model complexity",
+          body: "As the model grew more complex, it became harder to tell whether a poor prediction was a model failure or a pipeline failure — bad preprocessing feeding a correct model looks the same as correct preprocessing feeding a bad model.",
+          solution:
+            "Built the preprocessing pipeline as a series of inspectable steps, each one visualized with Matplotlib before the next step consumed its output. Model errors could be traced back through the pipeline to their origin.",
+        },
+      ],
+      impact: [
+        {
+          metric: "LSTM",
+          description: "Recurrent architecture for sequential financial risk prediction",
+        },
+        {
+          metric: "Transparent pipeline",
+          description: "Every preprocessing step inspectable — model failures traceable to their source",
+        },
+        {
+          metric: "Overfitting solved",
+          description: "Dropout + EarlyStopping reduced train/validation gap to an acceptable range",
+        },
+      ],
+      learned: [
+        {
+          title: "Preprocessing is half the model.",
+          body: "A bad preprocessing step produces inputs that look reasonable and silently degrade model output. Building the pipeline as a series of visualized, validated steps — not as a block of code run once before training — is what makes model behavior interpretable.",
+        },
+        {
+          title: "Overfitting in LSTM requires recurrent regularization, not just layer dropout.",
+          body: "Standard Dropout between layers reduces overfitting on the output. Recurrent Dropout within the LSTM cell prevents the hidden state from memorizing specific sequence patterns. Both are necessary — layer Dropout alone was not sufficient.",
+        },
+        {
+          title: "Prediction boundaries matter more than peak accuracy.",
+          body: "A model that achieves high accuracy on easy cases and fails silently on hard ones is dangerous in a risk context. Understanding where the model is reliable — and documenting those boundaries — is more valuable than optimizing aggregate metrics.",
+        },
+      ],
+    },
   },
 ];
 
