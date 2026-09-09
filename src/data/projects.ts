@@ -449,7 +449,7 @@ export const projects: Project[] = [
         {
           option: "Dedicated ML microservice (separate Python service)",
           why: "A separate service for the AI scoring would require inter-service communication (HTTP or message queue), additional deployment complexity, and network latency on every recruitment scoring call.",
-          chosen: "Embedded Python AI module within the Django backend — same process, no network hop, simpler deployment at this scale.",
+          chosen: "Embedded AI module within the Spring Boot backend — same process, no network hop, simpler deployment at this scale.",
         },
       ],
       optimizations: [
@@ -485,7 +485,7 @@ export const projects: Project[] = [
         },
         {
           title: "Separate the AI scoring into its own service.",
-          body: "Embedding the AI module in the Django backend was fast to build, but it creates a tight coupling between the scoring model and the API release cycle. A dedicated FastAPI service for AI scoring would let the model be updated independently of the rest of the platform.",
+          body: "Embedding the AI module in the Spring Boot backend was fast to build, but it creates a tight coupling between the scoring model and the API release cycle. A dedicated FastAPI microservice for AI scoring would let the model be updated independently of the rest of the platform.",
         },
         {
           title: "Add Playwright E2E tests from the start.",
