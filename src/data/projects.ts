@@ -1706,6 +1706,152 @@ export const projects: Project[] = [
       "A state machine for each card (face-down, face-up, matched) that drives the JavaFX animations directly. The UI reads from the card state — the animation is a consequence of the state, not a separate concern.",
     architecture:
       "JavaFX Scene → CardGrid → Card (state: face-down / face-up / matched) → match-check logic → score update",
+    caseStudy: {
+      context:
+        "Built KawaiiMemoryGame as a Java desktop project to learn JavaFX and apply object-oriented design to a real interactive system. A memory card game is deceptively simple — the rules are trivial, but the implementation forces you to think carefully about state: what does a card know about itself, who decides when a match is valid, and how does the visual update follow the game logic without duplicating it.",
+      objectives: [
+        "Playable card-matching memory game with a complete game loop",
+        "Card flip state machine with three states: face-down, face-up, matched",
+        "JavaFX animations driven by card state — not managed separately from game logic",
+        "Match-checking logic that handles the two-card selection window correctly",
+        "Score tracking updated on every successful match",
+        "Kawaii visual aesthetic with custom card graphics",
+      ],
+      techChoices: [
+        {
+          name: "Java",
+          reason:
+            "Strong object-oriented model maps directly to the game's entities: Card, CardGrid, GameController. Each card is an object with its own state — not an index in an array with state stored elsewhere.",
+        },
+        {
+          name: "JavaFX",
+          reason:
+            "JavaFX's scene graph and animation API are a natural fit for a card game. RotateTransition handles the card flip animation; the scene graph represents the card grid. JavaFX treats UI components as objects, which matches how the game models its cards.",
+        },
+      ],
+      alternatives: [
+        {
+          option: "Java Swing",
+          why: "Swing was an option as the older Java UI toolkit. Its event model is more imperative and its rendering pipeline doesn't support hardware-accelerated transitions natively — the flip animation would have required manual repaint scheduling.",
+          chosen: "JavaFX — hardware-accelerated scene graph, built-in RotateTransition, and a cleaner component model for a game with many interactive elements.",
+        },
+        {
+          option: "Storing card state outside the Card object",
+          why: "An earlier approach stored all card states in a flat array in the GameController — the card itself was just a visual component. This created two sources of truth: the array (game state) and what was displayed (UI state). They drifted.",
+          chosen: "State lives on the Card object. The UI reads from card.getState() — the animation is a consequence of a state transition, not an independent operation that has to stay synchronized.",
+        },
+      ],
+      optimizations: [
+        {
+          title: "State-driven animation — no duplicate state",
+          description: "The card flip animation is triggered by a state change on the Card object, not by a separate animation controller that tracks which cards are flipped. CardGrid observes each Card's state; when state changes to FACE_UP or MATCHED, the corresponding RotateTransition fires. Visual state and game state are the same object.",
+          before: "Animation controller and game state array maintained separately — easy to get out of sync",
+          after: "Single source of truth: card.setState() triggers both the game logic update and the animation",
+        },
+        {
+          title: "Two-card selection window with lock",
+          description: "The game must accept exactly two card flips before running match-check — and block all clicks during the flip animation and the reveal delay. Without a lock, fast clicks could select a third card before the first pair was evaluated.",
+          before: "No click guard — rapid clicks could select more than two cards before match-check ran",
+          after: "Selection lock engaged after the second card flip; unlocked only after match-check completes and non-matched cards return to face-down",
+        },
+        {
+          title: "Card grid shuffle at game start",
+          description: "Cards are placed in the grid using a shuffled symbol list — each symbol appears exactly twice, positions randomized with Collections.shuffle(). The shuffle is seeded at game start, not hardcoded, so every new game is a different layout.",
+          before: "Fixed card positions — same layout every game",
+          after: "Collections.shuffle() at game start — randomized layout each play session",
+        },
+      ],
+      testing: {
+        strategy: "Manual playtesting — complete game loops from start to all-matched win state. Edge case testing for rapid clicks, matching the same card twice, and simultaneous card animations.",
+        types: ["Manual game loop testing (start to win)", "Edge case: double-click on same card", "Edge case: click during flip animation", "Edge case: all pairs matched simultaneously"],
+        tools: ["Manual play testing", "Java debugger for state inspection"],
+        notes: "The two most important edge cases: clicking a card while it was mid-animation (the selection lock solved this), and clicking the same card twice to 'match' it with itself (the match-check compares card identities, not just symbols).",
+      },
+      wouldDoDifferently: [
+        {
+          title: "Define the state machine formally before coding.",
+          body: "The Card state machine emerged organically — FACE_DOWN, FACE_UP, MATCHED were added as needed. Starting with a formal state diagram, including all transitions and guards, would have prevented the click-during-animation edge case from being discovered through playtesting rather than design.",
+        },
+        {
+          title: "Separate the game engine from the JavaFX rendering layer.",
+          body: "The GameController is currently coupled to JavaFX — it creates UI nodes directly. Separating a pure-Java game model (no JavaFX imports) from a JavaFX renderer that reads from it would make the game logic testable without launching a JavaFX application.",
+        },
+      ],
+      timeline: [
+        {
+          milestone: "Game design and card model",
+          duration: "Week 1",
+          description:
+            "Defined the card state machine and the game rules. Which object owns the state? Who runs the match-check? How does the selection window work? Answered these before writing JavaFX code.",
+        },
+        {
+          milestone: "JavaFX scene and card grid",
+          duration: "Week 2",
+          description:
+            "Built the JavaFX scene: CardGrid lays out Card nodes in a grid. Each Card renders its face-down and face-up sides. RotateTransition wired to state changes.",
+        },
+        {
+          milestone: "Game loop and match logic",
+          duration: "Week 3",
+          description:
+            "Selection window, match-check logic, click lock during animation, score update on match, win condition when all pairs matched.",
+        },
+        {
+          milestone: "Kawaii visual design",
+          duration: "Week 4",
+          description:
+            "Custom card graphics, kawaii symbol set, color palette, and card-back pattern. Visual polish — matched cards stay face-up with a distinct visual treatment.",
+        },
+      ],
+      challenges: [
+        {
+          title: "UI state and game state staying consistent",
+          body: "A card flip is both a visual event (animation) and a game event (state change). Managing them separately means they can get out of sync — the card looks face-up but the game doesn't know it is, or vice versa.",
+          solution:
+            "State lives on the Card object. The animation is triggered by observing state changes — not called directly by the game controller. One state change causes both the game update and the visual update, in that order.",
+        },
+        {
+          title: "The two-card selection window",
+          body: "The game must accept exactly two card clicks, run match-check, then either keep matched cards face-up or flip non-matched cards back. Clicks during the animation window must be ignored.",
+          solution:
+            "A selection lock in the GameController — engaged after the second card is flipped, released after match-check and the return animation complete. Click events check the lock before doing anything.",
+        },
+        {
+          title: "Matching by identity, not just symbol",
+          body: "Two cards can show the same symbol. A naive match-check comparing symbols would allow a card to match itself if clicked twice.",
+          solution:
+            "Match-check compares card object references first: if card1 == card2, ignore the second click. Symbol comparison only runs when the two cards are different objects.",
+        },
+      ],
+      impact: [
+        {
+          metric: "Complete game loop",
+          description: "Playable from start to win state — shuffle, flip, match, score, win",
+        },
+        {
+          metric: "State machine",
+          description: "Card state drives animations and match logic — no duplicate state",
+        },
+        {
+          metric: "Desktop",
+          description: "Standalone JavaFX application — no browser, no server",
+        },
+      ],
+      learned: [
+        {
+          title: "State machines make interactive systems predictable.",
+          body: "A card with an explicit state (FACE_DOWN / FACE_UP / MATCHED) and defined transitions is easier to reason about than a card with a boolean 'isFlipped' and separate flags for 'isMatched' and 'isAnimating'. Explicit states prevent the combinations that don't make sense from existing.",
+        },
+        {
+          title: "One source of truth eliminates a whole class of bugs.",
+          body: "When game state and visual state were maintained separately, they drifted. When the Card object owns its state and the UI reads from it, there is nothing to drift. The bug category disappears.",
+        },
+        {
+          title: "JavaFX's scene graph is an object model, not a paint API.",
+          body: "JavaFX components are objects with properties and event handlers — not pixels to be redrawn. Once I stopped thinking about when to repaint and started thinking about what the scene graph should look like given the current state, the animation code became much simpler.",
+        },
+      ],
+    },
   },
 
   // ── 12. NovaBank360 ──────────────────────────────────────────────────────────
