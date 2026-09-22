@@ -876,82 +876,10 @@ export function CaseStudyView({ project, allProjects }: CaseStudyViewProps) {
               )}
             </section>
 
-            {/* ── Section 10: Demo & Screenshots ──────────────────────── */}
-            <section id="cs-media" aria-label="Demo and screenshots">
-              <SectionHeading number="10" title="Demo &amp; Screenshots" />
-              {cs?.screenshots && cs.screenshots.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {cs.screenshots.map((shot, i) => (
-                    <motion.div
-                      key={i}
-                      className="rounded-xl border overflow-hidden"
-                      style={{ borderColor: "var(--brd)" }}
-                      initial={reduced ? false : { opacity: 0, y: 14 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.07, duration: duration.slow, ease: ease.out }}
-                      viewport={viewport}
-                    >
-                      {/* Placeholder frame */}
-                      <div
-                        className="relative flex flex-col items-center justify-center gap-3 aspect-video"
-                        style={{ background: "var(--srf-1)" }}
-                      >
-                        <span style={{ fontSize: "28px", opacity: 0.4 }} aria-hidden="true">📸</span>
-                        <span
-                          className="inline-flex items-center px-2.5 py-1 rounded-full uppercase font-medium tracking-[0.12em]"
-                          style={{
-                            fontSize: "9px",
-                            background: "rgba(183,110,121,0.10)",
-                            color: "var(--acc)",
-                            borderWidth: "1px",
-                            borderStyle: "dashed",
-                            borderColor: "var(--acc)",
-                          }}
-                        >
-                          À compléter
-                        </span>
-                      </div>
-                      {/* Caption */}
-                      <div
-                        className="px-4 py-3 border-t"
-                        style={{ background: "var(--srf-0)", borderColor: "var(--brd)" }}
-                      >
-                        <p
-                          className="font-medium mb-0.5"
-                          style={{ fontSize: "12px", color: "var(--txt-muted)" }}
-                        >
-                          {shot.label}
-                        </p>
-                        <p
-                          className="font-light leading-snug"
-                          style={{ fontSize: "11.5px", color: "var(--txt-subtle)" }}
-                        >
-                          {shot.description}
-                        </p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              ) : (
-                <div
-                  className="flex items-center gap-4 py-8 px-6 rounded-xl border"
-                  style={{ borderColor: "var(--brd)", borderStyle: "dashed", background: "var(--srf-1)" }}
-                >
-                  <span style={{ fontSize: "24px" }} aria-hidden="true">🎬</span>
-                  <p
-                    className="font-light italic"
-                    style={{ fontSize: "13.5px", color: "var(--txt-subtle)" }}
-                  >
-                    À compléter — screenshots and demo recording.
-                  </p>
-                </div>
-              )}
-            </section>
-
             {/* ── Section 11: Impact ───────────────────────────────────── */}
             {cs && (
               <section id="cs-impact" aria-label="Results and impact">
-                <SectionHeading number="11" title="Impact" />
+                <SectionHeading number="10" title="Impact" />
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                   {cs.impact.map(({ metric, description }, i) => (
                     <motion.div
@@ -984,7 +912,7 @@ export function CaseStudyView({ project, allProjects }: CaseStudyViewProps) {
             {/* ── Section 12: What I Learned ──────────────────────────── */}
             {cs && (
               <section id="cs-learned" aria-label="What I learned">
-                <SectionHeading number="12" title="What I Learned" />
+                <SectionHeading number="11" title="What I Learned" />
                 <div className="space-y-8">
                   {cs.learned.map((item, i) => (
                     <motion.div
