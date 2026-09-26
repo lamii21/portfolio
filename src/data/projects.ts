@@ -273,24 +273,6 @@ export const projects: Project[] = [
           ],
         },
       ],
-      screenshots: [
-        {
-          label: "OCR capture flow",
-          description: "Student photographs handwritten equation → system shows the parsed expression for confirmation before solving — catches misreadings before they reach SymPy",
-        },
-        {
-          label: "Step-by-step solver UI",
-          description: "SymPy solution rendered as sequential algebraic transformations — each intermediate step visible, formatted to match what a student would write on paper",
-        },
-        {
-          label: "Three.js 3D function graph",
-          description: "Mathematical function rendered as an interactive 3D surface — student can rotate, zoom, and inspect the graph to understand geometric behavior",
-        },
-        {
-          label: "Progress dashboard",
-          description: "Per-topic completion rate, recent exercise history, difficulty progression over time — derived from the Progress join table",
-        },
-      ],
       timeline: [
         {
           milestone: "Schema Design",
@@ -544,24 +526,6 @@ export const projects: Project[] = [
             { name: "overall_score", type: "NUMERIC(5,2)" },
             { name: "status", type: "VARCHAR(50)" },
           ],
-        },
-      ],
-      screenshots: [
-        {
-          label: "HR Manager Dashboard",
-          description: "Headcount overview, leave pipeline, open positions, recruitment funnel — all derived from live PostgreSQL aggregates",
-        },
-        {
-          label: "AI Recruitment Panel",
-          description: "Ranked candidate list with score chips — each candidate expandable to show per-dimension score breakdown (technical skills, experience level, domain match)",
-        },
-        {
-          label: "Employee Profile View",
-          description: "Contract details, leave history, department assignment, manager chain — role-scoped: employees see their own data, managers see their team",
-        },
-        {
-          label: "Leave Approval Workflow",
-          description: "Request creation → manager review → approval/rejection — status tracked in LeaveRequest table, visible across all role views simultaneously",
         },
       ],
       timeline: [
@@ -935,24 +899,6 @@ export const projects: Project[] = [
           ],
         },
       ],
-      screenshots: [
-        {
-          label: "React Dashboard — BOM Hierarchy View",
-          description: "Tree visualization of the assembly structure — top-level assembly expands to sub-assemblies, sub-assemblies expand to individual parts with quantities",
-        },
-        {
-          label: "Processing Log",
-          description: "Per-file processing status, format variant detected, record count, processing time, error message for failed files",
-        },
-        {
-          label: "FastAPI — OpenAPI Documentation",
-          description: "Auto-generated /docs endpoint showing all BOM API endpoints, request/response schemas, and example payloads",
-        },
-        {
-          label: "Before/After — Weekly Processing Comparison",
-          description: "8 hours of manual Excel work vs. 4 minutes of automated pipeline — the quantified impact of the automation",
-        },
-      ],
       timeline: [
         {
           milestone: "Domain Study",
@@ -1189,24 +1135,6 @@ export const projects: Project[] = [
           ],
         },
       ],
-      screenshots: [
-        {
-          label: "Product Page with Color Recommendations",
-          description: "Product detail with inline complementary product carousel — each recommended item shows its compatibility type (complementary / analogous / neutral)",
-        },
-        {
-          label: "Mobile View — Progressive Disclosure",
-          description: "Recommendation panel collapsed by default on mobile → expanded on tap — same content, context-appropriate presentation",
-        },
-        {
-          label: "Cart & Checkout Flow",
-          description: "Cart summary with product thumbnails → customer details form → order confirmation with order ID",
-        },
-        {
-          label: "Admin — Product Management",
-          description: "Product list with color attribute chips visible — hue, tone, saturation editable per product — recommendation preview on update",
-        },
-      ],
       timeline: [
         {
           milestone: "Product Catalog + Color Schema",
@@ -1436,24 +1364,6 @@ export const projects: Project[] = [
             { name: "reason", type: "NVARCHAR(100)" },
             { name: "recorded_at", type: "DATETIME" },
           ],
-        },
-      ],
-      screenshots: [
-        {
-          label: "Order Entry — Waiter View",
-          description: "Table number selector, menu item grid with availability indicators, running order total — one-tap item addition",
-        },
-        {
-          label: "Inventory Dashboard",
-          description: "Current stock per menu item, low-stock visual indicators, quick adjustment for manual stock corrections",
-        },
-        {
-          label: "Daily Revenue Report",
-          description: "Orders by hour, top-selling items, total revenue for the day — all queried from live Order data, no manual input",
-        },
-        {
-          label: "Owner Admin Panel",
-          description: "Menu management: add/edit/remove items, set price, toggle availability — changes reflect immediately in the waiter view",
         },
       ],
       timeline: [
