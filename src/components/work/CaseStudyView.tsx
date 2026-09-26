@@ -19,7 +19,6 @@ const NAV_SECTIONS = [
   { id: "cs-challenges", label: "Challenges" },
   { id: "cs-perf",       label: "Optimizations" },
   { id: "cs-testing",    label: "Testing" },
-  { id: "cs-media",      label: "Demo" },
   { id: "cs-impact",     label: "Impact" },
   { id: "cs-learned",    label: "What I Learned" },
 ] as const;
@@ -1554,6 +1553,74 @@ function ArchitectureDiagram({ project }: { project: Project }) {
           <path id="yz-path" d="M93,110 L638,110" fill="none"/>
 
           <text x="15" y="32" fontSize="8" fill="var(--txt-subtle)" fontFamily="monospace" opacity="0.6">Processing Pipeline · Yazaki BOM Automation</text>
+        </svg>
+      </div>
+    );
+  }
+
+  // ── MindTrace ── Preferences → MCDA → Verdict + confidence
+  if (id === "mindtrace") {
+    return (
+      <div style={containerStyle} aria-hidden="true">
+        <svg width="100%" height="100%" viewBox="0 0 480 200" preserveAspectRatio="xMidYMid meet">
+          <rect x="10" y="82" width="72" height="32" rx="6"
+            fill="rgba(130,180,212,0.10)" stroke="rgba(130,180,212,0.30)" strokeWidth="1" />
+          <text x="46" y="100" textAnchor="middle" fill="rgba(130,180,212,0.75)" fontSize="7.5" fontFamily="monospace">preferences</text>
+          <text x="46" y="110" textAnchor="middle" fill="rgba(130,180,212,0.45)" fontSize="6" fontFamily="monospace">+ interviews</text>
+          <line x1="82" y1="98" x2="110" y2="98" stroke="rgba(130,180,212,0.3)" strokeWidth="1" />
+          <rect x="112" y="68" width="90" height="62" rx="8"
+            fill="rgba(183,110,121,0.08)" stroke="rgba(183,110,121,0.38)" strokeWidth="1.2" />
+          <text x="157" y="88" textAnchor="middle" fill="rgba(183,110,121,0.85)" fontSize="8" fontFamily="monospace" fontWeight="600">MCDA Engine</text>
+          <text x="157" y="101" textAnchor="middle" fill="rgba(183,110,121,0.55)" fontSize="6" fontFamily="monospace">scoring · weights</text>
+          <text x="157" y="114" textAnchor="middle" fill="rgba(183,110,121,0.45)" fontSize="6" fontFamily="monospace">confidence intervals</text>
+          <text x="157" y="124" textAnchor="middle" fill="rgba(183,110,121,0.35)" fontSize="5.5" fontFamily="monospace">deterministic</text>
+          <line x1="202" y1="98" x2="228" y2="98" stroke="rgba(183,110,121,0.3)" strokeWidth="1" />
+          <rect x="230" y="78" width="76" height="40" rx="6"
+            fill="rgba(107,168,120,0.10)" stroke="rgba(107,168,120,0.35)" strokeWidth="1" />
+          <text x="268" y="96" textAnchor="middle" fill="rgba(107,168,120,0.85)" fontSize="8" fontFamily="monospace" fontWeight="600">ACCEPT</text>
+          <text x="268" y="108" textAnchor="middle" fill="rgba(107,168,120,0.55)" fontSize="6.5" fontFamily="monospace">p=0.87 ± 0.06</text>
+          <line x1="306" y1="98" x2="330" y2="98" stroke="rgba(107,168,120,0.25)" strokeWidth="1" />
+          <rect x="332" y="82" width="80" height="30" rx="6"
+            fill="rgba(130,180,212,0.07)" stroke="rgba(130,180,212,0.20)" strokeWidth="0.8" />
+          <text x="372" y="99" textAnchor="middle" fill="rgba(130,180,212,0.55)" fontSize="6.5" fontFamily="monospace">LLM: explain</text>
+          <text x="372" y="109" textAnchor="middle" fill="rgba(130,180,212,0.35)" fontSize="5.5" fontFamily="monospace">never decides</text>
+        </svg>
+      </div>
+    );
+  }
+
+  // ── MEOWVERSE ── Upload → CV → Grad-CAM → verdict + provenance
+  if (id === "meowverse") {
+    return (
+      <div style={containerStyle} aria-hidden="true">
+        <svg width="100%" height="100%" viewBox="0 0 480 200" preserveAspectRatio="xMidYMid meet">
+          <rect x="10" y="80" width="60" height="36" rx="6"
+            fill="rgba(183,110,121,0.08)" stroke="rgba(183,110,121,0.28)" strokeWidth="1" />
+          <circle cx="40" cy="90" r="9" fill="rgba(183,110,121,0.15)" stroke="rgba(183,110,121,0.30)" strokeWidth="0.8" />
+          <circle cx="37" cy="88" r="1.8" fill="rgba(183,110,121,0.7)" />
+          <circle cx="43" cy="88" r="1.8" fill="rgba(183,110,121,0.7)" />
+          <polygon points="34,83 36,79 38,83" fill="rgba(183,110,121,0.25)" />
+          <polygon points="42,83 44,79 46,83" fill="rgba(183,110,121,0.25)" />
+          <text x="40" y="110" textAnchor="middle" fill="rgba(183,110,121,0.6)" fontSize="6" fontFamily="monospace">upload</text>
+          <line x1="70" y1="98" x2="92" y2="98" stroke="rgba(183,110,121,0.25)" strokeWidth="1" />
+          <rect x="94" y="72" width="76" height="52" rx="7"
+            fill="rgba(130,180,212,0.08)" stroke="rgba(130,180,212,0.30)" strokeWidth="1" />
+          <text x="132" y="90" textAnchor="middle" fill="rgba(130,180,212,0.80)" fontSize="7.5" fontFamily="monospace">MobileNetV3</text>
+          <text x="132" y="102" textAnchor="middle" fill="rgba(130,180,212,0.55)" fontSize="6" fontFamily="monospace">87.5% top-1</text>
+          <text x="132" y="114" textAnchor="middle" fill="rgba(130,180,212,0.40)" fontSize="5.5" fontFamily="monospace">Grad-CAM ↗</text>
+          <line x1="170" y1="98" x2="194" y2="98" stroke="rgba(130,180,212,0.25)" strokeWidth="1" />
+          <rect x="196" y="76" width="72" height="44" rx="7"
+            fill="rgba(212,167,106,0.08)" stroke="rgba(212,167,106,0.30)" strokeWidth="1" />
+          <text x="232" y="94" textAnchor="middle" fill="rgba(212,167,106,0.80)" fontSize="7" fontFamily="monospace">FAISS</text>
+          <text x="232" y="106" textAnchor="middle" fill="rgba(212,167,106,0.55)" fontSize="6" fontFamily="monospace">576-dim embed</text>
+          <text x="232" y="116" textAnchor="middle" fill="rgba(212,167,106,0.40)" fontSize="5.5" fontFamily="monospace">similarity</text>
+          <line x1="268" y1="98" x2="290" y2="98" stroke="rgba(212,167,106,0.25)" strokeWidth="1" />
+          <rect x="292" y="76" width="80" height="44" rx="7"
+            fill="rgba(107,168,120,0.08)" stroke="rgba(107,168,120,0.30)" strokeWidth="1" />
+          <text x="332" y="93" textAnchor="middle" fill="rgba(107,168,120,0.80)" fontSize="7" fontFamily="monospace">British Short.</text>
+          <rect x="296" y="100" width="72" height="12" rx="10"
+            fill="rgba(107,168,120,0.10)" stroke="rgba(107,168,120,0.25)" strokeWidth="0.7" />
+          <text x="332" y="109" textAnchor="middle" fill="rgba(107,168,120,0.65)" fontSize="5.5" fontFamily="monospace" letterSpacing="0.06em">REAL PREDICTION</text>
         </svg>
       </div>
     );

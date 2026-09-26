@@ -1441,19 +1441,17 @@ export const projects: Project[] = [
     category: "SaaS · E-commerce · Automation · Full-Stack",
     year: "2025",
     featured: false,
-    status: "in-progress",
+    status: "complete",
     system:
       "A SaaS order management platform built during my internship at YZY DigiTech. OrderHub centralises orders from multiple e-commerce stores, automates ingestion via Google Apps Script and webhooks, and exposes a unified dashboard backed by Supabase.",
     seam:
       "Building the full stack as one system: Next.js frontend and API routes, an Express.js webhook layer, the Google Apps Script automation that connects existing Google Sheets workflows to the platform, and Supabase as the persistent store.",
     outcome:
-      "Currently under development. Results and production metrics will be added after deployment.",
-    honest:
-      "This project is in active development during my internship at YZY DigiTech. Architecture and implementation details reflect the current state of the build — not a completed system.",
+      "Delivered at the end of my internship at YZY DigiTech Technologies. OrderHub centralises orders from multiple e-commerce stores, automates ingestion via Google Apps Script and webhooks, and exposes a unified dashboard backed by Supabase.",
     tech: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Supabase", "Express.js", "Google Apps Script"],
     repo: "https://github.com/lamii21/OrderHub",
     demo: null,
-    metrics: "Multi-store · Google Sheets sync · YZY DigiTech Internship",
+    metrics: "Multi-store · Google Sheets sync · Delivered at YZY DigiTech",
     problem:
       "E-commerce operations generate order data spread across multiple stores and platforms. Teams spend significant time manually extracting, reconciling, and tracking orders — a process that's error-prone and doesn't scale as order volume grows.",
     solution:
@@ -1759,6 +1757,357 @@ export const projects: Project[] = [
         {
           title: "JavaFX's scene graph is an object model, not a paint API.",
           body: "JavaFX components are objects with properties and event handlers — not pixels to be redrawn. Once I stopped thinking about when to repaint and started thinking about what the scene graph should look like given the current state, the animation code became much simpler.",
+        },
+      ],
+    },
+  },
+
+  // ── 13. MindTrace ────────────────────────────────────────────────────────────
+  {
+    id: "mindtrace",
+    title: "MindTrace",
+    category: "AI · Decision Systems · Architecture",
+    year: "2026",
+    featured: false,
+    status: "in-progress",
+    system:
+      "An auditable AI decision twin — a system that learns how an individual weighs trade-offs and simulates their reasoning on new decisions. Outputs structured verdicts (ACCEPT / REJECT / UNCERTAIN) with confidence intervals, per-factor contribution analysis, and complete decision traces.",
+    seam:
+      "The architectural constraint that defines the system: LLMs handle only extraction and explanation. All decision-critical operations — scoring, aggregation, confidence calibration, contradiction detection — are deterministic, unit-tested, and fully reproducible from event logs. The LLM does not make the decision.",
+    outcome:
+      "Currently in Phase 0 — architecture and specification. Domain models, MCDA mathematics, confidence formulas, API contracts, security threat modeling, and implementation milestones are documented. Application code is being built.",
+    tech: ["Python", "FastAPI", "PostgreSQL", "pgvector", "Next.js", "TypeScript", "Redis", "Docker", "numpy", "scipy"],
+    repo: "https://github.com/lamii21/Mindtrace---AI-Decision-Twin",
+    demo: null,
+    metrics: "Architecture phase · MCDA scoring · Deterministic decision engine",
+    problem:
+      "AI systems that make decisions are opaque — no explanation of how they weighted factors, no reproducible trace, no way to audit why a verdict was reached. An LLM acting as a decision-maker cannot be trusted in high-stakes contexts because its reasoning is neither deterministic nor verifiable.",
+    solution:
+      "Separate concerns strictly: LLMs extract and explain, deterministic engines decide. Every decision is produced by a MCDA scoring pipeline — Multi-Criteria Decision Analysis with explicit weights, credible intervals, and contradiction detection. The complete decision trace is stored and reproducible from the event log.",
+    architecture:
+      "Preference learning (interviews + observed choices) → MCDA scoring engine (deterministic) → confidence calibration → verdict (ACCEPT/REJECT/UNCERTAIN) + evidence trail → LLM explanation layer → FastAPI → Next.js dashboard",
+    caseStudy: {
+      context:
+        "MindTrace is a personal architecture project exploring the boundary between AI and decision systems. The core thesis: an AI decision twin is only useful if its reasoning is auditable. Most AI decision tools produce outputs that cannot be traced, reproduced, or challenged — which makes them unsuitable for any high-stakes use case. Phase 0 is architecture and specification; the implementation is in progress.",
+      objectives: [
+        "Learn individual decision preferences from interviews, observed choices, and declared weights",
+        "Score new decisions with a deterministic MCDA engine — not an LLM",
+        "Produce structured verdicts with confidence intervals and per-factor contribution breakdown",
+        "Store complete decision traces — every verdict reproducible from the event log",
+        "LLM layer for extraction and explanation only — never for scoring or aggregation",
+      ],
+      techChoices: [
+        {
+          name: "Python / FastAPI",
+          reason:
+            "FastAPI for the API layer with Pydantic v2 validation on all inputs and outputs. The MCDA scoring engine is pure Python with numpy/scipy — no ML framework needed for deterministic arithmetic.",
+        },
+        {
+          name: "PostgreSQL + pgvector",
+          reason:
+            "Relational storage for decision events, preference profiles, and audit trails. pgvector for semantic similarity in the preference-learning layer — finding past decisions that are structurally similar to the new one.",
+        },
+        {
+          name: "LLM (extraction only)",
+          reason:
+            "LLMs are used for two tasks only: extracting structured preference data from natural language interviews, and generating natural-language explanations of decisions already made by the deterministic engine. Deliberately excluded from the scoring path.",
+        },
+        {
+          name: "Next.js / TypeScript",
+          reason:
+            "Dashboard for reviewing decision traces, editing preference weights, and inspecting confidence intervals. TanStack Query for async state; visx/D3 for the contribution breakdown visualizations.",
+        },
+      ],
+      alternatives: [
+        {
+          option: "LangChain / agent framework for the decision layer",
+          why: "Agent frameworks route decisions through LLM chains — the reasoning is non-deterministic and not reproducible. The same input can produce different verdicts on different runs. Explicitly rejected in the project's Architecture Decision Records.",
+          chosen: "Deterministic MCDA engine — same input always produces the same score, credible interval, and verdict. Reproducible from the event log.",
+        },
+        {
+          option: "Neo4j (graph database for preference modeling)",
+          why: "A graph database could model the relationships between preferences and past decisions. Rejected because PostgreSQL with pgvector handles the similarity search requirement, and adding Neo4j would require managing two separate storage systems.",
+          chosen: "PostgreSQL + pgvector — one database, standard SQL for the relational data, vector similarity for preference retrieval.",
+        },
+        {
+          option: "JWT for session management",
+          why: "JWTs are stateless and cannot be individually revoked — a compromised token remains valid until expiry. For a system storing personal decision data, individual session revocation is a hard requirement.",
+          chosen: "Opaque session tokens stored in the database — any session can be revoked instantly, with a complete audit trail of session events.",
+        },
+      ],
+      testing: {
+        strategy: "Architecture phase — test specifications written before application code. All decision-critical components (MCDA scoring, confidence calibration, contradiction detection) are designed to be unit-tested in isolation with deterministic inputs and outputs.",
+        types: ["Unit tests for MCDA scoring engine", "Property-based tests for confidence calibration", "API contract tests (OpenAPI spec)", "Audit trail reproducibility tests"],
+        tools: ["pytest", "Pydantic v2 (validation)", "OpenTelemetry (observability)"],
+        notes: "The core testability requirement: given an event log, the exact verdict and confidence interval must be reproducible. This is a design constraint, not a test strategy.",
+      },
+      wouldDoDifferently: [],
+      timeline: [
+        {
+          milestone: "Architecture & Domain Modeling",
+          duration: "Phase 0 (current)",
+          description:
+            "Domain models, MCDA mathematics, confidence formulas, API contracts, security threat modeling. Architecture Decision Records for every major technical choice.",
+        },
+        {
+          milestone: "Core scoring engine",
+          duration: "Phase 1 (upcoming)",
+          description:
+            "MCDA scoring pipeline — preference weights, factor scoring, aggregation, confidence interval calculation, contradiction detection.",
+        },
+        {
+          milestone: "Preference learning + API",
+          duration: "Phase 2 (upcoming)",
+          description:
+            "Structured interview flow, observed-choice learning, FastAPI endpoints, PostgreSQL schema with pgvector.",
+        },
+        {
+          milestone: "Dashboard + LLM explanation layer",
+          duration: "Phase 3 (upcoming)",
+          description:
+            "Next.js decision review dashboard, LLM explanation generation (separate from scoring), decision trace visualization.",
+        },
+      ],
+      challenges: [
+        {
+          title: "Keeping the LLM out of the decision path",
+          body: "The temptation in any AI system is to route more and more logic through the LLM because it's flexible. In a decision twin, this produces a system whose verdicts cannot be reproduced or audited — the LLM's 'reasoning' is a post-hoc narrative, not a verifiable computation.",
+          solution:
+            "A strict architectural boundary enforced by the component design: the LLM receives the decision trace as input and produces a natural-language explanation as output. It never has write access to the scoring state. The ADRs document this as a non-negotiable constraint.",
+        },
+        {
+          title: "Confidence calibration for preference-based scoring",
+          body: "A preference profile built from limited observations produces scores with wide uncertainty. A verdict with no confidence measure is not useful — ACCEPT with 51% confidence is not the same as ACCEPT with 92% confidence.",
+          solution:
+            "Credible intervals computed from the preference data coverage — how many similar past decisions exist, how consistent the preference weights are across contexts. The confidence interval is a first-class output, not an annotation.",
+        },
+      ],
+      impact: [
+        {
+          metric: "Auditable",
+          description: "Complete decision trace — every verdict reproducible from the event log",
+        },
+        {
+          metric: "Deterministic",
+          description: "MCDA scoring engine: same input, same output, every time",
+        },
+        {
+          metric: "In progress",
+          description: "Phase 0 complete — implementation underway",
+        },
+      ],
+      learned: [
+        {
+          title: "Architecture is a constraint system, not a plan.",
+          body: "The most important decisions in MindTrace are the ones about what the system will not do — the LLM will not score, will not aggregate, will not make verdicts. Constraints defined upfront make the implementation cleaner than a flexible design that grows into complexity.",
+        },
+        {
+          title: "Reproducibility is a first-class requirement, not a test property.",
+          body: "Designing for reproducibility from the start — event sourcing, deterministic scoring, no LLM in the critical path — produces an architecture where reproducibility is natural. Adding it after the fact to a non-deterministic system is expensive.",
+        },
+      ],
+    },
+  },
+
+  // ── 14. MEOWVERSE AI ─────────────────────────────────────────────────────────
+  {
+    id: "meowverse",
+    title: "MEOWVERSE AI",
+    category: "AI · Computer Vision · Full-Stack",
+    year: "2026",
+    featured: false,
+    system:
+      "A full-stack web application that analyzes cat photos using computer vision and generative AI. MobileNetV3-Small breed classifier, Grad-CAM explainability, FAISS visual similarity search, and an optional generative layer for stories and portraits — with every output labeled as real prediction, AI-generated, or demo fallback.",
+    seam:
+      "Built the full pipeline as one system: image upload → preprocessing → ML inference (breed + color + embeddings) → optional Grad-CAM → deterministic personality scoring → optional generative AI. The honest-labeling constraint ran through every layer — no output reaches the user without a clear provenance tag.",
+    outcome:
+      "87.5% top-1 / 98.6% top-3 accuracy on held-out test set. 457 backend tests passing, 193 frontend tests passing. Production-grade security throughout: opaque session tokens, SQL-level privacy, rate limiting per AI endpoint, content-type validation.",
+    tech: ["Python", "FastAPI", "PyTorch", "Next.js", "TypeScript", "PostgreSQL", "Redis", "OpenCV", "FAISS", "Docker"],
+    repo: "https://github.com/lamii21/MEOWVERSE-AI-",
+    demo: null,
+    metrics: "87.5% top-1 accuracy · 457 backend tests · Grad-CAM explainability",
+    problem:
+      "Most AI demo apps hide their failure modes — confident wrong predictions, opaque reasoning, hallucinated outputs presented as facts. A computer vision app that doesn't surface where it's uncertain and why it decided what it decided isn't demonstrating AI engineering, it's demonstrating a wrapper.",
+    solution:
+      "A full production-grade CV pipeline with explicit provenance labeling at every output. Grad-CAM shows why the breed prediction was made. Confidence scores are shown, including cases where the model was confidently wrong. Every generative output is labeled AI-generated — not presented as a real prediction.",
+    architecture:
+      "Upload → OpenCV preprocessing → MobileNetV3-Small (breed) + color segmentation + FAISS embedding → Grad-CAM → personality scoring (deterministic rules) → optional Claude/OpenAI generative layer → Next.js App Router",
+    caseStudy: {
+      context:
+        "Built MEOWVERSE AI as a project to demonstrate production-grade ML engineering — not just model accuracy, but the full stack: inference pipeline, explainability, security, test coverage, and honest labeling of AI outputs. The cat domain was chosen deliberately: it's narrow enough to fine-tune a classifier with real accuracy numbers, and the generative layer (stories, portraits) makes the honest-labeling constraint meaningful.",
+      objectives: [
+        "Breed classification: MobileNetV3-Small fine-tuned on Oxford-IIIT Pet dataset",
+        "Grad-CAM implemented from scratch — explainability, not just prediction",
+        "FAISS visual similarity search using real 576-dim embeddings",
+        "Deterministic personality scoring — rules engine, no ML, no randomness",
+        "Generative layer with clear labeling: AI-generated stories and portrait images",
+        "Production security: opaque tokens, SQL-level privacy, rate limiting, upload validation",
+        "Test coverage: 457 backend tests, 193 frontend tests",
+      ],
+      techChoices: [
+        {
+          name: "PyTorch / MobileNetV3-Small",
+          reason:
+            "MobileNetV3-Small is a lightweight architecture suitable for fine-tuning on a constrained dataset (Oxford-IIIT Pet — 12 cat breeds). PyTorch gives full control over the training loop and the Grad-CAM implementation — no AutoML wrapper that hides how the model works.",
+        },
+        {
+          name: "FAISS",
+          reason:
+            "Exact cosine-similarity search over real 576-dim visual embeddings. FAISS provides sub-millisecond similarity search at this scale. The embeddings are real — extracted from the classifier's penultimate layer, not randomly initialized.",
+        },
+        {
+          name: "Grad-CAM (from scratch)",
+          reason:
+            "Grad-CAM implemented without a library to understand the gradient flow, not just call a function. The explainability heatmap shows which image regions drove the breed prediction — making the model's reasoning inspectable.",
+        },
+        {
+          name: "FastAPI / PostgreSQL / Redis",
+          reason:
+            "FastAPI for async inference endpoints. PostgreSQL with Alembic migrations for user data, session tokens, and the cat universe. Redis for rate limiting per AI endpoint — preventing abuse of the Claude and OpenAI generation calls.",
+        },
+        {
+          name: "Anthropic Claude + OpenAI",
+          reason:
+            "Claude for personality stories from the scoring output. OpenAI for image-conditioned portrait generation. Both labeled explicitly as AI-generated — the provenance is shown, not hidden.",
+        },
+      ],
+      alternatives: [
+        {
+          option: "Larger model (ResNet50, EfficientNet)",
+          why: "Larger models would likely achieve higher accuracy on the Oxford-IIIT dataset. They also require more compute, slower inference, and more memory — making real-time inference in a web app more expensive.",
+          chosen: "MobileNetV3-Small — lightweight enough for fast inference, fine-tuned to 87.5% top-1 accuracy on the held-out test set.",
+        },
+        {
+          option: "JWT for session management",
+          why: "JWTs are stateless and cannot be individually revoked. A session token stored in the database can be revoked per-user, per-device, or globally — necessary for a platform with privacy requirements.",
+          chosen: "Opaque session tokens with database-side storage — individual revocation, complete session audit trail.",
+        },
+        {
+          option: "ML-based personality scoring",
+          why: "Using the breed classifier's embeddings to predict personality would create a system where the personality score is as opaque as the breed prediction. A wrong personality score with no explanation is worse than no personality score.",
+          chosen: "Deterministic rules engine — 8 trait scores computed from explicit rules, reproducible, no randomness. The output is explainable because the rules are readable.",
+        },
+        {
+          option: "Approximate nearest-neighbor search (Annoy, ScaNN)",
+          why: "At the scale of this project, approximate search introduces recall loss without meaningful speed benefit. Exact cosine similarity with FAISS is fast enough for the dataset size.",
+          chosen: "FAISS exact search — correct results, sub-millisecond at this scale.",
+        },
+      ],
+      optimizations: [
+        {
+          title: "Grad-CAM from scratch — full gradient control",
+          description: "Implementing Grad-CAM without a library required hooking into the backward pass manually. The benefit: full control over which layer's gradients are used, and no dependency on a library that abstracts away what's actually happening in the model.",
+          before: "Black-box prediction — no indication of which image region drove the classification",
+          after: "Grad-CAM heatmap overlaid on the input image — which regions contributed most to the breed prediction",
+        },
+        {
+          title: "Rate limiting per AI endpoint via Redis",
+          description: "Claude and OpenAI calls are expensive and abusable. Redis-backed rate limiting per session per endpoint prevents a single user from exhausting the generation budget. The rate limit is per AI endpoint, not global — generation and inference have different limits.",
+          before: "No rate limiting — any session could trigger unlimited Claude/OpenAI calls",
+          after: "Redis rate limit per session per AI endpoint — generation budget enforced, inference unaffected",
+        },
+        {
+          title: "Decompression bomb remediation",
+          description: "Discovered during functional testing: certain crafted image uploads could trigger excessive memory allocation during decompression. Added content-type validation, file size limits, and a decompression guard before any image reaches the ML pipeline.",
+          before: "Unconstrained image decompression — potential memory exhaustion on malicious uploads",
+          after: "Content-type validation + size limit + decompression guard before the ML pipeline",
+        },
+      ],
+      testing: {
+        strategy: "457 backend tests covering inference pipeline, API endpoints, security controls, and ML output validation. 193 frontend tests. Real Docker container verification of ML inference — the model runs in the same environment as production.",
+        types: ["ML inference correctness (breed predictions)", "API endpoint tests (FastAPI)", "Security controls (auth, rate limiting, upload validation)", "Frontend component tests (Vitest)", "Docker container ML verification"],
+        coverage: "457 backend / 193 frontend tests passing",
+        tools: ["pytest", "Vitest", "Docker", "FastAPI TestClient"],
+        notes: "4.4% of test predictions were confidently wrong — deliberately reported, not hidden. Identified non-cat robustness limitation: no detection gate exists for non-cat uploads, documented honestly in the project.",
+      },
+      wouldDoDifferently: [
+        {
+          title: "Add a non-cat detection gate.",
+          body: "The classifier will confidently assign a breed to any image — a dog, a car, a landscape. A binary cat/non-cat gate before the breed classifier would prevent confidently wrong predictions on out-of-domain inputs. The limitation was identified and documented; the fix is the next architectural addition.",
+        },
+        {
+          title: "Fine-tune on a larger, more diverse dataset.",
+          body: "Oxford-IIIT Pet covers 12 cat breeds with controlled photography. Real-world cat photos — low light, partial views, mixed breeds — reduce accuracy significantly. A broader dataset with more pose and lighting variation would improve generalization.",
+        },
+      ],
+      timeline: [
+        {
+          milestone: "ML pipeline design",
+          duration: "Week 1–2",
+          description:
+            "Model selection (MobileNetV3-Small), dataset preparation (Oxford-IIIT Pet), training loop, evaluation on held-out set. 87.5% top-1 accuracy established.",
+        },
+        {
+          milestone: "Grad-CAM + FAISS",
+          duration: "Week 3",
+          description:
+            "Grad-CAM implemented from scratch — backward hook, gradient extraction, heatmap generation. FAISS index built from 576-dim penultimate-layer embeddings.",
+        },
+        {
+          milestone: "FastAPI + PostgreSQL + security layer",
+          duration: "Week 4–5",
+          description:
+            "API endpoints, database schema, Alembic migrations, opaque session tokens, SQL-level privacy, rate limiting, upload validation. Decompression bomb vulnerability found and fixed.",
+        },
+        {
+          milestone: "Generative layer + labeling system",
+          duration: "Week 6",
+          description:
+            "Claude integration for personality stories, OpenAI for portrait generation. Every output labeled: real prediction / AI-generated / demo fallback.",
+        },
+        {
+          milestone: "Frontend + test suite",
+          duration: "Week 7–8",
+          description:
+            "Next.js App Router, TanStack Query, Vitest. 457 backend tests, 193 frontend tests. Docker container ML inference verification.",
+        },
+      ],
+      challenges: [
+        {
+          title: "Honest labeling across a heterogeneous output pipeline",
+          body: "The app produces four types of output: real ML predictions, deterministic rule outputs, AI-generated text, and AI-generated images. Each has different reliability and provenance. Presenting them uniformly would mislead users about what they're seeing.",
+          solution:
+            "A provenance tag on every output: REAL PREDICTION (ML), COMPUTED (rules engine), AI GENERATED (LLM/image model), DEMO FALLBACK (when generation fails). The label is part of the component, not an afterthought.",
+        },
+        {
+          title: "Confidently wrong predictions",
+          body: "4.4% of test predictions were confidently wrong — high confidence score, wrong breed. Hiding this number would misrepresent the model's reliability.",
+          solution:
+            "Reported in the project documentation as a known failure rate. Confidence scores are shown in the UI — users see when the model is uncertain. The non-cat detection limitation (no gate for out-of-domain uploads) is documented explicitly.",
+        },
+        {
+          title: "Security on AI generation endpoints",
+          body: "LLM and image generation endpoints are expensive per-call and abusable. Standard auth middleware was not enough — a valid session could still exhaust the generation budget.",
+          solution:
+            "Redis-backed per-session per-endpoint rate limiting, separate from authentication. Generation calls and inference calls have different limits. Upload validation and decompression bomb protection added after a vulnerability was found during testing.",
+        },
+      ],
+      impact: [
+        {
+          metric: "87.5% top-1",
+          description: "Breed classification accuracy on held-out Oxford-IIIT Pet test set",
+        },
+        {
+          metric: "457 + 193 tests",
+          description: "Backend and frontend test suites — including ML inference, security, and API coverage",
+        },
+        {
+          metric: "Grad-CAM",
+          description: "Explainability implemented from scratch — why the model decided what it decided",
+        },
+      ],
+      learned: [
+        {
+          title: "Explainability is an engineering task, not a feature.",
+          body: "Implementing Grad-CAM from scratch — rather than calling a library — forced me to understand what the gradients actually represent and which layer they should be extracted from. The explainability output is more trustworthy when you understand the mechanism that produces it.",
+        },
+        {
+          title: "Honest failure reporting builds more trust than hidden errors.",
+          body: "Documenting the 4.4% confident-wrong rate and the non-cat limitation explicitly makes the project more credible, not less. A model with no documented failure modes is either not tested or misrepresented.",
+        },
+        {
+          title: "Security in ML apps requires domain-specific thinking.",
+          body: "Standard web security (auth, HTTPS, CORS) is necessary but insufficient for an ML app. Decompression bomb attacks via image upload, rate limiting per AI endpoint, and SQL-level privacy enforcement are ML-specific concerns that standard security checklists don't cover.",
         },
       ],
     },

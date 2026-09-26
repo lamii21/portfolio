@@ -878,6 +878,91 @@ function ProjectVisual({ id }: { id: string }) {
     );
   }
 
+  if (id === "mindtrace") {
+    return (
+      <div className="absolute inset-0" style={{ background: "var(--srf-1)" }} aria-hidden="true">
+        {BG}
+        <svg width="100%" height="100%" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid meet">
+          {/* Decision flow: input → scoring layers → verdict */}
+          {/* Input node */}
+          <rect x="20" y="85" width="60" height="30" rx="6"
+            fill="rgba(130,180,212,0.12)" stroke="rgba(130,180,212,0.35)" strokeWidth="1" />
+          <text x="50" y="104" textAnchor="middle" fill="rgba(130,180,212,0.8)" fontSize="7" fontFamily="monospace">preferences</text>
+          {/* Arrow */}
+          <line x1="80" y1="100" x2="105" y2="100" stroke="rgba(130,180,212,0.3)" strokeWidth="1" markerEnd="url(#arr)" />
+          {/* MCDA box */}
+          <rect x="108" y="72" width="72" height="56" rx="8"
+            fill="rgba(183,110,121,0.10)" stroke="rgba(183,110,121,0.40)" strokeWidth="1.2" />
+          <text x="144" y="95" textAnchor="middle" fill="rgba(183,110,121,0.9)" fontSize="7.5" fontFamily="monospace" fontWeight="600">MCDA</text>
+          <text x="144" y="108" textAnchor="middle" fill="rgba(183,110,121,0.6)" fontSize="6" fontFamily="monospace">scoring</text>
+          <text x="144" y="120" textAnchor="middle" fill="rgba(183,110,121,0.5)" fontSize="5.5" fontFamily="monospace">deterministic</text>
+          {/* Arrow */}
+          <line x1="180" y1="100" x2="205" y2="100" stroke="rgba(183,110,121,0.3)" strokeWidth="1" markerEnd="url(#arr2)" />
+          {/* Verdict */}
+          <rect x="208" y="82" width="70" height="36" rx="6"
+            fill="rgba(107,168,120,0.10)" stroke="rgba(107,168,120,0.35)" strokeWidth="1" />
+          <text x="243" y="99" textAnchor="middle" fill="rgba(107,168,120,0.9)" fontSize="7" fontFamily="monospace" fontWeight="600">ACCEPT</text>
+          <text x="243" y="110" textAnchor="middle" fill="rgba(107,168,120,0.5)" fontSize="5.5" fontFamily="monospace">p=0.87 ± 0.06</text>
+          {/* LLM label (below) */}
+          <text x="144" y="148" textAnchor="middle" fill="rgba(130,180,212,0.4)" fontSize="6" fontFamily="monospace">LLM: explain only ↑</text>
+          <defs>
+            <marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="rgba(130,180,212,0.4)" />
+            </marker>
+            <marker id="arr2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="rgba(183,110,121,0.4)" />
+            </marker>
+          </defs>
+        </svg>
+      </div>
+    );
+  }
+
+  if (id === "meowverse") {
+    return (
+      <div className="absolute inset-0" style={{ background: "var(--srf-1)" }} aria-hidden="true">
+        {BG}
+        <svg width="100%" height="100%" viewBox="0 0 320 200" preserveAspectRatio="xMidYMid meet">
+          {/* Cat breed card + confidence bar + Grad-CAM hint */}
+          <rect x="30" y="30" width="80" height="80" rx="10"
+            fill="rgba(183,110,121,0.08)" stroke="rgba(183,110,121,0.25)" strokeWidth="1" />
+          {/* Cat face (simple) */}
+          <circle cx="70" cy="62" r="18" fill="rgba(183,110,121,0.15)" stroke="rgba(183,110,121,0.30)" strokeWidth="1" />
+          <circle cx="64" cy="59" r="2.5" fill="rgba(183,110,121,0.6)" />
+          <circle cx="76" cy="59" r="2.5" fill="rgba(183,110,121,0.6)" />
+          <path d="M66,68 Q70,72 74,68" stroke="rgba(183,110,121,0.5)" strokeWidth="1" fill="none" strokeLinecap="round" />
+          {/* Ears */}
+          <polygon points="55,46 60,36 65,46" fill="rgba(183,110,121,0.20)" stroke="rgba(183,110,121,0.30)" strokeWidth="0.8" />
+          <polygon points="75,46 80,36 85,46" fill="rgba(183,110,121,0.20)" stroke="rgba(183,110,121,0.30)" strokeWidth="0.8" />
+          {/* Grad-CAM overlay hint */}
+          <rect x="30" y="30" width="80" height="80" rx="10"
+            fill="url(#gcam)" opacity="0.35" />
+          {/* Breed label */}
+          <text x="70" y="122" textAnchor="middle" fill="rgba(183,110,121,0.8)" fontSize="7" fontFamily="monospace">British Shorthair</text>
+          {/* Confidence bar */}
+          <rect x="130" y="40" width="110" height="8" rx="3" fill="rgba(107,168,120,0.10)" stroke="rgba(107,168,120,0.2)" strokeWidth="0.8" />
+          <rect x="130" y="40" width="96" height="8" rx="3" fill="rgba(107,168,120,0.45)" />
+          <text x="130" y="60" fill="rgba(107,168,120,0.7)" fontSize="6.5" fontFamily="monospace">top-1  87.5%</text>
+          {/* Test badge */}
+          <rect x="130" y="70" width="110" height="22" rx="4"
+            fill="rgba(130,180,212,0.08)" stroke="rgba(130,180,212,0.20)" strokeWidth="0.8" />
+          <text x="185" y="82" textAnchor="middle" fill="rgba(130,180,212,0.75)" fontSize="6.5" fontFamily="monospace">457 backend tests ✓</text>
+          <text x="185" y="92" textAnchor="middle" fill="rgba(130,180,212,0.55)" fontSize="6" fontFamily="monospace">193 frontend tests ✓</text>
+          {/* Provenance tag */}
+          <rect x="130" y="102" width="72" height="14" rx="10"
+            fill="rgba(212,167,106,0.10)" stroke="rgba(212,167,106,0.25)" strokeWidth="0.8" />
+          <text x="166" y="112" textAnchor="middle" fill="rgba(212,167,106,0.75)" fontSize="5.5" fontFamily="monospace" letterSpacing="0.08em">REAL PREDICTION</text>
+          <defs>
+            <radialGradient id="gcam" cx="60%" cy="55%" r="45%">
+              <stop offset="0%" stopColor="rgba(212,167,106,0.7)" />
+              <stop offset="100%" stopColor="rgba(212,167,106,0)" />
+            </radialGradient>
+          </defs>
+        </svg>
+      </div>
+    );
+  }
+
   if (id === "novabank360") {
     return (
       <div className="absolute inset-0" style={{ background: "var(--srf-1)" }} aria-hidden="true">
