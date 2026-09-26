@@ -299,7 +299,6 @@ const NAV_SECTIONS = [
   { id: "hm-arch",     label: "Architecture" },
   { id: "hm-how",      label: "How It Works" },
   { id: "hm-bench",    label: "Benchmarks" },
-  { id: "hm-demo",     label: "Demo" },
   { id: "hm-limits",   label: "Limitations" },
   { id: "hm-roadmap",  label: "Roadmap" },
   { id: "hm-faq",      label: "FAQ" },
@@ -976,148 +975,10 @@ export function HandyMathShowcase({ project, allProjects }: HandyMathShowcasePro
               </p>
             </section>
 
-            {/* ── Section: Demo & Screenshots ────────────────────────────── */}
-            <section id="hm-demo" aria-label="Demo and screenshots">
-              <ShowcaseHeading
-                eyebrow="05"
-                title="Demo &amp; Screenshots"
-                subtitle="Placeholder frames — to be filled with actual captures and a screen-recorded walkthrough of the full pipeline."
-              />
-
-              {/* Video placeholder */}
-              <motion.div
-                className="relative rounded-2xl border overflow-hidden mb-8"
-                style={{ borderColor: "var(--brd)", aspectRatio: "16/9", background: "var(--srf-1)" }}
-                variants={scaleIn}
-                initial="hidden"
-                whileInView="visible"
-                viewport={viewport}
-                custom={0}
-              >
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-                  <div
-                    className="w-16 h-16 rounded-full flex items-center justify-center border-2"
-                    style={{ borderColor: "var(--acc)", background: "rgba(183,110,121,0.08)" }}
-                  >
-                    <div
-                      style={{
-                        width: 0, height: 0,
-                        borderTop: "9px solid transparent",
-                        borderBottom: "9px solid transparent",
-                        borderLeft: "16px solid var(--acc)",
-                        marginLeft: "3px",
-                      }}
-                      aria-hidden
-                    />
-                  </div>
-                  <div className="text-center">
-                    <p
-                      className="font-serif text-foreground mb-1"
-                      style={{ fontSize: "clamp(0.95rem, 1.4vw, 1.05rem)" }}
-                    >
-                      Full Pipeline Demo
-                    </p>
-                    <p
-                      className="font-light"
-                      style={{ fontSize: "12px", color: "var(--txt-subtle)" }}
-                    >
-                      Camera capture → OCR → SymPy solve → Three.js 3D render
-                    </p>
-                  </div>
-                  <span
-                    className="inline-flex items-center px-3 py-1 rounded-full uppercase font-medium"
-                    style={{
-                      fontSize: "9px",
-                      letterSpacing: "0.12em",
-                      background: "rgba(183,110,121,0.10)",
-                      color: "var(--acc)",
-                      borderWidth: "1px",
-                      borderStyle: "dashed",
-                      borderColor: "var(--acc)",
-                    }}
-                  >
-                    À compléter — screen recording needed
-                  </span>
-                </div>
-                {/* Decorative grid */}
-                <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{
-                    backgroundImage: "linear-gradient(rgba(183,110,121,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(183,110,121,0.04) 1px, transparent 1px)",
-                    backgroundSize: "40px 40px",
-                    opacity: 0.6,
-                  }}
-                  aria-hidden
-                />
-              </motion.div>
-
-              {/* Screenshot grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[
-                  { label: "OCR Capture Flow", desc: "Student photographs equation → parsed expression shown for confirmation before solving" },
-                  { label: "Step-by-Step Solver", desc: "SymPy solution rendered as sequential algebraic transformations — one step per row" },
-                  { label: "Three.js 3D Graph", desc: "Interactive 3D surface — rotate, zoom, inspect — rendered from the solved function" },
-                  { label: "Progress Dashboard", desc: "Per-topic completion rate, recent exercises, difficulty progression over time" },
-                ].map((shot, i) => (
-                  <motion.div
-                    key={i}
-                    className="rounded-xl border overflow-hidden"
-                    style={{ borderColor: "var(--brd)" }}
-                    initial={reduced ? false : { opacity: 0, y: 12 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.07, duration: duration.slow, ease: ease.out }}
-                    viewport={viewport}
-                  >
-                    <div
-                      className="relative flex flex-col items-center justify-center gap-3 aspect-video"
-                      style={{ background: "var(--srf-1)" }}
-                    >
-                      <span style={{ fontSize: "24px", opacity: 0.35 }} aria-hidden>📸</span>
-                      <span
-                        className="inline-flex items-center px-2.5 py-1 rounded-full uppercase font-medium"
-                        style={{
-                          fontSize: "8px",
-                          letterSpacing: "0.12em",
-                          background: "rgba(183,110,121,0.08)",
-                          color: "var(--acc)",
-                          borderWidth: "1px",
-                          borderStyle: "dashed",
-                          borderColor: "var(--acc)",
-                        }}
-                      >
-                        À compléter
-                      </span>
-                      {/* grid pattern */}
-                      <div
-                        className="absolute inset-0 pointer-events-none"
-                        style={{
-                          backgroundImage: "linear-gradient(rgba(183,110,121,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(183,110,121,0.04) 1px, transparent 1px)",
-                          backgroundSize: "24px 24px",
-                          opacity: 0.6,
-                        }}
-                        aria-hidden
-                      />
-                    </div>
-                    <div
-                      className="px-4 py-3 border-t"
-                      style={{ background: "var(--srf-0)", borderColor: "var(--brd)" }}
-                    >
-                      <p className="font-medium mb-0.5" style={{ fontSize: "12px", color: "var(--txt-muted)" }}>
-                        {shot.label}
-                      </p>
-                      <p className="font-light leading-snug" style={{ fontSize: "11.5px", color: "var(--txt-subtle)" }}>
-                        {shot.desc}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </section>
-
             {/* ── Section: Limitations ───────────────────────────────────── */}
             <section id="hm-limits" aria-label="Known limitations">
               <ShowcaseHeading
-                eyebrow="06"
+                eyebrow="05"
                 title="Known Limitations"
                 subtitle="This section exists because a project without documented limitations is either not understood or being misrepresented. These are real constraints, not polish opportunities."
               />
@@ -1179,7 +1040,7 @@ export function HandyMathShowcase({ project, allProjects }: HandyMathShowcasePro
             {/* ── Section: Roadmap ───────────────────────────────────────── */}
             <section id="hm-roadmap" aria-label="Future improvements">
               <ShowcaseHeading
-                eyebrow="07"
+                eyebrow="06"
                 title="Roadmap"
                 subtitle="Planned improvements — ordered by impact on the core use case, not by implementation complexity."
               />
@@ -1270,7 +1131,7 @@ export function HandyMathShowcase({ project, allProjects }: HandyMathShowcasePro
             {/* ── Section: FAQ ───────────────────────────────────────────── */}
             <section id="hm-faq" aria-label="Frequently asked questions">
               <ShowcaseHeading
-                eyebrow="08"
+                eyebrow="07"
                 title="Technical FAQ"
                 subtitle="Questions a senior engineer or technical recruiter would ask — answered directly."
               />
