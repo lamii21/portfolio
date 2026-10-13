@@ -160,30 +160,6 @@ const BENCHMARKS = [
     status: "warn",
   },
   {
-    metric: "SymPy solve time — polynomial",
-    value: "À compléter",
-    note: "Formal benchmarks not yet recorded",
-    status: "todo",
-  },
-  {
-    metric: "SymPy solve time — integral / ODE",
-    value: "À compléter",
-    note: "Formal benchmarks not yet recorded",
-    status: "todo",
-  },
-  {
-    metric: "API response time (end-to-end)",
-    value: "À compléter",
-    note: "Benchmark against test exercises needed",
-    status: "todo",
-  },
-  {
-    metric: "Three.js render — first frame",
-    value: "À compléter",
-    note: "Cold start vs. warm (renderer lifecycle)",
-    status: "todo",
-  },
-  {
     metric: "Progress DB query (user history)",
     value: "O(1) on indexed join",
     note: "Progress table indexed on (user_id, exercise_id)",
@@ -954,25 +930,11 @@ export function HandyMathShowcase({ project, allProjects }: HandyMathShowcasePro
                       </span>
                       {row.status === "good" && <Check size={13} style={{ color: "rgb(34,197,94)", flexShrink: 0 }} aria-hidden />}
                       {row.status === "warn" && <AlertTriangle size={13} style={{ color: "rgb(251,146,60)", flexShrink: 0 }} aria-hidden />}
-                      {row.status === "todo" && (
-                        <span
-                          className="inline-flex items-center px-2 py-0.5 rounded-full uppercase font-medium"
-                          style={{ fontSize: "8px", background: "rgba(183,110,121,0.10)", color: "var(--acc)", letterSpacing: "0.1em", borderWidth: "1px", borderStyle: "dashed", borderColor: "var(--acc)" }}
-                        >
-                          À compléter
-                        </span>
-                      )}
                     </div>
                   </motion.div>
                 ))}
               </div>
 
-              <p
-                className="mt-4 font-light italic"
-                style={{ fontSize: "12px", color: "var(--txt-subtle)" }}
-              >
-                Benchmarks marked &ldquo;À compléter&rdquo; require a formal test setup with a representative exercise set and timing instrumentation on the solver and preprocessing stages.
-              </p>
             </section>
 
             {/* ── Section: Limitations ───────────────────────────────────── */}

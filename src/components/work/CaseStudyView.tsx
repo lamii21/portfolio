@@ -48,9 +48,17 @@ export function CaseStudyView({ project, allProjects }: CaseStudyViewProps) {
 
   const cs = project.caseStudy;
 
+  const visibleSections = NAV_SECTIONS.filter(({ id }) => {
+    if (id === "cs-schema")  return !!(cs?.dbSchema && cs.dbSchema.length > 0);
+    if (id === "cs-alts")    return !!(cs?.alternatives && cs.alternatives.length > 0);
+    if (id === "cs-perf")    return !!(cs?.optimizations && cs.optimizations.length > 0);
+    if (id === "cs-testing") return !!cs?.testing;
+    return true;
+  });
+
   // Scroll spy — track which section is in the viewport
   useEffect(() => {
-    const els = NAV_SECTIONS.map((s) => document.getElementById(s.id)).filter(Boolean) as HTMLElement[];
+    const els = visibleSections.map((s) => document.getElementById(s.id)).filter(Boolean) as HTMLElement[];
     if (!els.length) return;
 
     const observer = new IntersectionObserver(
@@ -202,7 +210,7 @@ export function CaseStudyView({ project, allProjects }: CaseStudyViewProps) {
               >
                 Contents
               </p>
-              {NAV_SECTIONS.map(({ id, label }) => (
+              {visibleSections.map(({ id, label }) => (
                 <a
                   key={id}
                   href={`#${id}`}
@@ -321,9 +329,9 @@ export function CaseStudyView({ project, allProjects }: CaseStudyViewProps) {
             </section>
 
             {/* ── Section 3: Data Schema ──────────────────────────────── */}
+            {cs?.dbSchema && cs.dbSchema.length > 0 && (
             <section id="cs-schema" aria-label="Database schema">
               <SectionHeading number="03" title="Data Schema" />
-              {cs?.dbSchema && cs.dbSchema.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {cs.dbSchema.map((entity, i) => (
                     <motion.div
@@ -388,21 +396,8 @@ export function CaseStudyView({ project, allProjects }: CaseStudyViewProps) {
                     </motion.div>
                   ))}
                 </div>
-              ) : (
-                <div
-                  className="flex items-center gap-4 py-8 px-6 rounded-xl border"
-                  style={{ borderColor: "var(--brd)", borderStyle: "dashed", background: "var(--srf-1)" }}
-                >
-                  <span style={{ fontSize: "24px" }} aria-hidden="true">🗄️</span>
-                  <p
-                    className="font-light italic"
-                    style={{ fontSize: "13.5px", color: "var(--txt-subtle)" }}
-                  >
-                    À compléter — schema entities and field definitions to be documented.
-                  </p>
-                </div>
-              )}
             </section>
+            )}
 
             {/* ── Section 4: Technical Choices ────────────────────────── */}
             {cs && (
@@ -438,9 +433,9 @@ export function CaseStudyView({ project, allProjects }: CaseStudyViewProps) {
             )}
 
             {/* ── Section 5: Alternatives Considered ──────────────────── */}
+            {cs?.alternatives && cs.alternatives.length > 0 && (
             <section id="cs-alts" aria-label="Alternatives considered">
               <SectionHeading number="05" title="Alternatives Considered" />
-              {cs?.alternatives && cs.alternatives.length > 0 ? (
                 <div className="space-y-4">
                   {cs.alternatives.map((alt, i) => (
                     <motion.div
@@ -498,21 +493,8 @@ export function CaseStudyView({ project, allProjects }: CaseStudyViewProps) {
                     </motion.div>
                   ))}
                 </div>
-              ) : (
-                <div
-                  className="flex items-center gap-4 py-8 px-6 rounded-xl border"
-                  style={{ borderColor: "var(--brd)", borderStyle: "dashed", background: "var(--srf-1)" }}
-                >
-                  <span style={{ fontSize: "24px" }} aria-hidden="true">🔀</span>
-                  <p
-                    className="font-light italic"
-                    style={{ fontSize: "13.5px", color: "var(--txt-subtle)" }}
-                  >
-                    À compléter — alternatives considered and why they were rejected.
-                  </p>
-                </div>
-              )}
             </section>
+            )}
 
             {/* ── Section 6: Timeline ──────────────────────────────────── */}
             {cs && (
@@ -649,9 +631,9 @@ export function CaseStudyView({ project, allProjects }: CaseStudyViewProps) {
             )}
 
             {/* ── Section 8: Optimizations ────────────────────────────── */}
+            {cs?.optimizations && cs.optimizations.length > 0 && (
             <section id="cs-perf" aria-label="Optimizations and performance">
               <SectionHeading number="08" title="Optimizations" />
-              {cs?.optimizations && cs.optimizations.length > 0 ? (
                 <div className="space-y-5">
                   {cs.optimizations.map((opt, i) => (
                     <motion.div
@@ -720,26 +702,13 @@ export function CaseStudyView({ project, allProjects }: CaseStudyViewProps) {
                     </motion.div>
                   ))}
                 </div>
-              ) : (
-                <div
-                  className="flex items-center gap-4 py-8 px-6 rounded-xl border"
-                  style={{ borderColor: "var(--brd)", borderStyle: "dashed", background: "var(--srf-1)" }}
-                >
-                  <span style={{ fontSize: "24px" }} aria-hidden="true">⚡</span>
-                  <p
-                    className="font-light italic"
-                    style={{ fontSize: "13.5px", color: "var(--txt-subtle)" }}
-                  >
-                    À compléter — optimizations made and measurable improvements.
-                  </p>
-                </div>
-              )}
             </section>
+            )}
 
             {/* ── Section 9: Testing ──────────────────────────────────── */}
+            {cs?.testing && (
             <section id="cs-testing" aria-label="Testing strategy">
               <SectionHeading number="09" title="Testing" />
-              {cs?.testing ? (
                 <motion.div
                   className="space-y-5"
                   initial={reduced ? false : { opacity: 0, y: 14 }}
@@ -859,21 +828,8 @@ export function CaseStudyView({ project, allProjects }: CaseStudyViewProps) {
                     </div>
                   )}
                 </motion.div>
-              ) : (
-                <div
-                  className="flex items-center gap-4 py-8 px-6 rounded-xl border"
-                  style={{ borderColor: "var(--brd)", borderStyle: "dashed", background: "var(--srf-1)" }}
-                >
-                  <span style={{ fontSize: "24px" }} aria-hidden="true">🧪</span>
-                  <p
-                    className="font-light italic"
-                    style={{ fontSize: "13.5px", color: "var(--txt-subtle)" }}
-                  >
-                    À compléter — testing strategy, types, tools, and coverage.
-                  </p>
-                </div>
-              )}
             </section>
+            )}
 
             {/* ── Section 11: Impact ───────────────────────────────────── */}
             {cs && (
